@@ -40,3 +40,43 @@ export const renderSearchForm = (container, onSearch) => {
   // Append form to container
   container.appendChild(form);
 };
+
+/**
+ * 이미지 검색 결과를 렌더링합니다.
+ * @param {HTMLElement} container - 결과를 렌더링할 컨테이너
+ * @param {Array} images - 이미지 데이터 배열
+ */
+export const renderImageResults = (container, images) => {
+  // Clear previous results
+  while (container.firstChild) {
+    container.removeChild(container.firstChild);
+  }
+
+  // Handle empty results
+  if (images.length === 0) {
+    const noResults = document.createElement('div');
+    noResults.className = 'no-results';
+    noResults.textContent = 'No results found';
+    container.appendChild(noResults);
+    return;
+  }
+
+  // Create image grid
+  const grid = document.createElement('div');
+  grid.className = 'image-grid';
+
+  // Render each image
+  images.forEach((image) => {
+    const imageItem = document.createElement('div');
+    imageItem.className = 'image-item';
+
+    const img = document.createElement('img');
+    img.src = image.previewURL;
+    img.alt = image.tags;
+
+    imageItem.appendChild(img);
+    grid.appendChild(imageItem);
+  });
+
+  container.appendChild(grid);
+};
