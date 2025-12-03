@@ -80,3 +80,29 @@ export const renderImageResults = (container, images) => {
 
   container.appendChild(grid);
 };
+
+/**
+ * 로딩 스켈레톤 UI를 렌더링합니다.
+ * @param {HTMLElement} container - 스켈레톤을 렌더링할 컨테이너
+ * @param {number} count - 스켈레톤 카드 개수 (기본값: 20)
+ */
+export const renderLoadingSkeleton = (container, count = 20) => {
+  // Clear previous content
+  while (container.firstChild) {
+    container.removeChild(container.firstChild);
+  }
+
+  // Create skeleton grid
+  const grid = document.createElement('div');
+  grid.className = 'skeleton-grid';
+
+  // Render skeleton items
+  for (let i = 0; i < count; i += 1) {
+    const skeletonItem = document.createElement('div');
+    skeletonItem.className = 'skeleton-item';
+
+    container.appendChild(skeletonItem);
+  }
+
+  container.appendChild(grid);
+};

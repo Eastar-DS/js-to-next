@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { renderSearchForm, renderImageResults } from '../scripts/ui.js';
+import { renderSearchForm, renderImageResults, renderLoadingSkeleton } from '../scripts/ui.js';
 
 describe('Search Form Rendering', () => {
   beforeEach(() => {
@@ -177,5 +177,71 @@ describe('Image Results Rendering', () => {
     // And: new content should be present
     const imageItems = container.querySelectorAll('.image-item');
     expect(imageItems.length).toBe(1);
+  });
+});
+
+describe('Loading Skeleton Rendering', () => {
+  beforeEach(() => {
+    // Set up a fresh DOM for each test
+    document.body.innerHTML = '<div id="loading"></div>';
+  });
+
+  afterEach(() => {
+    // Clean up DOM after each test
+    document.body.innerHTML = '';
+  });
+
+  test('should render skeleton cards', () => {
+    // Given: a container and count
+    const container = document.getElementById('loading');
+    const count = 3;
+
+    // When: we render skeleton loading
+    renderLoadingSkeleton(container, count);
+
+    // Then: it should render correct number of skeleton items
+    const skeletonItems = container.querySelectorAll('.skeleton-item');
+    expect(skeletonItems.length).toBe(3);
+  });
+
+  test('should render default number of skeleton cards when count not provided', () => {
+    // Given: a container without count
+    const container = document.getElementById('loading');
+
+    // When: we render skeleton loading without count
+    renderLoadingSkeleton(container);
+
+    // Then: it should render default 20 skeleton items
+    const skeletonItems = container.querySelectorAll('.skeleton-item');
+    expect(skeletonItems.length).toBe(20);
+  });
+
+  test('should add skeleton class to container', () => {
+    // Given: a container
+    const container = document.getElementById('loading');
+
+    // When: we render skeleton loading
+    renderLoadingSkeleton(container, 5);
+
+    // Then: container should have skeleton-grid class
+    const grid = container.querySelector('.skeleton-grid');
+    expect(grid).toBeTruthy();
+  });
+
+  test('should clear previous content before rendering skeleton', () => {
+    // Given: a container with existing content
+    const container = document.getElementById('loading');
+    container.innerHTML = '<div class="old-content">Old</div>';
+
+    // When: we render skeleton loading
+    renderLoadingSkeleton(container, 2);
+
+    // Then: old content should be removed
+    const oldContent = container.querySelector('.old-content');
+    expect(oldContent).toBeFalsy();
+
+    // And: skeleton items should be present
+    const skeletonItems = container.querySelectorAll('.skeleton-item');
+    expect(skeletonItems.length).toBe(2);
   });
 });
