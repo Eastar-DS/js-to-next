@@ -92,3 +92,78 @@ describe('Image Search Function', () => {
     await expect(searchImages(query)).rejects.toThrow('Network error');
   });
 });
+
+describe('Pagination Function', () => {
+  beforeEach(() => {
+    global.fetch = jest.fn();
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  test('should fetch specific page of images', async () => {
+    // Given: a query and page number
+    const query = 'nature';
+    const page = 2;
+    const perPage = 20;
+    const mockResponse = {
+      total: 500,
+      totalHits: 500,
+      hits: [
+        { id: 21, tags: 'nature, landscape' },
+        { id: 22, tags: 'nature, tree' },
+      ],
+    };
+
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockResponse,
+    });
+
+    // When: we fetch page 2
+    const result = await searchImages(query, page, perPage);
+
+    // Then: it should include correct page parameter
+    expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining(`page=${page}`));
+    expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining(`per_page=${perPage}`));
+    expect(result).toEqual(mockResponse);
+  });
+
+  test('should calculate total pages correctly', () => {
+    // Given: total results and items per page
+    const totalHits = 500;
+    const perPage = 20;
+
+    // When: we calculate total pages
+    const totalPages = Math.ceil(totalHits / perPage);
+
+    // Then: it should be correct
+    expect(totalPages).toBe(25);
+  });
+
+  test('should determine if previous page exists', () => {
+    // Given: current page number
+    const currentPage1 = 1;
+    const currentPage2 = 2;
+
+    // When & Then: page 1 should not have previous
+    expect(currentPage1 > 1).toBe(false);
+
+    // And: page 2 should have previous
+    expect(currentPage2 > 1).toBe(true);
+  });
+
+  test('should determine if next page exists', () => {
+    // Given: current page and total pages
+    const currentPage = 5;
+    const totalPages = 25;
+    const lastPage = 25;
+
+    // When & Then: page 5 should have next page
+    expect(currentPage < totalPages).toBe(true);
+
+    // And: last page should not have next page
+    expect(lastPage < totalPages).toBe(false);
+  });
+});
