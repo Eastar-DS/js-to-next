@@ -35,7 +35,9 @@ npm install --save-dev \
   ],
   "env": {
     "browser": true,
-    "es2024": true
+    "es2024": true,
+    "jest": true,
+    "node": true
   },
   "parserOptions": {
     "ecmaVersion": "latest",
@@ -74,7 +76,7 @@ npm install --save-dev \
 
 ### 4. Jest 설정
 ```bash
-npm install --save-dev jest @types/jest
+npm install --save-dev jest @types/jest jest-environment-jsdom
 ```
 
 **jest.config.js**
@@ -88,15 +90,27 @@ export default {
 };
 ```
 
+**jest.setup.js**
+```javascript
+// Jest setup file
+
+// Set test environment variables
+process.env.PIXABAY_API_KEY = 'test_api_key_12345';
+```
+
 ### 5. package.json scripts 추가
+
+package.json에 `"type": "module"`을 추가하고 scripts를 설정합니다:
+
 ```json
 {
+  "type": "module",
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "test": "jest",
-    "test:watch": "jest --watch"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch"
   }
 }
 ```

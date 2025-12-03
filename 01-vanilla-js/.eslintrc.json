@@ -5,7 +5,9 @@
   ],
   "env": {
     "browser": true,
-    "es2024": true
+    "es2024": true,
+    "jest": true,
+    "node": true
   },
   "parserOptions": {
     "ecmaVersion": "latest",
