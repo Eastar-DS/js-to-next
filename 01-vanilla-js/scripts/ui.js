@@ -106,3 +106,36 @@ export const renderLoadingSkeleton = (container, count = 20) => {
 
   container.appendChild(grid);
 };
+
+/**
+ * 에러 메시지를 렌더링합니다.
+ * @param {HTMLElement} container - 에러 메시지를 렌더링할 컨테이너
+ * @param {string} message - 에러 메시지
+ * @param {Function} onRetry - 재시도 버튼 클릭 시 호출될 콜백 함수
+ */
+export const renderErrorMessage = (container, message, onRetry) => {
+  // Set default message if not provided
+  const errorText = message || 'An error occurred';
+
+  // Clear previous content
+  while (container.firstChild) {
+    container.removeChild(container.firstChild);
+  }
+
+  // Create error message element
+  const errorElement = document.createElement('div');
+  errorElement.className = 'error-message';
+  errorElement.textContent = errorText;
+
+  container.appendChild(errorElement);
+
+  // Add retry button if callback provided
+  if (onRetry) {
+    const retryButton = document.createElement('button');
+    retryButton.className = 'retry-button';
+    retryButton.textContent = 'Retry';
+    retryButton.addEventListener('click', onRetry);
+
+    container.appendChild(retryButton);
+  }
+};

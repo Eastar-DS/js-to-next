@@ -1,5 +1,10 @@
 import { jest } from '@jest/globals';
-import { renderSearchForm, renderImageResults, renderLoadingSkeleton } from '../scripts/ui.js';
+import {
+  renderSearchForm,
+  renderImageResults,
+  renderLoadingSkeleton,
+  renderErrorMessage,
+} from '../scripts/ui.js';
 
 describe('Search Form Rendering', () => {
   beforeEach(() => {
@@ -243,5 +248,89 @@ describe('Loading Skeleton Rendering', () => {
     // And: skeleton items should be present
     const skeletonItems = container.querySelectorAll('.skeleton-item');
     expect(skeletonItems.length).toBe(2);
+  });
+});
+
+describe('Error Message Rendering', () => {
+  beforeEach(() => {
+    // Set up a fresh DOM for each test
+    document.body.innerHTML = '<div id="error"></div>';
+  });
+
+  afterEach(() => {
+    // Clean up DOM after each test
+    document.body.innerHTML = '';
+  });
+
+  test('should render error message with text', () => {
+    // Given: a container and error message
+    const container = document.getElementById('error');
+    const errorMessage = 'Failed to load images. Please try again.';
+
+    // When: we render error message
+    renderErrorMessage(container, errorMessage);
+
+    // Then: it should display the error message
+    const errorElement = container.querySelector('.error-message');
+    expect(errorElement).toBeTruthy();
+    expect(errorElement.textContent).toContain('Failed to load images');
+  });
+
+  test('should render default error message when no message provided', () => {
+    // Given: a container without error message
+    const container = document.getElementById('error');
+
+    // When: we render error message without text
+    renderErrorMessage(container);
+
+    // Then: it should display default error message
+    const errorElement = container.querySelector('.error-message');
+    expect(errorElement).toBeTruthy();
+    expect(errorElement.textContent).toContain('An error occurred');
+  });
+
+  test('should include retry button', () => {
+    // Given: a container and callback
+    const container = document.getElementById('error');
+    const onRetry = jest.fn();
+
+    // When: we render error message with retry callback
+    renderErrorMessage(container, 'Error occurred', onRetry);
+
+    // Then: it should have a retry button
+    const retryButton = container.querySelector('.retry-button');
+    expect(retryButton).toBeTruthy();
+    expect(retryButton.textContent).toBe('Retry');
+  });
+
+  test('should call retry callback when button clicked', () => {
+    // Given: a container and callback
+    const container = document.getElementById('error');
+    const onRetry = jest.fn();
+
+    // When: we render error message and click retry
+    renderErrorMessage(container, 'Error occurred', onRetry);
+    const retryButton = container.querySelector('.retry-button');
+    retryButton.click();
+
+    // Then: callback should be called
+    expect(onRetry).toHaveBeenCalledTimes(1);
+  });
+
+  test('should clear previous content before rendering error', () => {
+    // Given: a container with existing content
+    const container = document.getElementById('error');
+    container.innerHTML = '<div class="old-content">Old</div>';
+
+    // When: we render error message
+    renderErrorMessage(container, 'Error occurred');
+
+    // Then: old content should be removed
+    const oldContent = container.querySelector('.old-content');
+    expect(oldContent).toBeFalsy();
+
+    // And: error message should be present
+    const errorElement = container.querySelector('.error-message');
+    expect(errorElement).toBeTruthy();
   });
 });
