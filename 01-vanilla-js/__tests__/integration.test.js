@@ -5,6 +5,7 @@ import {
   renderImageResults,
   renderLoadingSkeleton,
   renderErrorMessage,
+  renderPagination,
 } from '../scripts/ui.js';
 
 describe('Search Workflow Integration', () => {
@@ -83,7 +84,9 @@ describe('Search Workflow Integration', () => {
     expect(skeletonItems.length).toBe(20);
 
     // And: wait for async operations to complete
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await new Promise((resolve) => {
+      setTimeout(resolve, 0);
+    });
 
     // And: results should be rendered after API call
     const imageItems = resultsContainer.querySelectorAll('.image-item');
@@ -128,7 +131,9 @@ describe('Search Workflow Integration', () => {
     form.dispatchEvent(submitEvent);
 
     // Wait for async operations
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await new Promise((resolve) => {
+      setTimeout(resolve, 0);
+    });
 
     // Then: "No results found" message should be displayed
     const noResults = resultsContainer.querySelector('.no-results');
@@ -169,11 +174,144 @@ describe('Search Workflow Integration', () => {
     form.dispatchEvent(submitEvent);
 
     // Wait for async operations
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await new Promise((resolve) => {
+      setTimeout(resolve, 0);
+    });
 
     // Then: error message should be displayed
     const errorElement = resultsContainer.querySelector('.error-message');
     expect(errorElement).toBeTruthy();
     expect(errorElement.textContent).toContain('Failed to load images');
+  });
+});
+
+describe('Pagination Integration', () => {
+  beforeEach(() => {
+    // Set up a fresh DOM for each test
+    document.body.innerHTML = `
+      <div id="app">
+        <div id="search-container"></div>
+        <div id="results-container"></div>
+        <div id="pagination-container"></div>
+      </div>
+    `;
+
+    // Reset fetch mock
+    global.fetch = jest.fn();
+  });
+
+  afterEach(() => {
+    // Clean up DOM after each test
+    document.body.innerHTML = '';
+    jest.restoreAllMocks();
+  });
+
+  test('should handle page change: loading → API call → new results', async () => {
+    // Given: containers and initial search results
+    const resultsContainer = document.getElementById('results-container');
+    const paginationContainer = document.getElementById('pagination-container');
+
+    // Mock first page response
+    const firstPageResponse = {
+      total: 500,
+      totalHits: 500,
+      hits: [
+        {
+          id: 1,
+          tags: 'cat, page 1',
+          previewURL: 'https://pixabay.com/preview/cat1.jpg',
+          largeImageURL: 'https://pixabay.com/large/cat1.jpg',
+        },
+      ],
+    };
+
+    // Mock second page response
+    const secondPageResponse = {
+      total: 500,
+      totalHits: 500,
+      hits: [
+        {
+          id: 21,
+          tags: 'cat, page 2',
+          previewURL: 'https://pixabay.com/preview/cat21.jpg',
+          largeImageURL: 'https://pixabay.com/large/cat21.jpg',
+        },
+      ],
+    };
+
+    global.fetch
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => firstPageResponse,
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => secondPageResponse,
+      });
+
+    // When: we set up pagination workflow
+    let currentPage = 1;
+    const currentQuery = 'cats';
+    const perPage = 20;
+
+    const handlePageChange = async (newPage) => {
+      currentPage = newPage;
+
+      // 1. Show loading skeleton
+      renderLoadingSkeleton(resultsContainer, perPage);
+
+      // 2. Fetch new page
+      const data = await searchImages(currentQuery, currentPage, perPage);
+
+      // 3. Render new results
+      renderImageResults(resultsContainer, data.hits);
+
+      // 4. Update pagination
+      const totalPages = Math.ceil(data.totalHits / perPage);
+      renderPagination(paginationContainer, currentPage, totalPages, handlePageChange);
+    };
+
+    // Initial render (page 1)
+    await handlePageChange(1);
+
+    // Wait for async operations
+    await new Promise((resolve) => {
+      setTimeout(resolve, 0);
+    });
+
+    // Then: first page results should be displayed
+    let imageItems = resultsContainer.querySelectorAll('.image-item');
+    expect(imageItems.length).toBe(1);
+    expect(imageItems[0].querySelector('img').alt).toBe('cat, page 1');
+
+    // And: pagination should be rendered
+    const nextButton = paginationContainer.querySelector('.next-button');
+    expect(nextButton).toBeTruthy();
+    expect(nextButton.disabled).toBe(false);
+
+    // When: user clicks next page
+    nextButton.click();
+
+    // Then: loading skeleton should be displayed immediately
+    let skeletonItems = resultsContainer.querySelectorAll('.skeleton-item');
+    expect(skeletonItems.length).toBe(20);
+
+    // Wait for async operations
+    await new Promise((resolve) => {
+      setTimeout(resolve, 0);
+    });
+
+    // And: second page results should be displayed
+    imageItems = resultsContainer.querySelectorAll('.image-item');
+    expect(imageItems.length).toBe(1);
+    expect(imageItems[0].querySelector('img').alt).toBe('cat, page 2');
+
+    // And: skeleton should be cleared
+    skeletonItems = resultsContainer.querySelectorAll('.skeleton-item');
+    expect(skeletonItems.length).toBe(0);
+
+    // And: pagination should reflect page 2
+    const pageInfo = paginationContainer.querySelector('.page-info');
+    expect(pageInfo.textContent).toContain('2');
   });
 });

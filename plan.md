@@ -41,7 +41,8 @@ Pixabay API를 활용한 이미지 검색 애플리케이션을 다양한 기술
 │   └── main.js
 └── __tests__/
     ├── api.test.js
-    └── ui.test.js
+    ├── ui.test.js
+    └── integration.test.js
 ```
 
 ### TDD 단계별 구현
@@ -85,13 +86,48 @@ Pixabay API를 활용한 이미지 검색 애플리케이션을 다양한 기술
   - [x] 검색 결과 없음 처리
   - [x] API 에러 핸들링
 
-- [ ] **Test 10**: 페이지네이션 통합 테스트
-  - [ ] 다음 페이지 클릭 → 로딩 → 새 결과 표시
+- [x] **Test 10**: 페이지네이션 통합 테스트
+  - [x] 다음 페이지 클릭 → 로딩 → 새 결과 표시
 
 #### 1.4 리팩토링 (Tidy First)
 - [ ] **Structural**: 중복 코드 제거 (DOM 조작, API 호출 등)
 - [ ] **Structural**: 함수 분리 및 단일 책임 원칙 적용
 - [ ] **Structural**: 상수 분리 (API URL, 페이지 크기 등)
+
+#### 1.5 실제 웹페이지 구현
+- [ ] **HTML 구조**: index.html 작성
+  - [ ] 기본 HTML5 구조 (DOCTYPE, meta tags)
+  - [ ] 검색 폼 컨테이너 (#search-container)
+  - [ ] 결과 컨테이너 (#results-container)
+  - [ ] 페이지네이션 컨테이너 (#pagination-container)
+  - [ ] scripts 및 styles 파일 링크
+
+- [ ] **CSS 스타일링**: styles/main.css 작성
+  - [ ] 레이아웃 스타일 (Flexbox/Grid)
+  - [ ] 검색 폼 스타일
+  - [ ] 이미지 그리드 스타일 (반응형)
+  - [ ] 페이지네이션 스타일
+  - [ ] 에러 메시지 스타일
+
+- [ ] **스켈레톤 UI**: styles/skeleton.css 작성
+  - [ ] 스켈레톤 그리드 레이아웃
+  - [ ] 스켈레톤 아이템 애니메이션
+  - [ ] 로딩 효과 (shimmer/pulse)
+
+- [ ] **메인 애플리케이션**: scripts/main.js 작성
+  - [ ] DOM 로드 이벤트 핸들러
+  - [ ] 앱 초기화 함수
+  - [ ] 검색 핸들러 (API + UI 통합)
+  - [ ] 페이지네이션 핸들러
+  - [ ] 전역 상태 관리 (currentPage, currentQuery)
+
+- [ ] **브라우저 테스트**: 실제 동작 확인
+  - [ ] 검색 기능 작동 확인
+  - [ ] 로딩 스켈레톤 표시 확인
+  - [ ] 이미지 결과 렌더링 확인
+  - [ ] 페이지네이션 작동 확인
+  - [ ] 에러 핸들링 확인
+  - [ ] 반응형 디자인 확인
 
 ---
 
