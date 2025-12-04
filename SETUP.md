@@ -145,7 +145,7 @@ npm install --save-dev \
 
 ### 3. 설정 파일 생성/수정
 
-**.eslintrc.json**
+**.eslintrc.json** (모든 Airbnb React/JSX 규칙 명시적 적용)
 ```json
 {
   "extends": [
@@ -157,25 +157,351 @@ npm install --save-dev \
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": "./tsconfig.json"
+    "project": "./tsconfig.json",
+    "ecmaFeatures": {
+      "jsx": true
+    }
   },
   "rules": {
+    // ===== React 19 호환성 =====
     "react/react-in-jsx-scope": "off",
-    "react/function-component-definition": [
-      "error",
-      {
-        "namedComponents": "arrow-function"
+
+    // ===== Airbnb React/JSX Style Guide 명시적 규칙 =====
+
+    // 1. Basic Rules
+    "react/no-multi-comp": ["error", { "ignoreStateless": true }],
+    "react/forbid-prop-types": ["error", {
+      "forbid": ["any", "array", "object"],
+      "checkContextTypes": true,
+      "checkChildContextTypes": true
+    }],
+
+    // 2. Class vs Stateless
+    "react/prefer-es6-class": ["error", "always"],
+    "react/prefer-stateless-function": ["error", { "ignorePureComponents": true }],
+
+    // 4. Naming
+    "react/jsx-filename-extension": ["error", { "extensions": [".tsx", ".jsx"] }],
+    "react/jsx-pascal-case": ["error", {
+      "allowAllCaps": true,
+      "ignore": []
+    }],
+
+    // 5. Declaration
+    "react/function-component-definition": ["error", {
+      "namedComponents": "arrow-function",
+      "unnamedComponents": "arrow-function"
+    }],
+
+    // 6. Alignment
+    "react/jsx-closing-bracket-location": ["error", "line-aligned"],
+    "react/jsx-closing-tag-location": "error",
+
+    // 7. Quotes
+    "jsx-quotes": ["error", "prefer-double"],
+
+    // 8. Spacing
+    "react/jsx-tag-spacing": ["error", {
+      "closingSlash": "never",
+      "beforeSelfClosing": "always",
+      "afterOpening": "never",
+      "beforeClosing": "never"
+    }],
+    "react/jsx-curly-spacing": ["error", "never", { "allowMultiline": true }],
+
+    // 9. Props
+    "react/jsx-boolean-value": ["error", "never", { "always": [] }],
+    "jsx-a11y/alt-text": ["error", {
+      "elements": ["img", "object", "area", "input[type=\"image\"]"],
+      "img": [],
+      "object": [],
+      "area": [],
+      "input[type=\"image\"]": []
+    }],
+    "jsx-a11y/img-redundant-alt": "error",
+    "jsx-a11y/aria-role": ["error", { "ignoreNonDOM": false }],
+    "jsx-a11y/no-access-key": "error",
+    "react/no-array-index-key": "error",
+    "react/require-default-props": ["error", {
+      "forbidDefaultForRequired": true,
+      "ignoreFunctionalComponents": false
+    }],
+    "react/default-props-match-prop-types": ["error", {
+      "allowRequiredDefaults": false
+    }],
+
+    // 10. Refs
+    "react/no-string-refs": "error",
+
+    // 11. Parentheses
+    "react/jsx-wrap-multilines": ["error", {
+      "declaration": "parens-new-line",
+      "assignment": "parens-new-line",
+      "return": "parens-new-line",
+      "arrow": "parens-new-line",
+      "condition": "parens-new-line",
+      "logical": "parens-new-line",
+      "prop": "parens-new-line"
+    }],
+
+    // 12. Tags
+    "react/self-closing-comp": ["error", {
+      "component": true,
+      "html": true
+    }],
+
+    // 13. Methods
+    "react/jsx-no-bind": ["error", {
+      "ignoreRefs": true,
+      "allowArrowFunctions": true,
+      "allowFunctions": false,
+      "allowBind": false,
+      "ignoreDOMComponents": true
+    }],
+    "react/require-render-return": "error",
+    "react/no-is-mounted": "error",
+
+    // 14. Ordering
+    "react/sort-comp": ["error", {
+      "order": [
+        "static-variables",
+        "static-methods",
+        "instance-variables",
+        "lifecycle",
+        "/^handle.+$/",
+        "/^on.+$/",
+        "getters",
+        "setters",
+        "/^(get|set)(?!(InitialState$|DefaultProps$|ChildContext$)).+$/",
+        "instance-methods",
+        "everything-else",
+        "rendering"
+      ],
+      "groups": {
+        "lifecycle": [
+          "displayName",
+          "propTypes",
+          "contextTypes",
+          "childContextTypes",
+          "mixins",
+          "statics",
+          "defaultProps",
+          "constructor",
+          "getDefaultProps",
+          "getInitialState",
+          "state",
+          "getChildContext",
+          "getDerivedStateFromProps",
+          "componentWillMount",
+          "UNSAFE_componentWillMount",
+          "componentDidMount",
+          "componentWillReceiveProps",
+          "UNSAFE_componentWillReceiveProps",
+          "shouldComponentUpdate",
+          "componentWillUpdate",
+          "UNSAFE_componentWillUpdate",
+          "getSnapshotBeforeUpdate",
+          "componentDidUpdate",
+          "componentDidCatch",
+          "componentWillUnmount"
+        ],
+        "rendering": [
+          "/^render.+$/",
+          "render"
+        ]
       }
-    ],
-    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
-    "import/prefer-default-export": "off"
+    }],
+
+    // ===== TypeScript 관련 =====
+    "@typescript-eslint/no-unused-vars": ["error", {
+      "argsIgnorePattern": "^_",
+      "varsIgnorePattern": "^_"
+    }],
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-explicit-any": "error",
+
+    // ===== Import 관련 =====
+    "import/prefer-default-export": "off",
+    "import/extensions": ["error", "ignorePackages", {
+      "ts": "never",
+      "tsx": "never"
+    }],
+
+    // ===== Hooks =====
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
   }
 }
 ```
 
 **.prettierrc** (Phase 1과 동일)
 
-### 4. TypeScript 설정 (Clean Architecture paths)
+### 4. Airbnb React/JSX Style Guide 검증 (Phase 1과 동일한 절차)
+
+**중요**: Phase 2 TDD를 시작하기 전에 반드시 ESLint 설정이 모든 Airbnb React/JSX 규칙을 정확하게 감지하는지 검증해야 합니다.
+
+#### 4.1 테스트 파일 작성
+
+프로젝트 루트에 `airbnb-react-style-test.tsx` 파일을 생성하고, Airbnb React/JSX Style Guide의 모든 "bad" 예제를 포함시킵니다.
+
+자세한 계획은 [REACT-STYLE-GUIDE-TEST-PLAN.md](./REACT-STYLE-GUIDE-TEST-PLAN.md)를 참조하세요.
+
+```tsx
+/**
+ * Airbnb React/JSX Style Guide 위반 사항 테스트 파일
+ *
+ * 출처: https://github.com/airbnb/javascript/tree/master/react
+ *
+ * 이 파일은 의도적으로 모든 규칙을 위반합니다.
+ */
+
+import React from 'react';
+
+// 1. Basic Rules - react/no-multi-comp
+const Foo = () => <div>Foo</div>;
+const Bar = () => <div>Bar</div>;
+
+// 2. Class vs Stateless - react/prefer-stateless-function
+class Listing extends React.Component {
+  render() {
+    return <div>{this.props.hello}</div>;
+  }
+}
+
+// 4. Naming - react/jsx-pascal-case
+const reservationCard = () => <div />;
+
+// 5. Declaration - react/function-component-definition
+function BadDeclaration() {
+  return <div />;
+}
+
+// 6. Alignment - react/jsx-closing-bracket-location
+const BadAlignment = () => (
+  <div
+    foo="bar"
+    baz="qux" />
+);
+
+// 7. Quotes - jsx-quotes
+const BadQuotes = () => <div className='bad' />;
+
+// 8. Spacing - react/jsx-tag-spacing, react/jsx-curly-spacing
+const BadSpacing = () => <div/>;
+const BadCurly = () => <div className={ 'bad' } />;
+
+// 9. Props - react/jsx-boolean-value
+const BadBoolean = () => <div hidden={true} />;
+
+// 9. Props - jsx-a11y/alt-text
+const BadAlt = () => <img src="test.jpg" />;
+
+// 9. Props - jsx-a11y/img-redundant-alt
+const BadAltText = () => <img src="test.jpg" alt="Picture of test" />;
+
+// 9. Props - jsx-a11y/no-access-key
+const BadAccessKey = () => <div accessKey="h" />;
+
+// 9. Props - react/no-array-index-key
+const BadKey = ({ items }) => (
+  <div>
+    {items.map((item, index) => (
+      <div key={index}>{item}</div>
+    ))}
+  </div>
+);
+
+// 10. Refs - react/no-string-refs
+class BadRefs extends React.Component {
+  render() {
+    return <div ref="myRef" />;
+  }
+}
+
+// 11. Parentheses - react/jsx-wrap-multilines
+const BadParens = () => {
+  return <div>
+    <span>Test</span>
+  </div>;
+};
+
+// 12. Tags - react/self-closing-comp
+const BadSelfClosing = () => <div></div>;
+
+// 13. Methods - react/jsx-no-bind
+class BadBind extends React.Component {
+  handleClick() {}
+
+  render() {
+    return <div onClick={this.handleClick.bind(this)} />;
+  }
+}
+
+// 13. Methods - react/require-render-return
+class BadReturn extends React.Component {
+  render() {
+    (<div />);
+  }
+}
+
+// 14. Ordering - react/sort-comp
+class BadOrdering extends React.Component {
+  render() {
+    return <div />;
+  }
+
+  componentDidMount() {}
+
+  static getDerivedStateFromProps() {}
+}
+
+export default Foo;
+```
+
+#### 4.2 ESLint 실행 및 검증
+
+```bash
+# 테스트 파일에 대해 ESLint 실행
+npm run lint -- airbnb-react-style-test.tsx
+
+# 예상 결과: 50+ problems (errors and warnings)
+```
+
+#### 4.3 검증 리포트 작성
+
+검증 결과를 `AIRBNB-REACT-STYLE-TEST-REPORT.md`에 문서화합니다:
+
+```markdown
+# Airbnb React/JSX Style Guide - ESLint 검증 리포트
+
+## 검증 결과
+
+✅ **총 XX개의 위반 사항이 정확하게 감지됨** (XX errors, XX warnings)
+
+### 감지된 규칙 위반 (Rule Violations)
+
+#### 1. Basic Rules ✅
+- `react/no-multi-comp` - 파일당 하나의 컴포넌트
+- `react/forbid-prop-types` - PropTypes 명시적 정의
+
+#### 2. Class vs Stateless ✅
+- `react/prefer-stateless-function` - 불필요한 클래스 금지
+
+...
+
+## 결론
+
+✅ **모든 Airbnb React/JSX Style Guide 규칙이 정확하게 적용되어 있습니다!**
+```
+
+#### 4.4 검증 완료 후
+
+- ✅ 모든 규칙이 정확하게 감지되는지 확인
+- ✅ 리포트 문서화 완료
+- ✅ Phase 2 TDD 시작 준비 완료
+
+### 5. TypeScript 설정 (Clean Architecture paths)
 
 **tsconfig.json** (compilerOptions에 추가)
 ```json

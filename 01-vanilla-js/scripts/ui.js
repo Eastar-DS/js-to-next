@@ -4,6 +4,16 @@
  */
 
 /**
+ * 컨테이너의 모든 자식 요소를 제거합니다.
+ * @param {HTMLElement} container - 비울 컨테이너
+ */
+const clearContainer = (container) => {
+  while (container.firstChild) {
+    container.removeChild(container.firstChild);
+  }
+};
+
+/**
  * 검색 폼을 렌더링합니다.
  * @param {HTMLElement} container - 폼을 렌더링할 컨테이너
  * @param {Function} onSearch - 검색 시 호출될 콜백 함수
@@ -48,9 +58,7 @@ export const renderSearchForm = (container, onSearch) => {
  */
 export const renderImageResults = (container, images) => {
   // Clear previous results
-  while (container.firstChild) {
-    container.removeChild(container.firstChild);
-  }
+  clearContainer(container);
 
   // Handle empty results
   if (images.length === 0) {
@@ -88,9 +96,7 @@ export const renderImageResults = (container, images) => {
  */
 export const renderLoadingSkeleton = (container, count = 20) => {
   // Clear previous content
-  while (container.firstChild) {
-    container.removeChild(container.firstChild);
-  }
+  clearContainer(container);
 
   // Create skeleton grid
   const grid = document.createElement('div');
@@ -118,9 +124,7 @@ export const renderErrorMessage = (container, message, onRetry) => {
   const errorText = message || 'An error occurred';
 
   // Clear previous content
-  while (container.firstChild) {
-    container.removeChild(container.firstChild);
-  }
+  clearContainer(container);
 
   // Create error message element
   const errorElement = document.createElement('div');
@@ -149,9 +153,7 @@ export const renderErrorMessage = (container, message, onRetry) => {
  */
 export const renderPagination = (container, currentPage, totalPages, onPageChange) => {
   // Clear previous content
-  while (container.firstChild) {
-    container.removeChild(container.firstChild);
-  }
+  clearContainer(container);
 
   // Create pagination wrapper
   const paginationWrapper = document.createElement('div');

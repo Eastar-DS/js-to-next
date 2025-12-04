@@ -11,21 +11,12 @@ import {
   renderErrorMessage,
   renderPagination,
 } from './ui.js';
-
-// 전역 상태 관리
-let currentQuery = '';
-let currentPage = 1;
-const perPage = 20;
+import { getQuery, setQuery, getPage, setPage, getPerPage } from './state.js';
 
 /**
- * 페이지 변경 핸들러
- * @param {number} newPage - 새 페이지 번호
+ * 페이지 상단으로 스크롤합니다.
  */
-const handlePageChange = (newPage) => {
-  // eslint-disable-next-line no-use-before-define
-  performSearch(currentQuery, newPage);
-
-  // 페이지 변경 시 상단으로 스크롤
+const scrollToTop = () => {
   window.scrollTo({
     top: 0,
     behavior: 'smooth',
@@ -33,13 +24,21 @@ const handlePageChange = (newPage) => {
 };
 
 /**
+ * DOM 컨테이너들을 가져옵니다.
+ * @returns {Object} 결과 및 페이지네이션 컨테이너
+ */
+const getContainers = () => ({
+  resultsContainer: document.getElementById('results-container'),
+  paginationContainer: document.getElementById('pagination-container'),
+});
+
+/**
  * 검색을 수행하고 결과를 렌더링합니다.
  * @param {string} query - 검색어
  * @param {number} page - 페이지 번호
  */
 const performSearch = async (query, page = 1) => {
-  const resultsContainer = document.getElementById('results-container');
-  const paginationContainer = document.getElementById('pagination-container');
+  const { resultsContainer, paginationContainer } = getContainers();
 
   // 빈 검색어는 무시
   if (!query.trim()) {
@@ -47,12 +46,12 @@ const performSearch = async (query, page = 1) => {
   }
 
   // 현재 상태 업데이트
-  currentQuery = query;
-  currentPage = page;
+  setQuery(query);
+  setPage(page);
 
   try {
     // 1. 로딩 스켈레톤 표시
-    renderLoadingSkeleton(resultsContainer, perPage);
+    renderLoadingSkeleton(resultsContainer, getPerPage());
 
     // 페이지네이션 초기화 (첫 검색시)
     if (page === 1) {
@@ -60,15 +59,19 @@ const performSearch = async (query, page = 1) => {
     }
 
     // 2. API 호출
-    const data = await searchImages(currentQuery, currentPage, perPage);
+    const data = await searchImages(getQuery(), getPage(), getPerPage());
 
     // 3. 결과 렌더링
     renderImageResults(resultsContainer, data.hits);
 
     // 4. 페이지네이션 렌더링
-    const totalPages = Math.ceil(data.totalHits / perPage);
+    const totalPages = Math.ceil(data.totalHits / getPerPage());
     if (totalPages > 1) {
-      renderPagination(paginationContainer, currentPage, totalPages, handlePageChange);
+      // Airbnb 8.1: Use arrow function for inline callback
+      renderPagination(paginationContainer, getPage(), totalPages, (newPage) => {
+        performSearch(getQuery(), newPage);
+        scrollToTop();
+      });
     } else {
       paginationContainer.innerHTML = '';
     }
@@ -77,7 +80,7 @@ const performSearch = async (query, page = 1) => {
     renderErrorMessage(
       resultsContainer,
       '이미지를 불러오는데 실패했습니다. 다시 시도해주세요.',
-      () => performSearch(currentQuery, currentPage)
+      () => performSearch(getQuery(), getPage())
     );
     paginationContainer.innerHTML = '';
   }
