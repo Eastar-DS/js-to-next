@@ -139,3 +139,56 @@ export const renderErrorMessage = (container, message, onRetry) => {
     container.appendChild(retryButton);
   }
 };
+
+/**
+ * 페이지네이션 UI를 렌더링합니다.
+ * @param {HTMLElement} container - 페이지네이션을 렌더링할 컨테이너
+ * @param {number} currentPage - 현재 페이지 번호
+ * @param {number} totalPages - 전체 페이지 수
+ * @param {Function} onPageChange - 페이지 변경 시 호출될 콜백 함수
+ */
+export const renderPagination = (container, currentPage, totalPages, onPageChange) => {
+  // Clear previous content
+  while (container.firstChild) {
+    container.removeChild(container.firstChild);
+  }
+
+  // Create pagination wrapper
+  const paginationWrapper = document.createElement('div');
+  paginationWrapper.className = 'pagination';
+
+  // Create previous button
+  const prevButton = document.createElement('button');
+  prevButton.className = 'prev-button';
+  prevButton.textContent = 'Previous';
+  prevButton.disabled = currentPage === 1;
+  prevButton.addEventListener('click', () => {
+    if (onPageChange) {
+      onPageChange(currentPage - 1);
+    }
+  });
+
+  // Create page info
+  const pageInfo = document.createElement('span');
+  pageInfo.className = 'page-info';
+  pageInfo.textContent = `Page ${currentPage} / ${totalPages}`;
+
+  // Create next button
+  const nextButton = document.createElement('button');
+  nextButton.className = 'next-button';
+  nextButton.textContent = 'Next';
+  nextButton.disabled = currentPage === totalPages;
+  nextButton.addEventListener('click', () => {
+    if (onPageChange) {
+      onPageChange(currentPage + 1);
+    }
+  });
+
+  // Append elements to pagination wrapper
+  paginationWrapper.appendChild(prevButton);
+  paginationWrapper.appendChild(pageInfo);
+  paginationWrapper.appendChild(nextButton);
+
+  // Append pagination to container
+  container.appendChild(paginationWrapper);
+};

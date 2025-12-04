@@ -4,6 +4,7 @@ import {
   renderImageResults,
   renderLoadingSkeleton,
   renderErrorMessage,
+  renderPagination,
 } from '../scripts/ui.js';
 
 describe('Search Form Rendering', () => {
@@ -332,5 +333,113 @@ describe('Error Message Rendering', () => {
     // And: error message should be present
     const errorElement = container.querySelector('.error-message');
     expect(errorElement).toBeTruthy();
+  });
+});
+
+describe('Pagination Rendering', () => {
+  beforeEach(() => {
+    // Set up a fresh DOM for each test
+    document.body.innerHTML = '<div id="pagination"></div>';
+  });
+
+  afterEach(() => {
+    // Clean up DOM after each test
+    document.body.innerHTML = '';
+  });
+
+  test('should render previous and next buttons', () => {
+    // Given: a container and pagination data
+    const container = document.getElementById('pagination');
+    const currentPage = 2;
+    const totalPages = 5;
+    const onPageChange = jest.fn();
+
+    // When: we render pagination
+    renderPagination(container, currentPage, totalPages, onPageChange);
+
+    // Then: it should have previous and next buttons
+    const prevButton = container.querySelector('.prev-button');
+    const nextButton = container.querySelector('.next-button');
+    expect(prevButton).toBeTruthy();
+    expect(nextButton).toBeTruthy();
+  });
+
+  test('should display current page number', () => {
+    // Given: a container and pagination data
+    const container = document.getElementById('pagination');
+    const currentPage = 3;
+    const totalPages = 10;
+    const onPageChange = jest.fn();
+
+    // When: we render pagination
+    renderPagination(container, currentPage, totalPages, onPageChange);
+
+    // Then: it should display current page and total pages
+    const pageInfo = container.querySelector('.page-info');
+    expect(pageInfo).toBeTruthy();
+    expect(pageInfo.textContent).toContain('3');
+    expect(pageInfo.textContent).toContain('10');
+  });
+
+  test('should disable previous button on first page', () => {
+    // Given: first page pagination
+    const container = document.getElementById('pagination');
+    const currentPage = 1;
+    const totalPages = 5;
+    const onPageChange = jest.fn();
+
+    // When: we render pagination
+    renderPagination(container, currentPage, totalPages, onPageChange);
+
+    // Then: previous button should be disabled
+    const prevButton = container.querySelector('.prev-button');
+    expect(prevButton.disabled).toBe(true);
+  });
+
+  test('should disable next button on last page', () => {
+    // Given: last page pagination
+    const container = document.getElementById('pagination');
+    const currentPage = 5;
+    const totalPages = 5;
+    const onPageChange = jest.fn();
+
+    // When: we render pagination
+    renderPagination(container, currentPage, totalPages, onPageChange);
+
+    // Then: next button should be disabled
+    const nextButton = container.querySelector('.next-button');
+    expect(nextButton.disabled).toBe(true);
+  });
+
+  test('should call callback with previous page when prev button clicked', () => {
+    // Given: pagination on page 3
+    const container = document.getElementById('pagination');
+    const currentPage = 3;
+    const totalPages = 5;
+    const onPageChange = jest.fn();
+
+    // When: we render pagination and click prev
+    renderPagination(container, currentPage, totalPages, onPageChange);
+    const prevButton = container.querySelector('.prev-button');
+    prevButton.click();
+
+    // Then: callback should be called with page 2
+    expect(onPageChange).toHaveBeenCalledWith(2);
+  });
+
+  test('should call callback with next page when next button clicked', () => {
+    // Given: pagination on page 3
+    const container = document.getElementById('pagination');
+    const currentPage = 3;
+    const totalPages = 5;
+    const onPageChange = jest.fn();
+
+    // When: we render pagination and click next
+    renderPagination(container, currentPage, totalPages, onPageChange);
+    const nextButton = container.querySelector('.next-button');
+    nextButton.click();
+
+    // Then: callback should be called with page 4
+    expect(onPageChange).toHaveBeenCalledWith(4);
   });
 });
