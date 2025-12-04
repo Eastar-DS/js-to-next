@@ -2,6 +2,8 @@
  * API 클라이언트 모듈
  */
 
+import { CONFIG } from './config.js';
+
 const API_BASE_URL = 'https://pixabay.com/api/';
 
 /**
@@ -9,6 +11,11 @@ const API_BASE_URL = 'https://pixabay.com/api/';
  * @returns {string} Pixabay API 키
  */
 export const getApiKey = () => {
+  // 브라우저 환경에서는 config.js 사용
+  if (typeof process === 'undefined' || !process.env) {
+    return CONFIG.PIXABAY_API_KEY;
+  }
+  // Node.js 환경(테스트)에서는 환경변수 사용
   return process.env.PIXABAY_API_KEY;
 };
 
