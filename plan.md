@@ -95,31 +95,31 @@ Pixabay API를 활용한 이미지 검색 애플리케이션을 다양한 기술
 - [ ] **Structural**: 상수 분리 (API URL, 페이지 크기 등)
 
 #### 1.5 실제 웹페이지 구현
-- [ ] **HTML 구조**: index.html 작성
-  - [ ] 기본 HTML5 구조 (DOCTYPE, meta tags)
-  - [ ] 검색 폼 컨테이너 (#search-container)
-  - [ ] 결과 컨테이너 (#results-container)
-  - [ ] 페이지네이션 컨테이너 (#pagination-container)
-  - [ ] scripts 및 styles 파일 링크
+- [x] **HTML 구조**: index.html 작성
+  - [x] 기본 HTML5 구조 (DOCTYPE, meta tags)
+  - [x] 검색 폼 컨테이너 (#search-container)
+  - [x] 결과 컨테이너 (#results-container)
+  - [x] 페이지네이션 컨테이너 (#pagination-container)
+  - [x] scripts 및 styles 파일 링크
 
-- [ ] **CSS 스타일링**: styles/main.css 작성
-  - [ ] 레이아웃 스타일 (Flexbox/Grid)
-  - [ ] 검색 폼 스타일
-  - [ ] 이미지 그리드 스타일 (반응형)
-  - [ ] 페이지네이션 스타일
-  - [ ] 에러 메시지 스타일
+- [x] **CSS 스타일링**: styles/main.css 작성
+  - [x] 레이아웃 스타일 (Flexbox/Grid)
+  - [x] 검색 폼 스타일
+  - [x] 이미지 그리드 스타일 (반응형)
+  - [x] 페이지네이션 스타일
+  - [x] 에러 메시지 스타일
 
-- [ ] **스켈레톤 UI**: styles/skeleton.css 작성
-  - [ ] 스켈레톤 그리드 레이아웃
-  - [ ] 스켈레톤 아이템 애니메이션
-  - [ ] 로딩 효과 (shimmer/pulse)
+- [x] **스켈레톤 UI**: styles/skeleton.css 작성
+  - [x] 스켈레톤 그리드 레이아웃
+  - [x] 스켈레톤 아이템 애니메이션
+  - [x] 로딩 효과 (shimmer/pulse)
 
-- [ ] **메인 애플리케이션**: scripts/main.js 작성
-  - [ ] DOM 로드 이벤트 핸들러
-  - [ ] 앱 초기화 함수
-  - [ ] 검색 핸들러 (API + UI 통합)
-  - [ ] 페이지네이션 핸들러
-  - [ ] 전역 상태 관리 (currentPage, currentQuery)
+- [x] **메인 애플리케이션**: scripts/main.js 작성
+  - [x] DOM 로드 이벤트 핸들러
+  - [x] 앱 초기화 함수
+  - [x] 검색 핸들러 (API + UI 통합)
+  - [x] 페이지네이션 핸들러
+  - [x] 전역 상태 관리 (currentPage, currentQuery)
 
 - [ ] **브라우저 테스트**: 실제 동작 확인
   - [ ] 검색 기능 작동 확인
