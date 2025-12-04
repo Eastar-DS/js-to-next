@@ -18,6 +18,21 @@ let currentPage = 1;
 const perPage = 20;
 
 /**
+ * 페이지 변경 핸들러
+ * @param {number} newPage - 새 페이지 번호
+ */
+const handlePageChange = (newPage) => {
+  // eslint-disable-next-line no-use-before-define
+  performSearch(currentQuery, newPage);
+
+  // 페이지 변경 시 상단으로 스크롤
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  });
+};
+
+/**
  * 검색을 수행하고 결과를 렌더링합니다.
  * @param {string} query - 검색어
  * @param {number} page - 페이지 번호
@@ -74,20 +89,6 @@ const performSearch = async (query, page = 1) => {
  */
 const handleSearch = (query) => {
   performSearch(query, 1);
-};
-
-/**
- * 페이지 변경 핸들러
- * @param {number} newPage - 새 페이지 번호
- */
-const handlePageChange = (newPage) => {
-  performSearch(currentQuery, newPage);
-
-  // 페이지 변경 시 상단으로 스크롤
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth',
-  });
 };
 
 /**

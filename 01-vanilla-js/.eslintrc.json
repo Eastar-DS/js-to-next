@@ -11,8 +11,62 @@
     "sourceType": "module"
   },
   "rules": {
+    // Console 허용 (개발 중)
     "no-console": "off",
+
+    // Airbnb: Import/Export 규칙
     "import/extensions": ["error", "always"],
-    "import/prefer-default-export": "off"
+    "import/prefer-default-export": "off",
+
+    // Airbnb: Arrow Functions (8.x)
+    "prefer-arrow-callback": ["error", { "allowNamedFunctions": false }],
+    "arrow-body-style": ["error", "as-needed"],
+    "arrow-parens": ["error", "always"],
+
+    // Airbnb: Functions (7.x)
+    "func-style": ["error", "expression", { "allowArrowFunctions": true }],
+    "no-use-before-define": ["error", { "functions": false, "classes": true, "variables": true }],
+
+    // Airbnb: References (2.x)
+    "no-var": "error",
+    "prefer-const": ["error", { "destructuring": "any", "ignoreReadBeforeAssign": false }],
+
+    // Airbnb: Objects (3.x)
+    "object-shorthand": ["error", "always", { "avoidQuotes": true }],
+    "quote-props": ["error", "as-needed"],
+    "no-prototype-builtins": "error",
+    "prefer-object-spread": "error",
+
+    // Airbnb: Arrays (4.x)
+    "no-array-constructor": "error",
+    "array-callback-return": ["error", { "allowImplicit": true }],
+
+    // Airbnb: Destructuring (5.x)
+    "prefer-destructuring": ["error", {
+      "VariableDeclarator": { "array": false, "object": true },
+      "AssignmentExpression": { "array": true, "object": false }
+    }],
+
+    // Airbnb: Strings (6.x)
+    "prefer-template": "error",
+    "no-useless-concat": "error",
+
+    // Airbnb: Comparison (15.x)
+    "eqeqeq": ["error", "always"],
+
+    // Airbnb: Blocks (16.x)
+    "brace-style": ["error", "1tbs", { "allowSingleLine": false }],
+    "curly": ["error", "all"],
+
+    // Airbnb: Variables (13.x)
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
+    "one-var": ["error", "never"],
+
+    // Airbnb: Hoisting (14.x)
+    "no-undef": "error",
+
+    // Airbnb: Naming Conventions (23.x)
+    "camelcase": ["error", { "properties": "never", "ignoreDestructuring": false }],
+    "new-cap": ["error", { "newIsCap": true, "capIsNew": false }]
   }
 }

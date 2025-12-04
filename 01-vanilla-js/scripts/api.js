@@ -23,9 +23,7 @@ export const getApiKey = () => {
  * API 기본 URL을 반환합니다.
  * @returns {string} API 기본 URL
  */
-export const getApiBaseUrl = () => {
-  return API_BASE_URL;
-};
+export const getApiBaseUrl = () => API_BASE_URL;
 
 /**
  * 검색어로 이미지를 검색합니다.
