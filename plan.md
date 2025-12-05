@@ -12,15 +12,15 @@ Pixabay API를 활용한 이미지 검색 애플리케이션을 다양한 기술
 
 ### 기술 스택 및 아키텍처 진행 순서
 1. Vanilla JavaScript (HTML, CSS, JS) - 기본 구조
-2. React 19 + Zustand + **TypeScript** - **Clean Architecture** 도입
-3. React 19 + React Query + **TypeScript** - **Clean Architecture** 심화
+2. React 19 + Zustand + **TypeScript** + **Styled Components** - **Clean Architecture** 도입
+3. React 19 + React Query + **TypeScript** + **Styled Components** - **Clean Architecture** 심화
 4. Next.js 16 + Tailwind CSS + **TypeScript** - **Feature-Sliced Design (FSD)** 도입
 5. Next.js 16 + Styled Components + **TypeScript** - **Feature-Sliced Design (FSD)** 심화
 
 ### 아키텍처 학습 목표
 - **Phase 1**: Vanilla JavaScript로 기본기 학습
-- **Phase 2-3**: Clean Architecture의 레이어 기반 구조와 의존성 규칙 학습 + TypeScript 타입 시스템
-- **Phase 4-5**: Feature-Sliced Design의 슬라이스 기반 현대적 구조 학습 + TypeScript 고급 활용
+- **Phase 2-3**: Clean Architecture의 레이어 기반 구조와 의존성 규칙 학습 + TypeScript 타입 시스템 + Styled Components 기초
+- **Phase 4-5**: Feature-Sliced Design의 슬라이스 기반 현대적 구조 학습 + TypeScript 고급 활용 + Tailwind CSS vs Styled Components 비교
 
 ---
 
@@ -142,7 +142,7 @@ Pixabay API를 활용한 이미지 검색 애플리케이션을 다양한 기술
 
 ---
 
-## Phase 2: React 19 + Zustand + TypeScript (Clean Architecture)
+## Phase 2: React 19 + Zustand + TypeScript + Styled Components (Clean Architecture)
 
 > **초기 설정**: [SETUP.md - Phase 2](./SETUP.md#phase-2-react-19--zustand--typescript-clean-architecture) 참조
 
@@ -160,7 +160,13 @@ Pixabay API를 활용한 이미지 검색 애플리케이션을 다양한 기술
 - **타입 추론**: Zustand와 함께 강력한 타입 추론 활용
 - **제네릭**: 재사용 가능한 타입 정의
 
-### Clean Architecture + TypeScript 레이어 구조
+### Styled Components 학습 목표
+- **CSS-in-JS 기초**: Styled Components의 기본 개념과 사용법
+- **타입 안전한 스타일링**: TypeScript와 Styled Components 통합
+- **테마 시스템**: ThemeProvider를 통한 전역 테마 관리
+- **Props 기반 스타일링**: 동적 스타일 적용 방법
+
+### Clean Architecture + TypeScript + Styled Components 레이어 구조
 ```
 02-react-zustand/
 ├── public/
@@ -191,14 +197,29 @@ Pixabay API를 활용한 이미지 검색 애플리케이션을 다양한 기술
 │   │
 │   ├── presentation/              # 프레젠테이션 레이어 (UI)
 │   │   ├── components/
-│   │   │   ├── SearchBar.tsx
-│   │   │   ├── ImageGrid.tsx
-│   │   │   ├── ImageCard.tsx
-│   │   │   ├── SkeletonCard.tsx
-│   │   │   ├── Pagination.tsx
-│   │   │   └── ErrorMessage.tsx
+│   │   │   ├── SearchBar/
+│   │   │   │   ├── SearchBar.tsx
+│   │   │   │   └── SearchBar.styles.ts
+│   │   │   ├── ImageGrid/
+│   │   │   │   ├── ImageGrid.tsx
+│   │   │   │   └── ImageGrid.styles.ts
+│   │   │   ├── ImageCard/
+│   │   │   │   ├── ImageCard.tsx
+│   │   │   │   └── ImageCard.styles.ts
+│   │   │   ├── SkeletonCard/
+│   │   │   │   ├── SkeletonCard.tsx
+│   │   │   │   └── SkeletonCard.styles.ts
+│   │   │   ├── Pagination/
+│   │   │   │   ├── Pagination.tsx
+│   │   │   │   └── Pagination.styles.ts
+│   │   │   └── ErrorMessage/
+│   │   │       ├── ErrorMessage.tsx
+│   │   │       └── ErrorMessage.styles.ts
 │   │   ├── pages/
 │   │   │   └── SearchPage.tsx
+│   │   ├── styles/
+│   │   │   ├── GlobalStyles.ts    # 전역 스타일
+│   │   │   └── theme.ts           # 테마 정의
 │   │   └── types.ts               # 컴포넌트 Props 타입
 │   │
 │   ├── App.tsx
@@ -295,54 +316,66 @@ Infrastructure (API, External Services)
   - [ ] 스토어와 타입 안전한 연동
   - [ ] 제네릭을 활용한 디바운스 구현
 
-#### 2.6 Presentation Layer - Components (Red → Green → Refactor)
-- [ ] **Test 11**: 컴포넌트 Props 타입 정의
+#### 2.6 Presentation Layer - Styled Components 설정 (Red → Green → Refactor)
+- [ ] **Test 11**: Styled Components + TypeScript 설정
+  - [ ] styled-components 및 타입 정의 설치
+  - [ ] 테마 타입 정의 (DefaultTheme 확장)
+  - [ ] ThemeProvider 설정
+  - [ ] GlobalStyles 정의
+
+#### 2.7 Presentation Layer - Components (Red → Green → Refactor)
+- [ ] **Test 12**: 컴포넌트 Props 타입 정의
   - [ ] 각 컴포넌트의 Props 인터페이스 정의
   - [ ] React.FC vs 함수 선언 방식 선택
 
-- [ ] **Test 12**: SearchBar 컴포넌트 테스트
+- [ ] **Test 13**: SearchBar 컴포넌트 + 스타일링
   - [ ] SearchBarProps 타입 정의
   - [ ] 타입 안전한 이벤트 핸들러
-  - [ ] onChange, onSubmit 타입 체크
+  - [ ] Styled Components로 스타일 정의
+  - [ ] Props 기반 동적 스타일링
 
-- [ ] **Test 13**: ImageCard 컴포넌트 테스트
+- [ ] **Test 14**: ImageCard 컴포넌트 + 스타일링
   - [ ] ImageCardProps 타입 정의 (Image 엔티티 사용)
   - [ ] 타입 안전한 props 전달
-  - [ ] 조건부 렌더링 타입 체크
+  - [ ] 카드 레이아웃 및 호버 효과
+  - [ ] 반응형 이미지 스타일
 
-- [ ] **Test 14**: SkeletonCard 컴포넌트 테스트
+- [ ] **Test 15**: SkeletonCard 컴포넌트 + 스타일링
   - [ ] SkeletonCardProps 타입 정의
   - [ ] 스켈레톤 UI 렌더링
+  - [ ] 로딩 애니메이션 (keyframes)
 
-- [ ] **Test 15**: Pagination 컴포넌트 테스트
+- [ ] **Test 16**: Pagination 컴포넌트 + 스타일링
   - [ ] PaginationProps 타입 정의
   - [ ] 타입 안전한 페이지 변경 핸들러
-  - [ ] 제네릭을 활용한 페이지 정보 타입
+  - [ ] 버튼 상태별 스타일 (active, disabled)
 
-- [ ] **Test 16**: ErrorMessage 컴포넌트 테스트
+- [ ] **Test 17**: ErrorMessage 컴포넌트 + 스타일링
   - [ ] ErrorMessageProps 타입 정의
   - [ ] Error 객체 타입 체크
-  - [ ] 재시도 콜백 타입 정의
+  - [ ] 에러 메시지 스타일링
 
-#### 2.7 통합 테스트
-- [ ] **Test 17**: 타입 시스템 통합 검증
+#### 2.8 통합 테스트
+- [ ] **Test 18**: 타입 시스템 통합 검증
   - [ ] 레이어 간 타입 일관성 확인
   - [ ] 타입 안전성 엔드투엔드 테스트
 
-- [ ] **Test 18**: 전체 검색 워크플로우 테스트
+- [ ] **Test 19**: 전체 검색 워크플로우 테스트
   - [ ] 타입 안전한 검색 플로우
   - [ ] 페이지네이션 타입 체크
   - [ ] 에러 핸들링 타입 검증
+  - [ ] 스타일 렌더링 확인
 
-#### 2.8 리팩토링 (Tidy First)
+#### 2.9 리팩토링 (Tidy First)
 - [ ] **Structural**: 공통 타입 추출 및 재사용
 - [ ] **Structural**: 유틸리티 타입 정의 (Nullable, Result 등)
 - [ ] **Structural**: 타입 가드 함수 정리
+- [ ] **Structural**: 스타일 믹스인 및 공통 스타일 추출
 - [ ] **Behavioral**: strict 모드 활성화 및 에러 수정
 
 ---
 
-## Phase 3: React 19 + React Query + TypeScript (Clean Architecture 심화)
+## Phase 3: React 19 + React Query + TypeScript + Styled Components (Clean Architecture 심화)
 
 > **초기 설정**: [SETUP.md - Phase 3](./SETUP.md#phase-3-react-19--react-query--typescript-clean-architecture-심화) 참조
 
@@ -355,6 +388,12 @@ Zustand 대신 React Query의 강력한 캐싱과 동기화 기능을 활용하�
 - **Query Key 타입 안전성**: 타입 안전한 Query Key 관리
 - **고급 제네릭**: Conditional Types, Mapped Types 활용
 - **타입 좁히기**: Union Types와 타입 가드 고급 활용
+
+### Styled Components 심화 학습 목표
+- **고급 테마 시스템**: 다크 모드 전환 구현
+- **Transient Props**: $-prefix를 활용한 최적화
+- **attrs() 헬퍼**: 기본 props 설정
+- **css 헬퍼**: 재사용 가능한 스타일 믹스인
 
 ### Clean Architecture + React Query + TypeScript 구조
 ```
