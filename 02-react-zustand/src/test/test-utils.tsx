@@ -3,8 +3,8 @@
  * React Testing Library를 확장한 커스텀 렌더 함수 및 헬퍼
  */
 
-import { ReactElement } from 'react';
-import { render, RenderOptions } from '@testing-library/react';
+import { type ReactElement } from 'react';
+import { render, type RenderOptions } from '@testing-library/react';
 
 /**
  * 기본 렌더 함수 (추후 Provider 등으로 확장 가능)

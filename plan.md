@@ -36,13 +36,21 @@ Pixabay API를 활용한 이미지 검색 애플리케이션을 다양한 기술
 │   ├── main.css
 │   └── skeleton.css
 ├── scripts/
-│   ├── api.js
-│   ├── ui.js
-│   └── main.js
-└── __tests__/
-    ├── api.test.js
-    ├── ui.test.js
-    └── integration.test.js
+│   ├── api.js          # API 클라이언트 및 환경변수 관리
+│   ├── config.js       # 설정 (API 키)
+│   ├── state.js        # 상태 관리 모듈 (getter/setter)
+│   ├── ui.js           # UI 렌더링 함수들 + clearContainer 헬퍼
+│   └── main.js         # 메인 앱 로직 (상태 통합)
+├── __tests__/
+│   ├── api.test.js
+│   ├── ui.test.js
+│   └── integration.test.js
+├── airbnb-style-test.js          # Airbnb Style Guide 검증 파일
+├── AIRBNB-STYLE-TEST-REPORT.md   # 검증 리포트
+├── .eslintrc.json
+├── .prettierrc
+├── jest.config.js
+└── package.json
 ```
 
 ### TDD 단계별 구현
@@ -90,9 +98,12 @@ Pixabay API를 활용한 이미지 검색 애플리케이션을 다양한 기술
   - [x] 다음 페이지 클릭 → 로딩 → 새 결과 표시
 
 #### 1.4 리팩토링 (Tidy First)
-- [ ] **Structural**: 중복 코드 제거 (DOM 조작, API 호출 등)
-- [ ] **Structural**: 함수 분리 및 단일 책임 원칙 적용
-- [ ] **Structural**: 상수 분리 (API URL, 페이지 크기 등)
+- [x] **Structural**: 중복 코드 제거 (DOM 조작 헬퍼 함수 `clearContainer` 추가)
+- [x] **Structural**: 함수 분리 및 단일 책임 원칙 적용 (`scrollToTop`, `getContainers` 분리)
+- [x] **Structural**: 상태 관리 모듈화 (`state.js` 생성 - getter/setter 패턴)
+- [x] **Behavioral**: 순환 참조 해결 (인라인 콜백 사용, Airbnb 8.1 준수)
+- [x] **Verification**: Airbnb Style Guide 검증 파일 작성 (`airbnb-style-test.js`)
+- [x] **Documentation**: 검증 리포트 작성 (`AIRBNB-STYLE-TEST-REPORT.md`)
 
 #### 1.5 실제 웹페이지 구현
 - [x] **HTML 구조**: index.html 작성
@@ -221,11 +232,15 @@ Infrastructure (API, External Services)
 ### TDD 단계별 구현 (Clean Architecture + TypeScript)
 
 #### 2.0 TypeScript 설정 (Red → Green → Refactor)
-- [ ] **Test 0**: TypeScript 환경 설정
-  - [ ] tsconfig.json 설정 (strict mode, paths 등)
-  - [ ] Vite + TypeScript 통합
-  - [ ] Jest + TypeScript 설정 (@types/jest, ts-jest)
-  - [ ] React + TypeScript 타입 정의
+- [x] **Test 0**: TypeScript 환경 설정
+  - [x] tsconfig.json 설정 (strict mode, paths 등)
+  - [x] Vite + TypeScript 통합
+  - [x] Jest + TypeScript 설정 (@types/jest, ts-jest)
+  - [x] React + TypeScript 타입 정의
+  - [x] Jest 테스트 환경 구성 (jest.config.ts, tsconfig.test.json)
+  - [x] Testing Library 설정 (@testing-library/react, @testing-library/jest-dom)
+  - [x] 테스트 유틸리티 파일 생성 (setup.ts, test-utils.tsx, fileMock.ts)
+  - [x] 설정 검증 테스트 (3/3 passed)
 
 #### 2.1 Domain Layer - Entities (Red → Green → Refactor)
 - [ ] **Test 1**: Image 엔티티 타입 테스트
