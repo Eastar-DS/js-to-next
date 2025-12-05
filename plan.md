@@ -252,7 +252,7 @@ Infrastructure (API, External Services)
 
 ### TDD 단계별 구현 (Clean Architecture + TypeScript)
 
-#### 2.0 TypeScript 설정 (Red → Green → Refactor)
+#### 2.0 TypeScript + Styled Components 설정 (Red → Green → Refactor)
 - [x] **Test 0**: TypeScript 환경 설정
   - [x] tsconfig.json 설정 (strict mode, paths 등)
   - [x] Vite + TypeScript 통합
@@ -262,6 +262,9 @@ Infrastructure (API, External Services)
   - [x] Testing Library 설정 (@testing-library/react, @testing-library/jest-dom)
   - [x] 테스트 유틸리티 파일 생성 (setup.ts, test-utils.tsx, fileMock.ts)
   - [x] 설정 검증 테스트 (3/3 passed)
+- [x] **Styled Components 설치**
+  - [x] styled-components 및 타입 정의 설치
+  - [x] jest-styled-components 설치 (테스트용)
 
 #### 2.1 Domain Layer - Entities (Red → Green → Refactor)
 - [ ] **Test 1**: Image 엔티티 타입 테스트
@@ -316,9 +319,8 @@ Infrastructure (API, External Services)
   - [ ] 스토어와 타입 안전한 연동
   - [ ] 제네릭을 활용한 디바운스 구현
 
-#### 2.6 Presentation Layer - Styled Components 설정 (Red → Green → Refactor)
-- [ ] **Test 11**: Styled Components + TypeScript 설정
-  - [ ] styled-components 및 타입 정의 설치
+#### 2.6 Presentation Layer - Theme & Global Styles (Red → Green → Refactor)
+- [ ] **Test 11**: 테마 및 전역 스타일 설정
   - [ ] 테마 타입 정의 (DefaultTheme 확장)
   - [ ] ThemeProvider 설정
   - [ ] GlobalStyles 정의
