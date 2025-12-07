@@ -282,14 +282,17 @@ Infrastructure (API, External Services)
   - [x] 7개 테스트 모두 통과
 
 #### 2.3 Domain Layer - UseCases (Red → Green → Refactor)
-- [ ] **Test 3**: SearchImages 유스케이스 테스트
-  - [ ] 제네릭 타입을 활용한 UseCase 인터페이스
-  - [ ] Repository 인터페이스를 통해 검색 실행
-  - [ ] 타입 안전한 에러 핸들링
+- [x] **Test 3**: SearchImagesUseCase 테스트
+  - [x] SearchImagesUseCase 클래스 정의
+  - [x] Repository 인터페이스를 통해 검색 실행
+  - [x] Result<Image[]> 반환 타입
+  - [x] 6개 테스트 모두 통과
 
-- [ ] **Test 4**: GetImagesByPage 유스케이스 테스트
-  - [ ] 페이지네이션 파라미터 타입 정의
-  - [ ] Repository를 통한 타입 안전한 데이터 조회
+- [x] **Test 4**: GetImagesByPageUseCase 테스트
+  - [x] GetImagesByPageUseCase 클래스 정의
+  - [x] 페이지네이션 파라미터 타입 정의 (query: string, page: number)
+  - [x] Repository를 통한 타입 안전한 데이터 조회
+  - [x] 6개 테스트 모두 통과
 
 #### 2.4 Infrastructure Layer - API Client (Red → Green → Refactor)
 - [ ] **Test 5**: API 응답 타입 정의
