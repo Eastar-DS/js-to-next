@@ -189,11 +189,12 @@ Pixabay API를 활용한 이미지 검색 애플리케이션을 다양한 기술
 │   │       └── useImageSearch.ts  # 커스텀 훅
 │   │
 │   ├── infrastructure/            # 인프라 레이어 (외부 시스템 연동)
-│   │   ├── api/
-│   │   │   ├── PixabayApiClient.ts # Pixabay API 클라이언트
-│   │   │   └── types.ts            # API 응답 타입
+│   │   ├── datasources/
+│   │   │   ├── PixabayDataSource.ts # Pixabay API 통신 (HTTP, DTO 반환)
+│   │   │   └── dto/
+│   │   │       └── PixabayDto.ts   # API 응답 DTO 타입
 │   │   └── repositories/
-│   │       └── PixabayImageRepository.ts # Repository 구현체
+│   │       └── PixabayImageRepository.ts # Repository 구현체 (DTO → Entity 변환)
 │   │
 │   ├── presentation/              # 프레젠테이션 레이어 (UI)
 │   │   ├── components/
@@ -294,20 +295,32 @@ Infrastructure (API, External Services)
   - [x] Repository를 통한 타입 안전한 데이터 조회
   - [x] 6개 테스트 모두 통과
 
-#### 2.4 Infrastructure Layer - API Client (Red → Green → Refactor)
-- [ ] **Test 5**: API 응답 타입 정의
-  - [ ] PixabayApiResponse 인터페이스 정의
-  - [ ] API 에러 타입 정의
+#### 2.4 Infrastructure Layer - DataSource & Repository (Red → Green → Refactor)
 
-- [ ] **Test 6**: PixabayApiClient 테스트
+**2.4.1 DTO 타입 정의**
+- [ ] **Test 5**: Pixabay API DTO 타입 정의
+  - [ ] PixabayImageDto 인터페이스 정의 (API 응답 구조)
+  - [ ] PixabayApiResponseDto 인터페이스 정의 (전체 응답 래퍼)
+  - [ ] API 에러 DTO 타입 정의
+  - [ ] DTO 타입 검증 함수 작성
+
+**2.4.2 DataSource Layer (API 통신)**
+- [ ] **Test 6**: PixabayDataSource 테스트
   - [ ] 제네릭 fetch 래퍼 구현
+  - [ ] search 메서드 구현 (query: string → DTO 반환)
+  - [ ] getByPage 메서드 구현 (query: string, page: number → DTO 반환)
   - [ ] 타입 안전한 HTTP 요청/응답 처리
-  - [ ] 타입 가드를 활용한 에러 핸들링
+  - [ ] 네트워크 에러 핸들링 (타입 가드 활용)
+  - [ ] API 키 및 환경 변수 관리
 
+**2.4.3 Repository Implementation (DTO → Entity 변환)**
 - [ ] **Test 7**: PixabayImageRepository 구현 테스트
   - [ ] ImageRepository 인터페이스 구현
-  - [ ] API 응답 → 도메인 엔티티 타입 변환
+  - [ ] DataSource 의존성 주입 (constructor)
+  - [ ] DTO → Domain Entity 변환 로직 (mapper 함수)
+  - [ ] Result<Image[]> 타입으로 래핑
   - [ ] 타입 안전한 에러 매핑
+  - [ ] 변환 실패 시 에러 처리
 
 #### 2.5 Application Layer - Store & Hooks (Red → Green → Refactor)
 - [ ] **Test 8**: Zustand 스토어 타입 정의

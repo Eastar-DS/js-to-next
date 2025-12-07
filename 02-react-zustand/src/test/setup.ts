@@ -8,7 +8,9 @@ import '@testing-library/jest-dom';
 // React 19 및 Testing Library를 위한 전역 설정
 globalThis.ResizeObserver = class ResizeObserver {
   observe() {}
+
   unobserve() {}
+
   disconnect() {}
 };
 

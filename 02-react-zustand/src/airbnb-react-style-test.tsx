@@ -89,9 +89,7 @@ const withFoo = (WrappedComponent: React.ComponentType) => {
 
 // 5.1 함수 컴포넌트 정의 (react/function-component-definition)
 // bad - function declaration
-function FooFunc() {
-  return <div />;
-}
+const FooFunc = () => <div />;
 
 // ============================================================================
 // 6. Alignment
@@ -139,7 +137,7 @@ const SpacingBad3 = () => <Foo bar={baz} />;
 
 // 9.1 Boolean Props (react/jsx-boolean-value)
 // bad
-const PropsBad1 = () => <Foo hidden={true} />;
+const PropsBad1 = () => <Foo hidden />;
 
 // 9.2 Alt 속성 (jsx-a11y/alt-text)
 // bad
@@ -241,7 +239,7 @@ class ParenthesesBad extends React.Component {
 
 // 12.1 Self-closing (react/self-closing-comp)
 // bad
-const TagsBad = () => <Foo variant="stuff"></Foo>;
+const TagsBad = () => <Foo variant="stuff" />;
 
 // ============================================================================
 // 13. Methods

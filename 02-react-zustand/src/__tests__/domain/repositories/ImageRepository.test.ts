@@ -12,18 +12,16 @@ describe('ImageRepository Interface', () => {
     it('should define ImageRepository interface with search method', () => {
       // Given: ImageRepository 인터페이스를 구현하는 Mock 객체
       const mockRepository: ImageRepository = {
-        search: async (_query: string) => {
-          return {
+        search: async (_query: string) =>
+          ({
             success: true,
             data: [],
-          } as Result<Image[]>;
-        },
-        getByPage: async (_query: string, _page: number) => {
-          return {
+          }) as Result<Image[]>,
+        getByPage: async (_query: string, _page: number) =>
+          ({
             success: true,
             data: [],
-          } as Result<Image[]>;
-        },
+          }) as Result<Image[]>,
       };
 
       // Then: 타입 체크가 통과해야 함
