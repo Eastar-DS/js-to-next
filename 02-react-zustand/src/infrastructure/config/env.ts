@@ -34,16 +34,23 @@ class EnvConfig {
    * 환경변수 로드
    */
   private loadConfig(): EnvironmentConfig {
+    return this.loadFromViteEnv();
+  }
+
+  /**
+   * Vite 환경변수에서 로드
+   */
+  private loadFromViteEnv(): EnvironmentConfig {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { env } = import.meta as any;
     return {
-      NODE_ENV: (import.meta.env.MODE as Environment) || 'development',
+      NODE_ENV: (env.MODE as Environment) || 'development',
       PIXABAY_API_KEY:
-        import.meta.env.VITE_PIXABAY_API_KEY ||
+        env.VITE_PIXABAY_API_KEY ||
         EnvConfig.throwMissingEnv('VITE_PIXABAY_API_KEY'),
-      API_BASE_URL:
-        import.meta.env.VITE_API_BASE_URL || 'https://pixabay.com/api/',
-      LOG_LEVEL: import.meta.env.VITE_LOG_LEVEL || 'info',
-      ENABLE_ANALYTICS:
-        import.meta.env.VITE_ENABLE_ANALYTICS === 'true' || false,
+      API_BASE_URL: env.VITE_API_BASE_URL || 'https://pixabay.com/api/',
+      LOG_LEVEL: env.VITE_LOG_LEVEL || 'info',
+      ENABLE_ANALYTICS: env.VITE_ENABLE_ANALYTICS === 'true' || false,
     };
   }
 
