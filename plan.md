@@ -267,16 +267,19 @@ Infrastructure (API, External Services)
   - [x] jest-styled-components 설치 (테스트용)
 
 #### 2.1 Domain Layer - Entities (Red → Green → Refactor)
-- [ ] **Test 1**: Image 엔티티 타입 테스트
-  - [ ] Image 인터페이스 정의 (id, tags, previewURL, largeImageURL 등)
-  - [ ] 타입 가드 함수 작성 (isImage)
-  - [ ] 엔티티 생성 팩토리 함수 및 유효성 검증
+- [x] **Test 1**: Image 엔티티 타입 테스트
+  - [x] Image 인터페이스 정의 (id, tags, previewURL, largeImageURL 등)
+  - [x] 타입 가드 함수 작성 (isImage)
+  - [x] 엔티티 생성 팩토리 함수 및 유효성 검증 (createImage)
+  - [x] 8개 테스트 모두 통과
 
 #### 2.2 Domain Layer - Repository Interface (Red → Green → Refactor)
-- [ ] **Test 2**: ImageRepository 인터페이스 테스트
-  - [ ] TypeScript interface로 Repository 계약 정의
-  - [ ] search, getByPage 메서드 시그니처 정의
-  - [ ] Result 타입 정의 (Success | Failure)
+- [x] **Test 2**: ImageRepository 인터페이스 테스트
+  - [x] TypeScript interface로 Repository 계약 정의
+  - [x] search, getByPage 메서드 시그니처 정의
+  - [x] Result 타입 정의 (Success | Failure)
+  - [x] Discriminated Union을 활용한 타입 좁히기
+  - [x] 7개 테스트 모두 통과
 
 #### 2.3 Domain Layer - UseCases (Red → Green → Refactor)
 - [ ] **Test 3**: SearchImages 유스케이스 테스트
