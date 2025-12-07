@@ -2,17 +2,246 @@
  * EnvConfig 테스트
  * Infrastructure Layer - 환경변수 관리
  *
- * Note: EnvConfig는 Vite의 import.meta.env를 사용하므로
- * Jest 환경에서는 실제 구현체를 직접 테스트할 수 없습니다.
- * 대신 환경변수 인터페이스와 타입을 검증합니다.
+ * 의존성 주입 패턴을 사용하여 실제 EnvConfig 클래스를 테스트합니다.
  */
 
-import type { Environment } from '@infrastructure/config/env';
+import { EnvConfig, type Environment, type EnvSource } from '@infrastructure/config/envConfig';
 
-describe('EnvConfig 타입 정의', () => {
+describe('EnvConfig', () => {
+  describe('생성자 및 환경변수 로드', () => {
+    it('should load environment variables from provided source', () => {
+      // Given: 테스트용 환경변수 소스
+      const mockEnvSource: EnvSource = {
+        MODE: 'test',
+        VITE_PIXABAY_API_KEY: 'test_key_123',
+        VITE_API_BASE_URL: 'https://test.api.com',
+        VITE_LOG_LEVEL: 'debug',
+        VITE_ENABLE_ANALYTICS: 'true',
+      };
+
+      // When: EnvConfig 인스턴스 생성
+      const envConfig = new EnvConfig(mockEnvSource);
+
+      // Then: 제공된 값으로 설정되어야 함
+      expect(envConfig.get('NODE_ENV')).toBe('test');
+      expect(envConfig.get('PIXABAY_API_KEY')).toBe('test_key_123');
+      expect(envConfig.get('API_BASE_URL')).toBe('https://test.api.com');
+      expect(envConfig.get('LOG_LEVEL')).toBe('debug');
+      expect(envConfig.get('ENABLE_ANALYTICS')).toBe(true);
+    });
+
+    it('should use default values when source values are missing', () => {
+      // Given: 빈 환경변수 소스
+      const mockEnvSource: EnvSource = {};
+
+      // When: EnvConfig 인스턴스 생성
+      const envConfig = new EnvConfig(mockEnvSource);
+
+      // Then: 기본값이 사용되어야 함
+      expect(envConfig.get('NODE_ENV')).toBe('development');
+      expect(envConfig.get('PIXABAY_API_KEY')).toBe('test_api_key');
+      expect(envConfig.get('API_BASE_URL')).toBe('https://pixabay.com/api/');
+      expect(envConfig.get('LOG_LEVEL')).toBe('info');
+      expect(envConfig.get('ENABLE_ANALYTICS')).toBe(false);
+    });
+
+    it('should convert string "true" to boolean for ENABLE_ANALYTICS', () => {
+      // Given: 문자열 "true"
+      const mockEnvSource: EnvSource = {
+        VITE_ENABLE_ANALYTICS: 'true',
+      };
+
+      // When: EnvConfig 생성
+      const envConfig = new EnvConfig(mockEnvSource);
+
+      // Then: boolean true로 변환되어야 함
+      expect(envConfig.get('ENABLE_ANALYTICS')).toBe(true);
+      expect(typeof envConfig.get('ENABLE_ANALYTICS')).toBe('boolean');
+    });
+
+    it('should convert non-"true" string to false for ENABLE_ANALYTICS', () => {
+      // Given: "true"가 아닌 문자열
+      const mockEnvSource: EnvSource = {
+        VITE_ENABLE_ANALYTICS: 'false',
+      };
+
+      // When: EnvConfig 생성
+      const envConfig = new EnvConfig(mockEnvSource);
+
+      // Then: false로 변환되어야 함
+      expect(envConfig.get('ENABLE_ANALYTICS')).toBe(false);
+    });
+  });
+
+  describe('환경변수 검증', () => {
+    it('should throw error when API key is empty string', () => {
+      // Given: 빈 API 키
+      const mockEnvSource: EnvSource = {
+        VITE_PIXABAY_API_KEY: '',
+      };
+
+      // When & Then: 에러가 발생해야 함
+      expect(() => {
+        new EnvConfig(mockEnvSource);
+      }).toThrow('PIXABAY_API_KEY must not be empty');
+    });
+
+    it('should throw error when API key is only whitespace', () => {
+      // Given: 공백만 있는 API 키
+      const mockEnvSource: EnvSource = {
+        VITE_PIXABAY_API_KEY: '   ',
+      };
+
+      // When & Then: 에러가 발생해야 함
+      expect(() => {
+        new EnvConfig(mockEnvSource);
+      }).toThrow('PIXABAY_API_KEY must not be empty');
+    });
+
+    it('should warn when using test key in production', () => {
+      // Given: 프로덕션 환경 + 테스트 API 키
+      const mockEnvSource: EnvSource = {
+        MODE: 'production',
+        VITE_PIXABAY_API_KEY: 'test_key',
+      };
+
+      // When: console.warn 스파이
+      const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+
+      // When: EnvConfig 생성
+      new EnvConfig(mockEnvSource);
+
+      // Then: 경고가 출력되어야 함
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        'Warning: Using test API key in production'
+      );
+
+      // Cleanup
+      consoleWarnSpy.mockRestore();
+    });
+
+    it('should not warn when using real key in production', () => {
+      // Given: 프로덕션 환경 + 실제 API 키
+      const mockEnvSource: EnvSource = {
+        MODE: 'production',
+        VITE_PIXABAY_API_KEY: 'real_production_key_abc123',
+      };
+
+      // When: console.warn 스파이
+      const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+
+      // When: EnvConfig 생성
+      new EnvConfig(mockEnvSource);
+
+      // Then: 경고가 출력되지 않아야 함
+      expect(consoleWarnSpy).not.toHaveBeenCalled();
+
+      // Cleanup
+      consoleWarnSpy.mockRestore();
+    });
+  });
+
+  describe('환경 체크 메서드', () => {
+    it('should correctly identify production environment', () => {
+      // Given: 프로덕션 환경
+      const mockEnvSource: EnvSource = {
+        MODE: 'production',
+        VITE_PIXABAY_API_KEY: 'prod_key',
+      };
+      const envConfig = new EnvConfig(mockEnvSource);
+
+      // When & Then
+      expect(envConfig.isProduction()).toBe(true);
+      expect(envConfig.isDevelopment()).toBe(false);
+      expect(envConfig.isTest()).toBe(false);
+    });
+
+    it('should correctly identify development environment', () => {
+      // Given: 개발 환경
+      const mockEnvSource: EnvSource = {
+        MODE: 'development',
+        VITE_PIXABAY_API_KEY: 'dev_key',
+      };
+      const envConfig = new EnvConfig(mockEnvSource);
+
+      // When & Then
+      expect(envConfig.isProduction()).toBe(false);
+      expect(envConfig.isDevelopment()).toBe(true);
+      expect(envConfig.isTest()).toBe(false);
+    });
+
+    it('should correctly identify test environment', () => {
+      // Given: 테스트 환경
+      const mockEnvSource: EnvSource = {
+        MODE: 'test',
+        VITE_PIXABAY_API_KEY: 'test_key',
+      };
+      const envConfig = new EnvConfig(mockEnvSource);
+
+      // When & Then
+      expect(envConfig.isProduction()).toBe(false);
+      expect(envConfig.isDevelopment()).toBe(false);
+      expect(envConfig.isTest()).toBe(true);
+    });
+  });
+
+  describe('환경변수 접근자', () => {
+    it('should get specific environment variable', () => {
+      // Given: 환경변수 소스
+      const mockEnvSource: EnvSource = {
+        MODE: 'test',
+        VITE_PIXABAY_API_KEY: 'my_api_key',
+        VITE_API_BASE_URL: 'https://custom.api.com',
+      };
+      const envConfig = new EnvConfig(mockEnvSource);
+
+      // When & Then: get 메서드로 특정 변수 조회
+      expect(envConfig.get('NODE_ENV')).toBe('test');
+      expect(envConfig.get('PIXABAY_API_KEY')).toBe('my_api_key');
+      expect(envConfig.get('API_BASE_URL')).toBe('https://custom.api.com');
+    });
+
+    it('should return all config as frozen object', () => {
+      // Given: 환경변수 소스
+      const mockEnvSource: EnvSource = {
+        MODE: 'test',
+        VITE_PIXABAY_API_KEY: 'test_key',
+      };
+      const envConfig = new EnvConfig(mockEnvSource);
+
+      // When: getAll 호출
+      const config = envConfig.getAll();
+
+      // Then: frozen 객체여야 함
+      expect(Object.isFrozen(config)).toBe(true);
+
+      // Then: 수정 시도 시 에러
+      expect(() => {
+        // @ts-expect-error - Testing readonly behavior
+        config.NODE_ENV = 'production';
+      }).toThrow();
+    });
+
+    it('should return new frozen object on each getAll call', () => {
+      // Given: EnvConfig 인스턴스
+      const mockEnvSource: EnvSource = {
+        VITE_PIXABAY_API_KEY: 'test_key',
+      };
+      const envConfig = new EnvConfig(mockEnvSource);
+
+      // When: getAll을 두 번 호출
+      const config1 = envConfig.getAll();
+      const config2 = envConfig.getAll();
+
+      // Then: 값은 같지만 다른 객체여야 함
+      expect(config1).toEqual(config2);
+      expect(config1).not.toBe(config2);
+    });
+  });
+
   describe('Environment 타입', () => {
-    it('should accept valid environment values', () => {
-      // Given: 유효한 환경 값들
+    it('should accept all valid environment values', () => {
+      // Given: 모든 유효한 환경 값
       const validEnvs: Environment[] = [
         'development',
         'staging',
@@ -20,252 +249,76 @@ describe('EnvConfig 타입 정의', () => {
         'test',
       ];
 
-      // Then: 모든 값이 Environment 타입으로 허용되어야 함
+      // When & Then: 각각 EnvConfig 생성 가능해야 함
       validEnvs.forEach((env) => {
-        expect(['development', 'staging', 'production', 'test']).toContain(env);
-      });
-    });
-
-    it('should have exactly 4 environment types', () => {
-      // Given: Environment 타입의 가능한 값
-      const environments: Environment[] = [
-        'development',
-        'staging',
-        'production',
-        'test',
-      ];
-
-      // Then: 정확히 4개의 환경이어야 함
-      expect(environments).toHaveLength(4);
-      expect(new Set(environments).size).toBe(4);
-    });
-  });
-
-  describe('EnvironmentConfig 인터페이스', () => {
-    it('should have correct structure', () => {
-      // Given: 환경설정 객체 예시
-      const mockConfig = {
-        NODE_ENV: 'test' as Environment,
-        PIXABAY_API_KEY: 'test_key',
-        API_BASE_URL: 'https://api.test.com',
-        LOG_LEVEL: 'info',
-        ENABLE_ANALYTICS: false,
-      };
-
-      // Then: 모든 필수 필드가 있어야 함
-      expect(mockConfig).toHaveProperty('NODE_ENV');
-      expect(mockConfig).toHaveProperty('PIXABAY_API_KEY');
-      expect(mockConfig).toHaveProperty('API_BASE_URL');
-      expect(mockConfig).toHaveProperty('LOG_LEVEL');
-      expect(mockConfig).toHaveProperty('ENABLE_ANALYTICS');
-    });
-
-    it('should have correct field types', () => {
-      // Given: 환경설정 객체
-      const mockConfig = {
-        NODE_ENV: 'development' as Environment,
-        PIXABAY_API_KEY: 'abc123',
-        API_BASE_URL: 'https://pixabay.com/api/',
-        LOG_LEVEL: 'debug',
-        ENABLE_ANALYTICS: true,
-      };
-
-      // Then: 각 필드가 올바른 타입이어야 함
-      expect(typeof mockConfig.NODE_ENV).toBe('string');
-      expect(typeof mockConfig.PIXABAY_API_KEY).toBe('string');
-      expect(typeof mockConfig.API_BASE_URL).toBe('string');
-      expect(typeof mockConfig.LOG_LEVEL).toBe('string');
-      expect(typeof mockConfig.ENABLE_ANALYTICS).toBe('boolean');
-    });
-  });
-
-  describe('EnvConfig 사용 패턴', () => {
-    it('should be used as singleton', () => {
-      // Given: 환경설정 사용 패턴
-      const pattern = 'singleton';
-
-      // Then: 싱글톤 패턴이어야 함
-      expect(pattern).toBe('singleton');
-    });
-
-    it('should validate required environment variables', () => {
-      // Given: 필수 환경변수 목록
-      const requiredVars = ['PIXABAY_API_KEY'];
-
-      // Then: PIXABAY_API_KEY는 필수여야 함
-      expect(requiredVars).toContain('PIXABAY_API_KEY');
-      expect(requiredVars).toHaveLength(1);
-    });
-
-    it('should provide default values for optional variables', () => {
-      // Given: 기본값이 있는 환경변수들
-      const defaults = {
-        API_BASE_URL: 'https://pixabay.com/api/',
-        LOG_LEVEL: 'info',
-        ENABLE_ANALYTICS: false,
-      };
-
-      // Then: 기본값이 정의되어 있어야 함
-      expect(defaults.API_BASE_URL).toBeDefined();
-      expect(defaults.LOG_LEVEL).toBeDefined();
-      expect(defaults.ENABLE_ANALYTICS).toBeDefined();
-    });
-  });
-
-  describe('환경 체크 로직', () => {
-    it('should check production environment correctly', () => {
-      // Given: 프로덕션 환경
-      const nodeEnv: Environment = 'production';
-
-      // When: 프로덕션 체크
-      const isProduction = nodeEnv === 'production';
-
-      // Then: true여야 함
-      expect(isProduction).toBe(true);
-    });
-
-    it('should check development environment correctly', () => {
-      // Given: 개발 환경
-      const nodeEnv: Environment = 'development';
-
-      // When: 개발 환경 체크
-      const isDevelopment = nodeEnv === 'development';
-
-      // Then: true여야 함
-      expect(isDevelopment).toBe(true);
-    });
-
-    it('should check test environment correctly', () => {
-      // Given: 테스트 환경
-      const nodeEnv: Environment = 'test';
-
-      // When: 테스트 환경 체크
-      const isTest = nodeEnv === 'test';
-
-      // Then: true여야 함
-      expect(isTest).toBe(true);
-    });
-
-    it('should have only one environment type active', () => {
-      // Given: 다양한 환경들
-      const environments: Environment[] = [
-        'development',
-        'staging',
-        'production',
-        'test',
-      ];
-
-      // When & Then: 각 환경에 대해 정확히 하나만 매치되어야 함
-      environments.forEach((currentEnv) => {
-        const checks = {
-          isProduction: currentEnv === 'production',
-          isDevelopment: currentEnv === 'development',
-          isTest: currentEnv === 'test',
-          isStaging: currentEnv === 'staging',
+        const mockEnvSource: EnvSource = {
+          MODE: env,
+          VITE_PIXABAY_API_KEY: 'test_key',
         };
-
-        const trueCount = Object.values(checks).filter(Boolean).length;
-        expect(trueCount).toBe(1);
+        const envConfig = new EnvConfig(mockEnvSource);
+        expect(envConfig.get('NODE_ENV')).toBe(env);
       });
     });
   });
 
-  describe('환경변수 검증 로직', () => {
-    it('should throw error for missing API key', () => {
-      // Given: API 키가 없는 경우
-      const apiKey = '';
+  describe('타입 안전성', () => {
+    it('should enforce correct return types', () => {
+      // Given: EnvConfig 인스턴스
+      const mockEnvSource: EnvSource = {
+        MODE: 'test',
+        VITE_PIXABAY_API_KEY: 'test_key',
+        VITE_API_BASE_URL: 'https://test.com',
+        VITE_LOG_LEVEL: 'debug',
+        VITE_ENABLE_ANALYTICS: 'true',
+      };
+      const envConfig = new EnvConfig(mockEnvSource);
 
-      // When & Then: 빈 문자열은 검증 실패해야 함
-      expect(apiKey.trim()).toBe('');
-    });
+      // When: 각 환경변수 조회
+      const nodeEnv = envConfig.get('NODE_ENV');
+      const apiKey = envConfig.get('PIXABAY_API_KEY');
+      const baseUrl = envConfig.get('API_BASE_URL');
+      const logLevel = envConfig.get('LOG_LEVEL');
+      const analytics = envConfig.get('ENABLE_ANALYTICS');
 
-    it('should warn about test key in production', () => {
-      // Given: 프로덕션 환경과 테스트 API 키
-      const isProduction = true;
-      const apiKey = 'test_api_key';
-
-      // When: 프로덕션에서 테스트 키 사용 체크
-      const shouldWarn = isProduction && apiKey.includes('test');
-
-      // Then: 경고가 필요해야 함
-      expect(shouldWarn).toBe(true);
-    });
-
-    it('should not warn about real key in production', () => {
-      // Given: 프로덕션 환경과 실제 API 키
-      const isProduction = true;
-      const apiKey = 'real_production_key_abc123';
-
-      // When: 프로덕션에서 실제 키 사용 체크
-      const shouldWarn = isProduction && apiKey.includes('test');
-
-      // Then: 경고가 필요하지 않아야 함
-      expect(shouldWarn).toBe(false);
+      // Then: 올바른 타입이어야 함
+      expect(typeof nodeEnv).toBe('string');
+      expect(typeof apiKey).toBe('string');
+      expect(typeof baseUrl).toBe('string');
+      expect(typeof logLevel).toBe('string');
+      expect(typeof analytics).toBe('boolean');
     });
   });
 
-  describe('환경변수 타입 안전성', () => {
-    it('should enforce boolean type for ENABLE_ANALYTICS', () => {
-      // Given: ENABLE_ANALYTICS 값들
-      const validValues = [true, false];
-      const stringValue = 'true';
-
-      // Then: boolean 타입만 허용해야 함
-      validValues.forEach((val) => {
-        expect(typeof val).toBe('boolean');
-      });
-      expect(typeof stringValue).not.toBe('boolean');
-    });
-
-    it('should convert string to boolean for ENABLE_ANALYTICS', () => {
-      // Given: 환경변수 문자열
-      const envValue = 'true';
-
-      // When: boolean으로 변환
-      const boolValue = envValue === 'true';
-
-      // Then: 올바르게 변환되어야 함
-      expect(boolValue).toBe(true);
-      expect(typeof boolValue).toBe('boolean');
-    });
-
-    it('should have URL format for API_BASE_URL', () => {
-      // Given: API URL들
-      const validUrls = [
-        'https://pixabay.com/api/',
-        'https://api.example.com',
-        'http://localhost:3000',
-      ];
-
-      // Then: 모두 URL 형식이어야 함
-      validUrls.forEach((url) => {
-        expect(url).toMatch(/^https?:\/\//);
-      });
-    });
-  });
-
-  describe('Readonly 설정', () => {
-    it('should return frozen config object', () => {
-      // Given: 설정 객체
-      const config = {
-        NODE_ENV: 'test' as Environment,
-        PIXABAY_API_KEY: 'test',
-        API_BASE_URL: 'https://test.com',
-        LOG_LEVEL: 'info',
-        ENABLE_ANALYTICS: false,
+  describe('엣지 케이스', () => {
+    it('should handle partial environment source', () => {
+      // Given: 일부만 제공된 환경변수
+      const mockEnvSource: EnvSource = {
+        VITE_PIXABAY_API_KEY: 'partial_key',
+        VITE_LOG_LEVEL: 'warn',
       };
 
-      // When: freeze 적용
-      const frozenConfig = Object.freeze(config);
+      // When: EnvConfig 생성
+      const envConfig = new EnvConfig(mockEnvSource);
 
-      // Then: frozen 상태여야 함
-      expect(Object.isFrozen(frozenConfig)).toBe(true);
+      // Then: 제공된 값은 사용하고 나머지는 기본값
+      expect(envConfig.get('PIXABAY_API_KEY')).toBe('partial_key');
+      expect(envConfig.get('LOG_LEVEL')).toBe('warn');
+      expect(envConfig.get('NODE_ENV')).toBe('development'); // 기본값
+      expect(envConfig.get('API_BASE_URL')).toBe('https://pixabay.com/api/'); // 기본값
+    });
 
-      // Then: 수정 시도 시 에러
-      expect(() => {
-        // @ts-expect-error - Testing readonly behavior
-        frozenConfig.NODE_ENV = 'production';
-      }).toThrow();
+    it('should handle URL with trailing slash', () => {
+      // Given: 끝에 슬래시가 있는 URL
+      const mockEnvSource: EnvSource = {
+        VITE_PIXABAY_API_KEY: 'test_key',
+        VITE_API_BASE_URL: 'https://api.example.com/',
+      };
+
+      // When: EnvConfig 생성
+      const envConfig = new EnvConfig(mockEnvSource);
+
+      // Then: URL이 그대로 저장되어야 함
+      expect(envConfig.get('API_BASE_URL')).toBe('https://api.example.com/');
     });
   });
 });
