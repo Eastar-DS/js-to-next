@@ -419,7 +419,9 @@ Infrastructure (API, External Services)
 
 **테스트 결과:** 107 tests passing
 
-#### 2.7 Presentation Layer - Component Props (Red → Green → Refactor) ✅
+#### 2.7 Presentation Layer - Components (Red → Green → Refactor)
+
+**2.7.1 Component Props 타입 정의** ✅
 - [x] **Test 12**: 컴포넌트 Props 타입 정의 (4 tests)
   - [x] SearchBarProps: onSearch, isLoading
   - [x] ImageCardProps: image (Image 엔티티)
@@ -431,7 +433,7 @@ Infrastructure (API, External Services)
 
 **테스트 결과:** 111 tests passing
 
-#### 2.8 Presentation Layer - UI Components (Red → Green → Refactor)
+**2.7.2 UI Components 구현**
 - [ ] **Test 13**: SearchBar 컴포넌트 + 스타일링
   - [ ] 검색 입력 필드 렌더링
   - [ ] 타입 안전한 이벤트 핸들러
@@ -464,7 +466,7 @@ Infrastructure (API, External Services)
   - [ ] 로딩/에러 상태 처리
   - [ ] 반응형 그리드 레이아웃
 
-#### 2.9 통합 테스트
+#### 2.8 통합 테스트 (Red → Green → Refactor)
 - [ ] **Test 19**: 타입 시스템 통합 검증
   - [ ] 레이어 간 타입 일관성 확인
   - [ ] 타입 안전성 엔드투엔드 테스트
@@ -475,7 +477,7 @@ Infrastructure (API, External Services)
   - [ ] 에러 핸들링 타입 검증
   - [ ] 스타일 렌더링 확인
 
-#### 2.10 리팩토링 (Tidy First)
+#### 2.9 리팩토링 (Tidy First)
 - [ ] **Structural**: 공통 타입 추출 및 재사용
 - [ ] **Structural**: 유틸리티 타입 정의 (Nullable, Result 등)
 - [ ] **Structural**: 타입 가드 함수 정리
