@@ -3,7 +3,8 @@
  * Presentation Layer - Search Input Component
  */
 
-import { useState, FormEvent } from 'react';
+import { useState } from 'react';
+import type { FormEvent, ChangeEvent } from 'react';
 import type { SearchBarProps } from '@presentation/components/types';
 import { SearchForm, SearchInput, SearchButton } from './SearchBar.styles';
 
@@ -11,19 +12,26 @@ import { SearchForm, SearchInput, SearchButton } from './SearchBar.styles';
  * 검색창 컴포넌트
  * 사용자 입력을 받아 검색 이벤트를 발생시킵니다.
  */
-export function SearchBar({ onSearch, isLoading }: SearchBarProps) {
+export const SearchBar = ({ onSearch, isLoading }: SearchBarProps) => {
   const [query, setQuery] = useState('');
 
   /**
    * 폼 제출 핸들러
    */
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
     // 빈 검색어는 제출하지 않음
     if (query.trim()) {
       onSearch(query.trim());
     }
+  };
+
+  /**
+   * 입력 필드 변경 핸들러
+   */
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value);
   };
 
   return (
@@ -32,7 +40,7 @@ export function SearchBar({ onSearch, isLoading }: SearchBarProps) {
         type="text"
         placeholder="검색어를 입력하세요"
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={handleInputChange}
         disabled={isLoading}
       />
       <SearchButton type="submit" disabled={isLoading}>
@@ -40,4 +48,4 @@ export function SearchBar({ onSearch, isLoading }: SearchBarProps) {
       </SearchButton>
     </SearchForm>
   );
-}
+};
