@@ -379,21 +379,31 @@ Infrastructure (API, External Services)
   - **환경변수 관리 (DI 패턴)**: 테스트 가능한 의존성 주입 구현
   - Vite 환경변수: VITE_ 접두사, .env 설정
 
-#### 2.5 Application Layer - Store & Hooks (Red → Green → Refactor)
-- [ ] **Test 8**: Zustand 스토어 타입 정의
-  - [ ] StoreState 인터페이스 정의
-  - [ ] StoreActions 타입 정의
-  - [ ] 타입 안전한 스토어 생성
+#### 2.5 Application Layer - Store & Hooks (Red → Green → Refactor) ✅
+- [x] **Test 8**: Zustand 스토어 타입 정의 (6 tests)
+  - [x] StoreState 인터페이스 정의: images, isLoading, error, currentPage, totalPages, query
+  - [x] StoreActions 타입 정의: searchImages, getImagesByPage, resetStore
+  - [x] ImageStore 타입: State & Actions 결합
 
-- [ ] **Test 9**: Zustand 스토어 구현 테스트
-  - [ ] 타입 추론을 활용한 초기 상태
-  - [ ] UseCase를 호출하는 타입 안전한 액션
-  - [ ] 상태 업데이트 로직
+- [x] **Test 9**: Zustand 스토어 구현 테스트 (6 tests)
+  - [x] createImageStore 팩토리 함수 (UseCase DI 패턴)
+  - [x] searchImages 액션: Result 타입 처리, 성공/실패 상태 업데이트
+  - [x] getImagesByPage 액션: 페이지 변경 및 상태 업데이트
+  - [x] resetStore 액션: 초기 상태로 리셋
 
-- [ ] **Test 10**: useImageSearch 훅 테스트
-  - [ ] 커스텀 훅 반환 타입 정의
-  - [ ] 스토어와 타입 안전한 연동
-  - [ ] 제네릭을 활용한 디바운스 구현
+- [x] **Test 10**: useImageSearch 훅 테스트 (6 tests)
+  - [x] UseImageSearchReturn 반환 타입 정의
+  - [x] 스토어와 타입 안전한 연동 (Zustand selector 패턴)
+  - [x] 디바운스 구현 (기본 300ms, 설정 가능)
+  - [x] search 함수: 디바운스된 검색
+  - [x] goToPage 함수: 페이지 이동
+
+**구현 파일:**
+- `src/application/store/types.ts`: 스토어 타입 정의
+- `src/application/store/useImageStore.ts`: Zustand 스토어 팩토리
+- `src/application/hooks/useImageSearch.ts`: 커스텀 훅
+
+**테스트 결과:** 103 tests passing
 
 #### 2.6 Presentation Layer - Theme & Global Styles (Red → Green → Refactor)
 - [ ] **Test 11**: 테마 및 전역 스타일 설정
