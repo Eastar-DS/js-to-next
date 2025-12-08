@@ -405,56 +405,77 @@ Infrastructure (API, External Services)
 
 **테스트 결과:** 103 tests passing
 
-#### 2.6 Presentation Layer - Theme & Global Styles (Red → Green → Refactor)
-- [ ] **Test 11**: 테마 및 전역 스타일 설정
-  - [ ] 테마 타입 정의 (DefaultTheme 확장)
-  - [ ] ThemeProvider 설정
-  - [ ] GlobalStyles 정의
+#### 2.6 Presentation Layer - Theme & Global Styles (Red → Green → Refactor) ✅
+- [x] **Test 11**: 테마 및 전역 스타일 설정 (4 tests)
+  - [x] 테마 타입 정의 (DefaultTheme 확장)
+  - [x] Theme 인터페이스 정의: colors, spacing, typography, borderRadius, shadows
+  - [x] GlobalStyles 정의: CSS Reset, body 스타일, 요소별 기본 스타일
+  - [x] TypeScript 선언 병합으로 styled-components DefaultTheme 확장
 
-#### 2.7 Presentation Layer - Components (Red → Green → Refactor)
-- [ ] **Test 12**: 컴포넌트 Props 타입 정의
-  - [ ] 각 컴포넌트의 Props 인터페이스 정의
-  - [ ] React.FC vs 함수 선언 방식 선택
+**구현 파일:**
+- `src/presentation/styles/theme.ts`: 테마 객체 및 타입 정의
+- `src/presentation/styles/styled.d.ts`: DefaultTheme 타입 확장
+- `src/presentation/styles/GlobalStyles.ts`: 전역 스타일 컴포넌트
 
+**테스트 결과:** 107 tests passing
+
+#### 2.7 Presentation Layer - Component Props (Red → Green → Refactor) ✅
+- [x] **Test 12**: 컴포넌트 Props 타입 정의 (4 tests)
+  - [x] SearchBarProps: onSearch, isLoading
+  - [x] ImageCardProps: image (Image 엔티티)
+  - [x] ImageGridProps: images[], isLoading, error
+  - [x] PaginationProps: currentPage, totalPages, onPageChange
+
+**구현 파일:**
+- `src/presentation/components/types.ts`: 모든 컴포넌트 Props 타입 정의
+
+**테스트 결과:** 111 tests passing
+
+#### 2.8 Presentation Layer - UI Components (Red → Green → Refactor)
 - [ ] **Test 13**: SearchBar 컴포넌트 + 스타일링
-  - [ ] SearchBarProps 타입 정의
+  - [ ] 검색 입력 필드 렌더링
   - [ ] 타입 안전한 이벤트 핸들러
   - [ ] Styled Components로 스타일 정의
-  - [ ] Props 기반 동적 스타일링
+  - [ ] Props 기반 동적 스타일링 (로딩 상태)
 
 - [ ] **Test 14**: ImageCard 컴포넌트 + 스타일링
-  - [ ] ImageCardProps 타입 정의 (Image 엔티티 사용)
+  - [ ] Image 엔티티 데이터 표시
   - [ ] 타입 안전한 props 전달
   - [ ] 카드 레이아웃 및 호버 효과
   - [ ] 반응형 이미지 스타일
 
 - [ ] **Test 15**: SkeletonCard 컴포넌트 + 스타일링
-  - [ ] SkeletonCardProps 타입 정의
   - [ ] 스켈레톤 UI 렌더링
   - [ ] 로딩 애니메이션 (keyframes)
+  - [ ] 테마 색상 적용
 
 - [ ] **Test 16**: Pagination 컴포넌트 + 스타일링
-  - [ ] PaginationProps 타입 정의
+  - [ ] 페이지 버튼 렌더링
   - [ ] 타입 안전한 페이지 변경 핸들러
   - [ ] 버튼 상태별 스타일 (active, disabled)
 
 - [ ] **Test 17**: ErrorMessage 컴포넌트 + 스타일링
-  - [ ] ErrorMessageProps 타입 정의
   - [ ] Error 객체 타입 체크
+  - [ ] 에러 메시지 표시
   - [ ] 에러 메시지 스타일링
 
-#### 2.8 통합 테스트
-- [ ] **Test 18**: 타입 시스템 통합 검증
+- [ ] **Test 18**: ImageGrid 컴포넌트 + 스타일링
+  - [ ] 이미지 목록 그리드 렌더링
+  - [ ] 로딩/에러 상태 처리
+  - [ ] 반응형 그리드 레이아웃
+
+#### 2.9 통합 테스트
+- [ ] **Test 19**: 타입 시스템 통합 검증
   - [ ] 레이어 간 타입 일관성 확인
   - [ ] 타입 안전성 엔드투엔드 테스트
 
-- [ ] **Test 19**: 전체 검색 워크플로우 테스트
+- [ ] **Test 20**: 전체 검색 워크플로우 테스트
   - [ ] 타입 안전한 검색 플로우
   - [ ] 페이지네이션 타입 체크
   - [ ] 에러 핸들링 타입 검증
   - [ ] 스타일 렌더링 확인
 
-#### 2.9 리팩토링 (Tidy First)
+#### 2.10 리팩토링 (Tidy First)
 - [ ] **Structural**: 공통 타입 추출 및 재사용
 - [ ] **Structural**: 유틸리티 타입 정의 (Nullable, Result 등)
 - [ ] **Structural**: 타입 가드 함수 정리
