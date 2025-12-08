@@ -353,6 +353,14 @@ Infrastructure (API, External Services)
   - [x] 필수 환경변수 검증
   - [x] 환경별 기본값 설정
   - [x] isProduction(), isDevelopment() 헬퍼 메서드
+  - [x] **의존성 주입 패턴 리팩토링** (테스트 가능하도록 개선)
+    - [x] envConfig.ts: 순수 클래스 (import.meta 없음, 테스트 가능)
+    - [x] env.ts: 싱글톤 인스턴스 (import.meta.env 사용)
+    - [x] 18개 EnvConfig 테스트 모두 통과
+  - [x] **Vite 환경변수 설정**
+    - [x] .env 파일: VITE_ 접두사 규칙 적용
+    - [x] .env.example: 팀원용 템플릿 생성
+    - [x] MODE는 Vite 자동 설정 안내
 
 - [x] **아키텍처 문서**: ARCHITECTURE.md
   - [x] Mapper 패턴 설명
@@ -362,9 +370,14 @@ Infrastructure (API, External Services)
   - [x] 프로덕션 체크리스트
 
 **✅ Phase 2.4 완료 요약**
-- 전체 67개 테스트 통과
-- Infrastructure Layer: DTO(9) + DataSource(11) + Mapper(8) + Repository(9) = 37개 테스트
-- 프로덕션급 패턴 적용: Mapper, 에러 체계화, 로깅, 환경변수 관리
+- 전체 85개 테스트 통과 (67 + EnvConfig 18)
+- Infrastructure Layer: DTO(9) + DataSource(11) + Mapper(8) + Repository(9) + EnvConfig(18) = 55개 테스트
+- 프로덕션급 패턴 적용:
+  - Mapper 패턴: DTO ↔ Entity 변환 분리
+  - 에러 체계화: DomainError 상속 구조
+  - 로깅 시스템: 환경별 로그 레벨
+  - **환경변수 관리 (DI 패턴)**: 테스트 가능한 의존성 주입 구현
+  - Vite 환경변수: VITE_ 접두사, .env 설정
 
 #### 2.5 Application Layer - Store & Hooks (Red → Green → Refactor)
 - [ ] **Test 8**: Zustand 스토어 타입 정의
