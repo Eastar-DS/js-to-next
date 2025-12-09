@@ -433,38 +433,52 @@ Infrastructure (API, External Services)
 
 **테스트 결과:** 111 tests passing
 
-**2.7.2 UI Components 구현**
-- [ ] **Test 13**: SearchBar 컴포넌트 + 스타일링
-  - [ ] 검색 입력 필드 렌더링
-  - [ ] 타입 안전한 이벤트 핸들러
-  - [ ] Styled Components로 스타일 정의
-  - [ ] Props 기반 동적 스타일링 (로딩 상태)
+**2.7.2 UI Components 구현** ✅
+- [x] **Test 13**: SearchBar 컴포넌트 + 스타일링 (11 tests)
+  - [x] 검색 입력 필드 렌더링
+  - [x] 타입 안전한 이벤트 핸들러
+  - [x] Styled Components로 스타일 정의
+  - [x] Props 기반 동적 스타일링 (로딩 상태)
 
-- [ ] **Test 14**: ImageCard 컴포넌트 + 스타일링
-  - [ ] Image 엔티티 데이터 표시
-  - [ ] 타입 안전한 props 전달
-  - [ ] 카드 레이아웃 및 호버 효과
-  - [ ] 반응형 이미지 스타일
+- [x] **Test 14**: ImageCard 컴포넌트 + 스타일링 (11 tests)
+  - [x] Image 엔티티 데이터 표시
+  - [x] 타입 안전한 props 전달
+  - [x] 카드 레이아웃 및 호버 효과
+  - [x] 반응형 이미지 스타일
 
-- [ ] **Test 15**: SkeletonCard 컴포넌트 + 스타일링
-  - [ ] 스켈레톤 UI 렌더링
-  - [ ] 로딩 애니메이션 (keyframes)
-  - [ ] 테마 색상 적용
+- [x] **Test 15**: SkeletonCard 컴포넌트 + 스타일링 (8 tests)
+  - [x] 스켈레톤 UI 렌더링
+  - [x] 로딩 애니메이션 (keyframes)
+  - [x] 테마 색상 적용
 
-- [ ] **Test 16**: Pagination 컴포넌트 + 스타일링
-  - [ ] 페이지 버튼 렌더링
-  - [ ] 타입 안전한 페이지 변경 핸들러
-  - [ ] 버튼 상태별 스타일 (active, disabled)
+- [x] **Test 16**: Pagination 컴포넌트 + 스타일링 (14 tests)
+  - [x] 페이지 버튼 렌더링
+  - [x] 타입 안전한 페이지 변경 핸들러
+  - [x] 버튼 상태별 스타일 (active, disabled)
 
-- [ ] **Test 17**: ErrorMessage 컴포넌트 + 스타일링
-  - [ ] Error 객체 타입 체크
-  - [ ] 에러 메시지 표시
-  - [ ] 에러 메시지 스타일링
+- [x] **Test 17**: ErrorMessage 컴포넌트 + 스타일링 (9 tests)
+  - [x] Error 객체 타입 체크
+  - [x] 에러 메시지 표시
+  - [x] 에러 메시지 스타일링
 
-- [ ] **Test 18**: ImageGrid 컴포넌트 + 스타일링
-  - [ ] 이미지 목록 그리드 렌더링
-  - [ ] 로딩/에러 상태 처리
-  - [ ] 반응형 그리드 레이아웃
+- [x] **Test 18**: ImageGrid 컴포넌트 + 스타일링 (10 tests)
+  - [x] 이미지 목록 그리드 렌더링
+  - [x] 로딩/에러 상태 처리
+  - [x] 반응형 그리드 레이아웃
+
+**구현 파일:**
+- `src/presentation/components/SearchBar/SearchBar.tsx`: 검색 바 컴포넌트
+- `src/presentation/components/ImageCard/ImageCard.tsx`: 이미지 카드 컴포넌트
+- `src/presentation/components/SkeletonCard/SkeletonCard.tsx`: 로딩 스켈레톤 컴포넌트
+- `src/presentation/components/Pagination/Pagination.tsx`: 페이지네이션 컴포넌트
+- `src/presentation/components/ErrorMessage/ErrorMessage.tsx`: 에러 메시지 컴포넌트
+- `src/presentation/components/ImageGrid/ImageGrid.tsx`: 이미지 그리드 컨테이너
+- 각 컴포넌트별 `.styles.ts` 파일
+- `src/presentation/components/types.ts`: ErrorMessageProps 추가
+- `src/presentation/styles/theme.ts`: surface, textSecondary 색상 추가
+- `src/App.tsx`: 컴포넌트 미리보기 (임시)
+
+**테스트 결과:** 171 tests passing
 
 #### 2.8 통합 테스트 (Red → Green → Refactor)
 - [ ] **Test 19**: 타입 시스템 통합 검증

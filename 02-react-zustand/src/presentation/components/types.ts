@@ -46,3 +46,13 @@ export interface PaginationProps {
   /** 페이지 변경 이벤트 핸들러 */
   onPageChange: (page: number) => void;
 }
+
+/**
+ * ErrorMessage 컴포넌트 Props
+ */
+export interface ErrorMessageProps {
+  /** 에러 메시지 */
+  message: string;
+  /** 재시도 버튼 핸들러 (선택사항) */
+  onRetry?: () => void;
+}

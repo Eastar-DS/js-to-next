@@ -11,7 +11,9 @@ export interface Theme {
     primary: string;
     secondary: string;
     background: string;
+    surface: string;
     text: string;
+    textSecondary: string;
     error: string;
     border: string;
     hover: string;
@@ -57,7 +59,9 @@ export const theme: Theme = {
     primary: '#3498db',
     secondary: '#2ecc71',
     background: '#ffffff',
+    surface: '#ffffff',
     text: '#2c3e50',
+    textSecondary: '#7f8c8d',
     error: '#e74c3c',
     border: '#ecf0f1',
     hover: '#f8f9fa',
@@ -70,7 +74,8 @@ export const theme: Theme = {
     xl: '32px',
   },
   typography: {
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+    fontFamily:
+      '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
     fontSize: {
       small: '12px',
       medium: '16px',
