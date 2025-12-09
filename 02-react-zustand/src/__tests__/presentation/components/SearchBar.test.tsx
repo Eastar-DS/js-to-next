@@ -11,9 +11,8 @@ import { SearchBar } from '@presentation/components/SearchBar/SearchBar';
 import { theme } from '@presentation/styles/theme';
 
 // 테스트용 Wrapper 컴포넌트
-const renderWithTheme = (component: React.ReactElement) => {
-  return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
-};
+const renderWithTheme = (component: React.ReactElement) =>
+  render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
 
 describe('SearchBar - 컴포넌트 렌더링 및 동작', () => {
   describe('렌더링', () => {
@@ -49,7 +48,7 @@ describe('SearchBar - 컴포넌트 렌더링 및 동작', () => {
       renderWithTheme(<SearchBar onSearch={mockOnSearch} isLoading={false} />);
 
       const inputElement = screen.getByPlaceholderText(
-        /검색어를 입력하세요/i,
+        /검색어를 입력하세요/i
       ) as HTMLInputElement;
       const formElement = inputElement.closest('form') as HTMLFormElement;
 
@@ -68,7 +67,7 @@ describe('SearchBar - 컴포넌트 렌더링 및 동작', () => {
       renderWithTheme(<SearchBar onSearch={mockOnSearch} isLoading={false} />);
 
       const inputElement = screen.getByPlaceholderText(
-        /검색어를 입력하세요/i,
+        /검색어를 입력하세요/i
       ) as HTMLInputElement;
       const formElement = inputElement.closest('form') as HTMLFormElement;
 
@@ -85,7 +84,7 @@ describe('SearchBar - 컴포넌트 렌더링 및 동작', () => {
       renderWithTheme(<SearchBar onSearch={mockOnSearch} isLoading={false} />);
 
       const inputElement = screen.getByPlaceholderText(
-        /검색어를 입력하세요/i,
+        /검색어를 입력하세요/i
       ) as HTMLInputElement;
 
       // When: 입력 필드 값 변경
@@ -102,7 +101,7 @@ describe('SearchBar - 컴포넌트 렌더링 및 동작', () => {
       const mockOnSearch = jest.fn();
 
       // When: isLoading이 true인 상태로 렌더링
-      renderWithTheme(<SearchBar onSearch={mockOnSearch} isLoading={true} />);
+      renderWithTheme(<SearchBar onSearch={mockOnSearch} isLoading />);
 
       // Then: input과 button이 비활성화되어야 함
       const inputElement = screen.getByPlaceholderText(/검색어를 입력하세요/i);

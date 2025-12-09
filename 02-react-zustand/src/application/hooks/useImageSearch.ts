@@ -30,7 +30,7 @@ export interface UseImageSearchReturn {
  */
 export function useImageSearch(
   useStore: ReturnType<typeof createImageStore>,
-  debounceDelay: number = 300,
+  debounceDelay: number = 300
 ): UseImageSearchReturn {
   // 스토어에서 상태 가져오기
   const images = useStore((state) => state.images);
@@ -62,7 +62,7 @@ export function useImageSearch(
         searchImages(searchQuery);
       }, debounceDelay);
     },
-    [searchImages, debounceDelay],
+    [searchImages, debounceDelay]
   );
 
   /**
@@ -72,17 +72,18 @@ export function useImageSearch(
     async (page: number) => {
       await getImagesByPage(query, page);
     },
-    [getImagesByPage, query],
+    [getImagesByPage, query]
   );
 
   // 컴포넌트 언마운트 시 타이머 정리
-  useEffect(() => {
-    return () => {
+  useEffect(
+    () => () => {
       if (debounceTimer.current) {
         clearTimeout(debounceTimer.current);
       }
-    };
-  }, []);
+    },
+    []
+  );
 
   return {
     images,

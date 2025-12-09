@@ -87,12 +87,15 @@ describe('ImageStore - 타입 정의', () => {
 
     it('should define getImagesByPage action type', () => {
       // Given: getImagesByPage 액션 타입 정의
-      type GetImagesByPageAction = (query: string, page: number) => Promise<void>;
+      type GetImagesByPageAction = (
+        query: string,
+        page: number
+      ) => Promise<void>;
 
       // When: 타입을 사용하여 모의 함수 생성
       const getImagesByPage: GetImagesByPageAction = async (
         query: string,
-        page: number,
+        page: number
       ) => {
         expect(typeof query).toBe('string');
         expect(typeof page).toBe('number');

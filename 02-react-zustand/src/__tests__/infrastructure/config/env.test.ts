@@ -5,7 +5,11 @@
  * 의존성 주입 패턴을 사용하여 실제 EnvConfig 클래스를 테스트합니다.
  */
 
-import { EnvConfig, type Environment, type EnvSource } from '@infrastructure/config/envConfig';
+import {
+  EnvConfig,
+  type Environment,
+  type EnvSource,
+} from '@infrastructure/config/envConfig';
 
 describe('EnvConfig', () => {
   describe('생성자 및 환경변수 로드', () => {

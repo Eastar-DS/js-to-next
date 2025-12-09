@@ -58,7 +58,7 @@ describe('useImageStore - Zustand 스토어 구현', () => {
     // UseCase를 주입하여 스토어 생성
     useImageStore = createImageStore(
       mockSearchImagesUseCase,
-      mockGetImagesByPageUseCase,
+      mockGetImagesByPageUseCase
     );
   });
 
@@ -146,7 +146,7 @@ describe('useImageStore - Zustand 스토어 구현', () => {
       expect(result.current.error).toBeNull();
       expect(mockGetImagesByPageUseCase.execute).toHaveBeenCalledWith(
         'nature',
-        2,
+        2
       );
     });
 

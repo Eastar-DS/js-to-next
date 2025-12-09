@@ -44,7 +44,7 @@ describe('useImageSearch - Custom Hook', () => {
 
     useImageStore = createImageStore(
       mockSearchImagesUseCase,
-      mockGetImagesByPageUseCase,
+      mockGetImagesByPageUseCase
     );
 
     // 타이머 모의
@@ -151,9 +151,7 @@ describe('useImageSearch - Custom Hook', () => {
       };
       mockSearchImagesUseCase.execute.mockResolvedValue(successResult);
 
-      const { result } = renderHook(() =>
-        useImageSearch(useImageStore, 1000),
-      );
+      const { result } = renderHook(() => useImageSearch(useImageStore, 1000));
 
       // When: search 호출
       act(() => {
@@ -204,7 +202,7 @@ describe('useImageSearch - Custom Hook', () => {
       // Then: 스토어 액션이 호출되어야 함
       expect(mockGetImagesByPageUseCase.execute).toHaveBeenCalledWith(
         'nature',
-        2,
+        2
       );
       expect(result.current.currentPage).toBe(2);
     });

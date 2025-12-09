@@ -50,9 +50,10 @@ export class EnvConfig {
    */
   private loadFromSource(source: EnvSource): EnvironmentConfig {
     // undefined나 없을 때만 기본값 사용, 빈 문자열은 그대로 유지 (validate에서 에러)
-    const apiKey = source.VITE_PIXABAY_API_KEY !== undefined
-      ? source.VITE_PIXABAY_API_KEY
-      : 'test_api_key';
+    const apiKey =
+      source.VITE_PIXABAY_API_KEY !== undefined
+        ? source.VITE_PIXABAY_API_KEY
+        : 'test_api_key';
 
     return {
       NODE_ENV: (source.MODE as Environment) || 'development',

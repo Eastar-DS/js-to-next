@@ -18,9 +18,9 @@ import type { ImageStore } from './types';
  */
 export const createImageStore = (
   searchImagesUseCase: SearchImagesUseCase,
-  getImagesByPageUseCase: GetImagesByPageUseCase,
-) => {
-  return create<ImageStore>((set) => ({
+  getImagesByPageUseCase: GetImagesByPageUseCase
+) =>
+  create<ImageStore>((set) => ({
     // 초기 상태
     images: [],
     isLoading: false,
@@ -82,4 +82,3 @@ export const createImageStore = (
       });
     },
   }));
-};
