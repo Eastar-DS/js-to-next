@@ -14,6 +14,8 @@ export const SearchForm = styled.form`
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
+  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
+  padding-bottom: ${({ theme }) => theme.spacing.lg};
 `;
 
 /**

@@ -480,16 +480,61 @@ Infrastructure (API, External Services)
 
 **테스트 결과:** 171 tests passing
 
-#### 2.8 통합 테스트 (Red → Green → Refactor)
-- [ ] **Test 19**: 타입 시스템 통합 검증
-  - [ ] 레이어 간 타입 일관성 확인
-  - [ ] 타입 안전성 엔드투엔드 테스트
+#### 2.8 통합 테스트 (Red → Green → Refactor) ✅
+- [x] **Test 19**: 타입 시스템 통합 검증 (9 tests)
+  - [x] 레이어 간 타입 일관성 확인
+  - [x] 타입 안전성 엔드투엔드 테스트
+  - [x] 타입 좁히기 및 Result 타입 Discriminated Union 검증
 
-- [ ] **Test 20**: 전체 검색 워크플로우 테스트
-  - [ ] 타입 안전한 검색 플로우
-  - [ ] 페이지네이션 타입 체크
-  - [ ] 에러 핸들링 타입 검증
-  - [ ] 스타일 렌더링 확인
+- [x] **Test 20**: 전체 검색 워크플로우 테스트 (12 tests)
+  - [x] 타입 안전한 검색 플로우
+  - [x] 페이지네이션 타입 체크
+  - [x] 에러 핸들링 타입 검증
+  - [x] 스타일 렌더링 확인
+  - [x] 전체 워크플로우 시나리오 (검색 → 결과 → 페이지 변경)
+
+**테스트 결과:** 192 tests passing
+
+#### 2.8.1 실제 API 연결 및 App.tsx 구현 (Red → Green → Refactor) ✅
+- [x] **Test 21**: App.tsx 실제 API 연결 통합 테스트
+  - [x] useImageSearch 훅 통합
+  - [x] Pixabay API 실제 호출
+  - [x] 검색 결과 상태 관리
+  - [x] 페이지네이션 동작 확인
+  - [x] 에러 핸들링 UI 표시
+
+- [x] **실제 구현**: App.tsx 리팩토링
+  - [x] .env 파일 설정 확인 (VITE_PIXABAY_API_KEY)
+  - [x] Repository, UseCase, Store 의존성 주입
+  - [x] useImageSearch 훅 사용
+  - [x] 검색, 페이지네이션 핸들러 연결
+  - [x] 로딩, 에러 상태 UI 연결
+  - [x] Flexbox 레이아웃 구조 적용 (header/main/footer)
+
+- [x] **브라우저 테스트**: 실제 동작 확인
+  - [x] 검색 기능 작동 확인
+  - [x] 로딩 스켈레톤 표시 확인
+  - [x] 이미지 결과 렌더링 확인 (20개 이미지)
+  - [x] 페이지네이션 작동 확인
+  - [x] 에러 핸들링 확인
+  - [x] 반응형 레이아웃 확인 (1열, 2열, 다열 그리드)
+
+- [x] **버그 수정**: 실제 동작 중 발견된 이슈 해결
+  - [x] CORS 에러 수정 (fetch 헤더 제거)
+  - [x] import.meta.env 접근 방식 수정
+  - [x] 반응형 이미지 잘림 현상 수정 (SearchBar 패딩, GridContainer 상단 패딩 제거)
+
+**구현 파일:**
+- `02-react-zustand/.env`: 환경변수 설정
+- `src/App.tsx`: 전체 레이어 통합 및 의존성 주입
+- `src/infrastructure/config/env.ts`: import.meta.env 직접 접근 방식 수정
+- `src/infrastructure/datasources/PixabayDataSource.ts`: CORS 헤더 제거
+- `src/presentation/components/SearchBar/SearchBar.styles.ts`: 패딩 조정
+- `src/presentation/components/ImageGrid/ImageGrid.styles.ts`: 상단 패딩 제거
+- `src/presentation/components/ImageCard/ImageCard.styles.ts`: 이미지 aspect-ratio 적용
+- `src/presentation/styles/GlobalStyles.ts`: body min-height 수정
+
+**테스트 결과:** 브라우저 실제 동작 확인 완료 (모든 기능 정상 작동)
 
 #### 2.9 리팩토링 (Tidy First)
 - [ ] **Structural**: 공통 타입 추출 및 재사용

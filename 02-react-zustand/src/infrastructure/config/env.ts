@@ -11,14 +11,12 @@ import { EnvConfig } from './envConfig';
  * Vite의 import.meta.env에서 환경변수 로드
  */
 function getViteEnvSource() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { env } = import.meta as any;
   return {
-    MODE: env.MODE,
-    VITE_PIXABAY_API_KEY: env.VITE_PIXABAY_API_KEY,
-    VITE_API_BASE_URL: env.VITE_API_BASE_URL,
-    VITE_LOG_LEVEL: env.VITE_LOG_LEVEL,
-    VITE_ENABLE_ANALYTICS: env.VITE_ENABLE_ANALYTICS,
+    MODE: import.meta.env.MODE,
+    VITE_PIXABAY_API_KEY: import.meta.env.VITE_PIXABAY_API_KEY,
+    VITE_API_BASE_URL: import.meta.env.VITE_API_BASE_URL,
+    VITE_LOG_LEVEL: import.meta.env.VITE_LOG_LEVEL,
+    VITE_ENABLE_ANALYTICS: import.meta.env.VITE_ENABLE_ANALYTICS,
   };
 }
 

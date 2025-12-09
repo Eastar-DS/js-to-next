@@ -9,18 +9,18 @@ export const GridContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: ${({ theme }) => theme.spacing.lg};
-  padding: ${({ theme }) => theme.spacing.lg};
+  padding: 0 ${({ theme }) => theme.spacing.lg} ${({ theme }) => theme.spacing.lg};
   width: 100%;
 
   @media (max-width: 768px) {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: ${({ theme }) => theme.spacing.md};
-    padding: ${({ theme }) => theme.spacing.md};
+    padding: 0 ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.md};
   }
 
   @media (max-width: 480px) {
     grid-template-columns: 1fr;
     gap: ${({ theme }) => theme.spacing.sm};
-    padding: ${({ theme }) => theme.spacing.sm};
+    padding: 0 ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.sm};
   }
 `;

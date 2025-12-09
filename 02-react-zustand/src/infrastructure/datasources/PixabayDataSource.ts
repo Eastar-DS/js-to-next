@@ -39,12 +39,7 @@ export class PixabayDataSource {
   async getByPage(query: string, page: number): Promise<PixabayApiResponseDto> {
     const url = this.buildUrl(query, page);
 
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const response = await fetch(url);
 
     if (!response.ok) {
       throw new Error(

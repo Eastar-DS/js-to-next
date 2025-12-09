@@ -17,12 +17,14 @@ export const GlobalStyles = createGlobalStyle`
     box-sizing: border-box;
   }
 
-  html, body {
+  html {
     width: 100%;
     height: 100%;
   }
 
   body {
+    width: 100%;
+    min-height: 100%;
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-size: ${({ theme }) => theme.typography.fontSize.medium};
     font-weight: ${({ theme }) => theme.typography.fontWeight.normal};
@@ -35,7 +37,7 @@ export const GlobalStyles = createGlobalStyle`
 
   #root {
     width: 100%;
-    min-height: 100%;
+    min-height: 100vh;
   }
 
   /* 기본 요소 스타일 */

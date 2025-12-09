@@ -24,14 +24,17 @@ export const Card = styled.div`
 export const ImageContainer = styled.div`
   position: relative;
   width: 100%;
-  height: 200px;
+  padding-top: 75%; /* 4:3 aspect ratio */
   overflow: hidden;
   background-color: ${({ theme }) => theme.colors.hover};
 `;
 
 export const StyledImage = styled.img`
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 200px;
+  height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
 
