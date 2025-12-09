@@ -536,12 +536,34 @@ Infrastructure (API, External Services)
 
 **테스트 결과:** 브라우저 실제 동작 확인 완료 (모든 기능 정상 작동)
 
-#### 2.9 리팩토링 (Tidy First)
-- [ ] **Structural**: 공통 타입 추출 및 재사용
-- [ ] **Structural**: 유틸리티 타입 정의 (Nullable, Result 등)
-- [ ] **Structural**: 타입 가드 함수 정리
-- [ ] **Structural**: 스타일 믹스인 및 공통 스타일 추출
-- [ ] **Behavioral**: strict 모드 활성화 및 에러 수정
+#### 2.9 리팩토링 (Tidy First) ✅
+- [x] **Structural**: 공통 타입 추출 및 재사용
+  - [x] AsyncState<T> 인터페이스 정의 (data, isLoading, error)
+  - [x] PaginationState 인터페이스 정의 (currentPage, totalPages)
+  - [x] 중복된 타입 정의를 src/domain/types.ts로 통합
+- [x] **Structural**: 유틸리티 타입 정의 (Nullable, Result 등)
+  - [x] Nullable<T>, Optional<T> 타입 유틸리티
+  - [x] ID, Timestamp 타입 별칭
+  - [x] Result<T> 타입은 이미 정의되어 있음
+- [x] **Structural**: 타입 가드 함수 정리 (사용자 선택으로 스킵)
+- [x] **Structural**: 스타일 믹스인 및 공통 스타일 추출
+  - [x] transitions 믹스인 (default, slow, transform, color)
+  - [x] cardContainer 믹스인 (공통 카드 스타일)
+  - [x] buttonStates 믹스인 (hover, active, disabled)
+  - [x] flexColumn, flexRow 믹스인 (레이아웃)
+  - [x] responsiveGrid 함수 (반응형 그리드)
+  - [x] textEllipsis 함수 (단일/다중 줄 말줄임)
+  - [x] absoluteCenter 믹스인 (중앙 정렬)
+  - [x] customScrollbar 믹스인 (스크롤바 스타일)
+- [x] **Verification**: strict 모드 확인 (이미 활성화됨)
+  - [x] tsconfig.app.json에서 strict: true 확인
+  - [x] 추가 strict 옵션 확인 (noUnusedLocals, noUnusedParameters 등)
+
+**구현 파일:**
+- `src/domain/types.ts`: 공통 타입 추가 (AsyncState, PaginationState, Nullable, Optional, ID, Timestamp)
+- `src/presentation/styles/mixins.ts`: 8개 재사용 가능한 스타일 믹스인 생성
+
+**테스트 결과:** 192 tests passing (Phase 2.8.1 테스트 수정 포함)
 
 ---
 
@@ -550,144 +572,302 @@ Infrastructure (API, External Services)
 > **초기 설정**: [SETUP.md - Phase 3](./SETUP.md#phase-3-react-19--react-query--typescript-clean-architecture-심화) 참조
 
 ### 아키텍처 개념
-Phase 2의 Clean Architecture를 유지하면서 **React Query를 서버 상태 관리 계층**에 통합합니다.
-Zustand 대신 React Query의 강력한 캐싱과 동기화 기능을 활용하여 서버 상태를 관리합니다.
+Phase 2의 Clean Architecture를 유지하면서 **Zustand를 React Query로 교체**합니다.
+서버 상태 관리에 특화된 React Query의 강력한 캐싱, 동기화, 리페칭 기능을 활용합니다.
 
-### TypeScript 심화 학습 목표
+**핵심 차이점:**
+- **Phase 2**: Zustand (클라이언트 상태 관리) - `create()`, `useStore()`
+- **Phase 3**: React Query (서버 상태 관리) - `useQuery()`, `QueryClient`
+
+### 학습 목표
+
+#### TypeScript 심화
 - **React Query 타입 추론**: useQuery, useMutation의 제네릭 활용
-- **Query Key 타입 안전성**: 타입 안전한 Query Key 관리
+- **Query Key 타입 안전성**: const assertion을 활용한 타입 안전한 Query Key
 - **고급 제네릭**: Conditional Types, Mapped Types 활용
 - **타입 좁히기**: Union Types와 타입 가드 고급 활용
 
-### Styled Components 심화 학습 목표
-- **고급 테마 시스템**: 다크 모드 전환 구현
-- **Transient Props**: $-prefix를 활용한 최적화
-- **attrs() 헬퍼**: 기본 props 설정
-- **css 헬퍼**: 재사용 가능한 스타일 믹스인
+#### React Query 핵심 개념
+- **자동 캐싱**: staleTime, gcTime으로 캐시 관리
+- **자동 리페칭**: refetchOnWindowFocus, refetchOnMount
+- **Pagination**: placeholderData로 부드러운 페이지 전환
+- **Prefetching**: 다음 페이지 미리 로드
+- **DevTools**: React Query DevTools로 쿼리 상태 확인
 
-### Clean Architecture + React Query + TypeScript 구조
+### Phase 2 코드 재사용 전략
+
+**재사용 (복사만 하면 됨):**
+- ✅ `src/domain/` - 엔티티, UseCase, Repository 인터페이스 (100% 재사용)
+- ✅ `src/infrastructure/` - DataSource, Mapper, Repository 구현 (100% 재사용)
+- ✅ `src/presentation/components/` - 모든 UI 컴포넌트 (100% 재사용)
+- ✅ `src/presentation/styles/` - 테마, GlobalStyles, mixins (100% 재사용)
+
+**교체 (Zustand → React Query):**
+- ❌ `src/application/store/` → 삭제
+- ✅ `src/application/queries/` → 새로 작성 (Query 훅)
+- ✅ `src/application/queryClient.ts` → 새로 작성 (React Query 설정)
+- 🔄 `src/application/hooks/useImageSearch.ts` → 수정 (useQuery 사용)
+- 🔄 `src/App.tsx` → 수정 (QueryClientProvider 추가)
+
+### Clean Architecture + React Query 구조
 ```
 03-react-query/
 ├── public/
 ├── src/
-│   ├── domain/                    # 도메인 레이어 (Phase 2와 동일)
+│   ├── domain/                    # ✅ Phase 2에서 100% 재사용
 │   │   ├── entities/
 │   │   │   ├── Image.ts
 │   │   │   └── types.ts
 │   │   ├── repositories/
 │   │   │   └── ImageRepository.ts
 │   │   └── usecases/
-│   │       ├── SearchImages.ts
-│   │       └── GetImagesByPage.ts
+│   │       ├── SearchImagesUseCase.ts
+│   │       └── GetImagesByPageUseCase.ts
 │   │
-│   ├── application/               # 애플리케이션 레이어 (React Query 통합)
-│   │   ├── queries/
-│   │   │   ├── queryKeys.ts       # 타입 안전한 Query key 팩토리
+│   ├── infrastructure/            # ✅ Phase 2에서 100% 재사용
+│   │   ├── datasources/
+│   │   │   ├── PixabayDataSource.ts
+│   │   │   └── dto/
+│   │   │       └── PixabayDto.ts
+│   │   ├── mappers/
+│   │   │   └── PixabayImageMapper.ts
+│   │   ├── repositories/
+│   │   │   └── PixabayImageRepository.ts
+│   │   ├── logging/
+│   │   │   └── Logger.ts
+│   │   └── config/
+│   │       └── env.ts
+│   │
+│   ├── application/               # 🔄 React Query로 교체
+│   │   ├── queries/               # ✅ 새로 작성
+│   │   │   ├── queryKeys.ts       # Query Key 팩토리
 │   │   │   ├── types.ts           # Query 관련 타입
-│   │   │   ├── useImagesQuery.ts  # 이미지 조회 쿼리
-│   │   │   └── useSearchQuery.ts  # 검색 쿼리
+│   │   │   └── useImagesQuery.ts  # useQuery 훅
 │   │   ├── hooks/
-│   │   │   └── useImageSearch.ts  # 비즈니스 로직 훅
-│   │   └── queryClient.ts         # React Query 설정
+│   │   │   └── useImageSearch.ts  # 🔄 React Query 사용하도록 수정
+│   │   └── queryClient.ts         # ✅ 새로 작성 (QueryClient 설정)
 │   │
-│   ├── infrastructure/            # 인프라 레이어 (Phase 2와 동일)
-│   │   ├── api/
-│   │   │   ├── PixabayApiClient.ts
-│   │   │   └── types.ts
-│   │   └── repositories/
-│   │       └── PixabayImageRepository.ts
-│   │
-│   ├── presentation/              # 프레젠테이션 레이어
+│   ├── presentation/              # ✅ Phase 2에서 100% 재사용
 │   │   ├── components/
-│   │   │   ├── SearchBar.tsx
-│   │   │   ├── ImageGrid.tsx
-│   │   │   ├── ImageCard.tsx
-│   │   │   ├── SkeletonCard.tsx
-│   │   │   ├── Pagination.tsx
-│   │   │   └── ErrorMessage.tsx
-│   │   ├── pages/
-│   │   │   └── SearchPage.tsx
-│   │   └── types.ts
+│   │   │   ├── SearchBar/
+│   │   │   ├── ImageGrid/
+│   │   │   ├── ImageCard/
+│   │   │   ├── SkeletonCard/
+│   │   │   ├── Pagination/
+│   │   │   └── ErrorMessage/
+│   │   ├── styles/
+│   │   │   ├── theme.ts
+│   │   │   ├── GlobalStyles.ts
+│   │   │   └── mixins.ts
+│   │   └── pages/
+│   │       └── SearchPage.tsx
 │   │
-│   ├── App.tsx
+│   ├── App.tsx                    # 🔄 QueryClientProvider 추가
 │   ├── main.tsx
 │   └── vite-env.d.ts
 │
-├── __tests__/
-│   ├── domain/
+├── __tests__/                     # 일부 재사용, 일부 수정
+│   ├── domain/                    # ✅ Phase 2에서 재사용 (31 tests)
+│   ├── infrastructure/            # ✅ Phase 2에서 재사용 (55 tests)
 │   ├── application/
-│   │   └── queries/
-│   ├── infrastructure/
-│   └── presentation/
+│   │   └── queries/               # ✅ 새로 작성 (Query 훅 테스트)
+│   └── presentation/              # ✅ Phase 2에서 재사용 (67 tests)
 │
+├── .env                           # ✅ Phase 2에서 재사용
 ├── tsconfig.json
+├── tsconfig.app.json
 ├── tsconfig.node.json
+├── jest.config.ts
 └── package.json
 ```
 
-### TDD 단계별 구현 (TypeScript + React Query)
+### TDD 단계별 구현 (React Query 집중)
 
-#### 3.1 React Query 타입 안전한 설정 (Red → Green → Refactor)
-- [ ] **Test 1**: QueryClient 타입 정의 및 초기화
+#### 3.0 프로젝트 설정 및 Phase 2 코드 복사 (Red → Green → Refactor)
+- [ ] **Setup 0**: 프로젝트 초기화
+  - [ ] `npm create vite@latest 03-react-query -- --template react-ts`
+  - [ ] React Query 설치: `npm install @tanstack/react-query`
+  - [ ] React Query DevTools 설치: `npm install @tanstack/react-query-devtools`
+  - [ ] Styled Components 설치: `npm install styled-components`
+  - [ ] 타입 정의 설치: `npm install -D @types/styled-components`
+  - [ ] Phase 2의 테스트 설정 복사 (Jest, Testing Library)
+
+- [ ] **Setup 1**: Phase 2 코드 복사
+  - [ ] `src/domain/` 전체 복사
+  - [ ] `src/infrastructure/` 전체 복사
+  - [ ] `src/presentation/` 전체 복사
+  - [ ] `__tests__/domain/` 전체 복사
+  - [ ] `__tests__/infrastructure/` 전체 복사
+  - [ ] `__tests__/presentation/` 전체 복사
+  - [ ] `.env` 파일 복사
+  - [ ] `tsconfig` 설정 복사
+  - [ ] 복사한 테스트 실행 확인 (153/153 통과 예상)
+
+#### 3.1 React Query 설정 (Red → Green → Refactor)
+- [ ] **Test 1**: QueryClient 설정 및 타입 테스트 (3 tests)
+  - [ ] `src/application/queryClient.ts` 작성
   - [ ] QueryClient 옵션 타입 정의
-  - [ ] 기본 옵션 설정 (staleTime, gcTime 등)
-  - [ ] 에러 핸들링 기본 설정 타입
+  - [ ] 기본 옵션 설정 (staleTime: 5분, gcTime: 10분, retry: 1)
+  - [ ] 에러 핸들링 기본 설정
+
+**구현 파일:** `src/application/queryClient.ts`
 
 #### 3.2 Query Key 타입 시스템 (Red → Green → Refactor)
-- [ ] **Test 2**: 타입 안전한 Query Key 팩토리
+- [ ] **Test 2**: 타입 안전한 Query Key 팩토리 (5 tests)
+  - [ ] `src/application/queries/queryKeys.ts` 작성
   - [ ] Query Key 타입 정의 (const assertion 활용)
-  - [ ] Query Key 팩토리 함수 구현
-  - [ ] 타입 추론을 활용한 자동완성
+  - [ ] imageKeys 팩토리 함수 구현
+    - [ ] `imageKeys.all` - 모든 이미지 쿼리
+    - [ ] `imageKeys.list(query)` - 특정 검색어의 이미지 목록
+    - [ ] `imageKeys.page(query, page)` - 특정 페이지
+  - [ ] 타입 추론을 활용한 자동완성 검증
 
-#### 3.3 타입 안전한 Query 훅 (Red → Green → Refactor)
-- [ ] **Test 3**: useImagesQuery 훅 타입 정의
-  - [ ] useQuery 제네릭 타입 활용
-  - [ ] QueryFunctionContext 타입 정의
-  - [ ] 반환 타입 추론 및 타입 좁히기
+**구현 파일:** `src/application/queries/queryKeys.ts`
 
-- [ ] **Test 4**: useSearchQuery 훅 타입 정의
-  - [ ] useQuery 파라미터 타입 정의
-  - [ ] enabled 옵션과 타입 안전성
-  - [ ] select 옵션 타입 추론
+#### 3.3 useImagesQuery 훅 구현 (Red → Green → Refactor)
+- [ ] **Test 3**: useImagesQuery 기본 기능 테스트 (8 tests)
+  - [ ] `src/application/queries/useImagesQuery.ts` 작성
+  - [ ] useQuery 제네릭 타입 활용 (`useQuery<Image[], Error>`)
+  - [ ] queryFn에서 UseCase 호출 및 Result 타입 처리
+  - [ ] 타입 안전한 에러 처리 (Result 타입의 success 분기)
+  - [ ] enabled 옵션 (query가 비어있으면 실행 안 함)
+  - [ ] staleTime, gcTime 설정
+  - [ ] 반환 타입 추론 (data, isLoading, error)
 
-- [ ] **Test 5**: Pagination with React Query 타입
-  - [ ] placeholderData 옵션 타입 (keepPreviousData 대체)
-  - [ ] 페이지 상태 타입 정의
-  - [ ] 타입 안전한 페이지 전환
+**구현 파일:** `src/application/queries/useImagesQuery.ts`
+**핵심 학습:** useQuery 제네릭, queryFn, Query Key, enabled 옵션
 
-- [ ] **Test 6**: Prefetching 타입 안전성
-  - [ ] queryClient.prefetchQuery 타입
-  - [ ] 다음 페이지 예측 로직 타입
+#### 3.4 App.tsx 기본 구현 (조기 통합) ⭐
+- [ ] **Test 4**: App.tsx 기본 통합 테스트 (5 tests)
+  - [ ] `src/App.tsx` 수정
+  - [ ] QueryClientProvider 설정
+  - [ ] useState로 query, page 상태 관리
+  - [ ] useImagesQuery 훅 사용
+  - [ ] SearchBar 연동 (검색어 입력 → query state 변경)
+  - [ ] ImageGrid 연동 (data 표시)
+  - [ ] 브라우저 테스트: 기본 검색 기능 동작 확인 ✅
 
-#### 3.4 고급 TypeScript 패턴 (Red → Green → Refactor)
-- [ ] **Test 7**: Conditional Types 활용
-  - [ ] Query 상태에 따른 조건부 타입
-  - [ ] Error 타입 좁히기
+**구현 파일:** `src/App.tsx` (기본 버전)
+**목표:** 여기서 실제 브라우저에서 검색이 동작하는 것 확인!
 
-- [ ] **Test 8**: Utility Types 정의
-  - [ ] QueryResult 헬퍼 타입
-  - [ ] Awaited<> 활용한 비동기 타입 추출
+#### 3.5 Pagination 구현 (Red → Green → Refactor)
+- [ ] **Test 5**: Pagination 기능 테스트 (6 tests)
+  - [ ] useImagesQuery에 page 파라미터 추가
+  - [ ] Query Key에 page 포함 (`imageKeys.page(query, page)`)
+  - [ ] placeholderData 옵션 (이전 데이터 유지하며 로딩)
+  - [ ] Pagination 컴포넌트 연동
+  - [ ] 브라우저 테스트: 페이지 전환 동작 확인 ✅
 
-#### 3.5 통합 테스트
-- [ ] **Test 9**: React Query 캐싱 통합 타입 테스트
-  - [ ] 타입 안전한 캐시 사용
-  - [ ] 캐시 무효화 타입 체크
+**핵심 학습:** Query Key의 중요성 (page가 바뀌면 새 쿼리로 인식)
 
-- [ ] **Test 10**: 에러 재시도 로직 타입 테스트
-  - [ ] retry 옵션 타입 정의
-  - [ ] 타입 안전한 에러 핸들링
+#### 3.6 useImageSearch 커스텀 훅 (Red → Green → Refactor)
+- [ ] **Test 6**: useImageSearch 훅 리팩토링 (5 tests)
+  - [ ] `src/application/hooks/useImageSearch.ts` 수정
+  - [ ] useState로 query, page 관리
+  - [ ] useImagesQuery 호출
+  - [ ] search 함수: query 변경 + page를 1로 리셋
+  - [ ] goToPage 함수: page 변경
+  - [ ] 디바운스 기능 유지 (useDebounce 또는 직접 구현)
 
-#### 3.6 리팩토링 (Tidy First)
-- [ ] **Structural**: Query key 타입 체계화
-- [ ] **Structural**: 제네릭 타입 재사용성 개선
-- [ ] **Structural**: 타입 유틸리티 정리
-- [ ] **Behavioral**: Optimistic updates 타입 안전성 (선택적)
+**구현 파일:** `src/application/hooks/useImageSearch.ts` (수정)
 
-#### 3.7 TypeScript + Zustand vs React Query 비교
-- [ ] 타입 추론 능력 비교
-- [ ] 타입 안전성 비교
-- [ ] 개발 경험 (DX) 비교
-- [ ] 각 접근법의 타입 시스템 장단점
+#### 3.7 App.tsx 완성 (Red → Green → Refactor)
+- [ ] **Test 7**: App.tsx 최종 통합 테스트 (6 tests)
+  - [ ] useImageSearch 훅 사용하도록 리팩토링
+  - [ ] 모든 컴포넌트 연동 확인
+  - [ ] React Query DevTools 추가
+  - [ ] 브라우저 테스트: 전체 기능 동작 확인 ✅
+    - [ ] 검색 기능
+    - [ ] 페이지네이션
+    - [ ] 로딩 스켈레톤
+    - [ ] 에러 핸들링
+
+**구현 파일:** `src/App.tsx` (최종 버전)
+
+#### 3.8 고급 기능 - Prefetching (Red → Green → Refactor)
+- [ ] **Test 8**: Prefetching 테스트 (4 tests)
+  - [ ] queryClient.prefetchQuery 사용
+  - [ ] 현재 페이지 + 1 미리 로드
+  - [ ] useEffect에서 자동 prefetch
+  - [ ] 브라우저 테스트: DevTools에서 prefetch 확인 ✅
+
+**핵심 학습:** 사용자 경험 개선 (다음 페이지 즉시 로드)
+
+#### 3.9 고급 기능 - Optimistic Updates (선택적)
+- [ ] **Test 9**: Optimistic Updates 테스트 (선택적, 3 tests)
+  - [ ] useMutation 사용
+  - [ ] onMutate에서 낙관적 업데이트
+  - [ ] onError에서 롤백
+  - [ ] onSettled에서 쿼리 무효화
+
+**참고:** 이 프로젝트에서는 읽기 전용이라 실제 사용 X, 개념만 학습
+
+#### 3.10 Zustand vs React Query 비교 분석
+- [ ] **분석 1**: 코드 비교
+  - [ ] 상태 관리 코드 라인 수 비교
+  - [ ] 타입 안전성 비교
+  - [ ] 보일러플레이트 비교
+
+- [ ] **분석 2**: 성능 비교
+  - [ ] 번들 크기 비교 (`npm run build`)
+  - [ ] 렌더링 횟수 비교 (React DevTools Profiler)
+  - [ ] 네트워크 요청 횟수 비교
+
+- [ ] **분석 3**: 개발 경험 비교
+  - [ ] DevTools 비교
+  - [ ] 타입 추론 능력
+  - [ ] 에러 처리 방식
+  - [ ] 학습 곡선
+
+- [ ] **문서 작성**: `COMPARISON.md` 작성
+  - [ ] Phase 2 (Zustand) vs Phase 3 (React Query) 상세 비교
+  - [ ] 각 접근법의 장단점
+  - [ ] 사용 사례별 권장사항
+
+#### 3.11 리팩토링 (Tidy First)
+- [ ] **Structural**: Query 관련 타입 정리
+  - [ ] 공통 Query 타입 추출
+  - [ ] Query 옵션 타입 체계화
+
+- [ ] **Structural**: 커스텀 훅 최적화
+  - [ ] 중복 로직 제거
+  - [ ] 재사용 가능한 유틸리티 함수 추출
+
+- [ ] **Verification**: 전체 테스트 실행
+  - [ ] 모든 테스트 통과 확인
+  - [ ] 타입 체크 확인 (`npm run build`)
+
+### 예상 테스트 결과
+- Domain Layer: 31 tests (Phase 2 재사용)
+- Infrastructure Layer: 55 tests (Phase 2 재사용)
+- **Application Layer (React Query): 약 40 tests (새로 작성)**
+- Presentation Layer: 67 tests (Phase 2 재사용)
+- **예상 총합: 약 193 tests**
+
+### 핵심 학습 포인트
+
+#### 1. React Query 개념
+- **서버 상태 vs 클라이언트 상태**: React Query는 서버 상태 전용
+- **자동 캐싱**: staleTime 동안 캐시 사용, 이후 자동 리페칭
+- **Query Key의 중요성**: 배열의 각 요소가 바뀌면 새 쿼리
+- **Declarative API**: 상태를 "선언"하면 React Query가 알아서 관리
+
+#### 2. Zustand vs React Query
+| 항목 | Zustand | React Query |
+|------|---------|-------------|
+| **목적** | 클라이언트 상태 | 서버 상태 |
+| **캐싱** | ❌ 없음 | ✅ 자동 |
+| **리페칭** | ❌ 수동 | ✅ 자동 |
+| **로딩 상태** | 직접 관리 | 자동 제공 |
+| **에러 재시도** | 직접 구현 | 자동 (retry) |
+| **DevTools** | ❌ 없음 | ✅ 강력함 |
+| **번들 크기** | 작음 (~1KB) | 중간 (~13KB) |
+| **학습 곡선** | 낮음 | 중간 |
+
+#### 3. 언제 무엇을 사용할까?
+- **Zustand**: UI 상태, 폼 상태, 모달 상태 등 클라이언트 상태
+- **React Query**: API 데이터, 서버 데이터, 비동기 데이터
+- **함께 사용**: Zustand (UI 상태) + React Query (서버 상태)
 
 ---
 
