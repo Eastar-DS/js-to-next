@@ -684,24 +684,26 @@ Phase 2의 Clean Architecture를 유지하면서 **Zustand를 React Query로 교
 ### TDD 단계별 구현 (React Query 집중)
 
 #### 3.0 프로젝트 설정 및 Phase 2 코드 복사 (Red → Green → Refactor)
-- [ ] **Setup 0**: 프로젝트 초기화
-  - [ ] `npm create vite@latest 03-react-query -- --template react-ts`
-  - [ ] React Query 설치: `npm install @tanstack/react-query`
-  - [ ] React Query DevTools 설치: `npm install @tanstack/react-query-devtools`
-  - [ ] Styled Components 설치: `npm install styled-components`
-  - [ ] 타입 정의 설치: `npm install -D @types/styled-components`
-  - [ ] Phase 2의 테스트 설정 복사 (Jest, Testing Library)
+- [x] **Setup 0**: 프로젝트 초기화
+  - [x] `npm create vite@latest 03-react-query -- --template react-ts`
+  - [x] React Query 설치: `npm install @tanstack/react-query`
+  - [x] React Query DevTools 설치: `npm install @tanstack/react-query-devtools`
+  - [x] Styled Components 설치: `npm install styled-components`
+  - [x] 타입 정의 설치: `npm install -D @types/styled-components`
+  - [x] Phase 2의 테스트 설정 복사 (Jest, Testing Library)
 
-- [ ] **Setup 1**: Phase 2 코드 복사
-  - [ ] `src/domain/` 전체 복사
-  - [ ] `src/infrastructure/` 전체 복사
-  - [ ] `src/presentation/` 전체 복사
-  - [ ] `__tests__/domain/` 전체 복사
-  - [ ] `__tests__/infrastructure/` 전체 복사
-  - [ ] `__tests__/presentation/` 전체 복사
-  - [ ] `.env` 파일 복사
-  - [ ] `tsconfig` 설정 복사
-  - [ ] 복사한 테스트 실행 확인 (153/153 통과 예상)
+- [x] **Setup 1**: Phase 2 코드 복사
+  - [x] `src/domain/` 전체 복사
+  - [x] `src/infrastructure/` 전체 복사
+  - [x] `src/presentation/` 전체 복사
+  - [x] `__tests__/domain/` 전체 복사
+  - [x] `__tests__/infrastructure/` 전체 복사
+  - [x] `__tests__/presentation/` 전체 복사
+  - [x] `.env` 파일 복사
+  - [x] `tsconfig` 설정 복사
+  - [x] ESLint 설정 복사 (`.eslintrc.json`)
+  - [x] Prettier 설정 복사 (`.prettierrc.json`)
+  - [x] 복사한 테스트 실행 확인 (174/174 통과)
 
 #### 3.1 React Query 설정 (Red → Green → Refactor)
 - [ ] **Test 1**: QueryClient 설정 및 타입 테스트 (3 tests)
