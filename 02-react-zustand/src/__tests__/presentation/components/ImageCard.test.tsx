@@ -103,7 +103,7 @@ describe('ImageCard - 컴포넌트 렌더링 및 동작', () => {
       renderWithTheme(<ImageCard image={mockImage} />);
 
       const imgElement = screen.getByAltText(mockImage.tags);
-      expect(imgElement).toHaveStyle({ width: '100%', height: '200px' });
+      expect(imgElement).toHaveStyle({ width: '100%', height: '100%' });
     });
   });
 

@@ -64,16 +64,13 @@ describe('PixabayDataSource', () => {
       // Then: 올바른 URL로 fetch 호출
       expect(globalThis.fetch).toHaveBeenCalledTimes(1);
       expect(globalThis.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('https://pixabay.com/api/'),
-        expect.any(Object)
+        expect.stringContaining('https://pixabay.com/api/')
       );
       expect(globalThis.fetch).toHaveBeenCalledWith(
-        expect.stringContaining(`key=${mockApiKey}`),
-        expect.any(Object)
+        expect.stringContaining(`key=${mockApiKey}`)
       );
       expect(globalThis.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('q=cats'),
-        expect.any(Object)
+        expect.stringContaining('q=cats')
       );
 
       // Then: DTO를 반환해야 함
@@ -99,8 +96,7 @@ describe('PixabayDataSource', () => {
 
       // Then: URL 인코딩이 적용되어야 함 (URLSearchParams는 공백을 +로 인코딩)
       expect(globalThis.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('q=cats+and+dogs'),
-        expect.any(Object)
+        expect.stringContaining('q=cats+and+dogs')
       );
     });
 
@@ -178,12 +174,10 @@ describe('PixabayDataSource', () => {
 
       // Then: 페이지 파라미터가 포함된 URL로 호출
       expect(globalThis.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('q=dogs'),
-        expect.any(Object)
+        expect.stringContaining('q=dogs')
       );
       expect(globalThis.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('page=2'),
-        expect.any(Object)
+        expect.stringContaining('page=2')
       );
       expect(result).toEqual(mockResponse);
     });
@@ -206,8 +200,7 @@ describe('PixabayDataSource', () => {
 
       // Then: page=1 파라미터가 포함되어야 함
       expect(globalThis.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('page=1'),
-        expect.any(Object)
+        expect.stringContaining('page=1')
       );
     });
 
@@ -229,8 +222,7 @@ describe('PixabayDataSource', () => {
 
       // Then: per_page 파라미터가 포함되어야 함
       expect(globalThis.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('per_page='),
-        expect.any(Object)
+        expect.stringContaining('per_page=')
       );
     });
 
@@ -271,8 +263,7 @@ describe('PixabayDataSource', () => {
 
       // Then: 제공된 API 키를 사용해야 함
       expect(globalThis.fetch).toHaveBeenCalledWith(
-        expect.stringContaining(`key=${customKey}`),
-        expect.any(Object)
+        expect.stringContaining(`key=${customKey}`)
       );
     });
   });
