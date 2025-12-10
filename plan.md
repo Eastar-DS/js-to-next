@@ -706,11 +706,11 @@ Phase 2의 Clean Architecture를 유지하면서 **Zustand를 React Query로 교
   - [x] 복사한 테스트 실행 확인 (174/174 통과)
 
 #### 3.1 React Query 설정 (Red → Green → Refactor)
-- [ ] **Test 1**: QueryClient 설정 및 타입 테스트 (3 tests)
-  - [ ] `src/application/queryClient.ts` 작성
-  - [ ] QueryClient 옵션 타입 정의
-  - [ ] 기본 옵션 설정 (staleTime: 5분, gcTime: 10분, retry: 1)
-  - [ ] 에러 핸들링 기본 설정
+- [x] **Test 1**: QueryClient 설정 및 타입 테스트 (3 tests)
+  - [x] `src/application/queryClient.ts` 작성
+  - [x] QueryClient 옵션 타입 정의
+  - [x] 기본 옵션 설정 (staleTime: 5분, gcTime: 10분, retry: 1)
+  - [x] refetchOnWindowFocus 비활성화
 
 **구현 파일:** `src/application/queryClient.ts`
 
