@@ -715,14 +715,14 @@ Phase 2의 Clean Architecture를 유지하면서 **Zustand를 React Query로 교
 **구현 파일:** `src/application/queryClient.ts`
 
 #### 3.2 Query Key 타입 시스템 (Red → Green → Refactor)
-- [ ] **Test 2**: 타입 안전한 Query Key 팩토리 (5 tests)
-  - [ ] `src/application/queries/queryKeys.ts` 작성
-  - [ ] Query Key 타입 정의 (const assertion 활용)
-  - [ ] imageKeys 팩토리 함수 구현
-    - [ ] `imageKeys.all` - 모든 이미지 쿼리
-    - [ ] `imageKeys.list(query)` - 특정 검색어의 이미지 목록
-    - [ ] `imageKeys.page(query, page)` - 특정 페이지
-  - [ ] 타입 추론을 활용한 자동완성 검증
+- [x] **Test 2**: 타입 안전한 Query Key 팩토리 (5 tests)
+  - [x] `src/application/queries/queryKeys.ts` 작성
+  - [x] Query Key 타입 정의 (const assertion 활용)
+  - [x] imageKeys 팩토리 함수 구현
+    - [x] `imageKeys.all` - 모든 이미지 쿼리
+    - [x] `imageKeys.list(query)` - 특정 검색어의 이미지 목록
+    - [x] `imageKeys.page(query, page)` - 특정 페이지
+  - [x] 타입 추론을 활용한 자동완성 검증 (as const)
 
 **구현 파일:** `src/application/queries/queryKeys.ts`
 
