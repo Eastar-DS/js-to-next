@@ -727,14 +727,15 @@ Phase 2의 Clean Architecture를 유지하면서 **Zustand를 React Query로 교
 **구현 파일:** `src/application/queries/queryKeys.ts`
 
 #### 3.3 useImagesQuery 훅 구현 (Red → Green → Refactor)
-- [ ] **Test 3**: useImagesQuery 기본 기능 테스트 (8 tests)
-  - [ ] `src/application/queries/useImagesQuery.ts` 작성
-  - [ ] useQuery 제네릭 타입 활용 (`useQuery<Image[], Error>`)
-  - [ ] queryFn에서 UseCase 호출 및 Result 타입 처리
-  - [ ] 타입 안전한 에러 처리 (Result 타입의 success 분기)
-  - [ ] enabled 옵션 (query가 비어있으면 실행 안 함)
-  - [ ] staleTime, gcTime 설정
-  - [ ] 반환 타입 추론 (data, isLoading, error)
+- [x] **Test 3**: useImagesQuery 기본 기능 테스트 (8 tests)
+  - [x] `src/application/queries/useImagesQuery.ts` 작성
+  - [x] useQuery 제네릭 타입 활용 (`useQuery<Image[], Error>`)
+  - [x] queryFn에서 UseCase 호출 및 Result 타입 처리
+  - [x] 타입 안전한 에러 처리 (Result 타입의 success 분기)
+  - [x] enabled 옵션 (query가 비어있으면 실행 안 함)
+  - [x] QueryClient 기본 설정 사용 (staleTime, gcTime, retry)
+  - [x] 반환 타입 추론 (data, isLoading, error)
+  - [x] 캐싱 동작 검증
 
 **구현 파일:** `src/application/queries/useImagesQuery.ts`
 **핵심 학습:** useQuery 제네릭, queryFn, Query Key, enabled 옵션
