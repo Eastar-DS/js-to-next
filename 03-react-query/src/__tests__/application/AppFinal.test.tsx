@@ -76,26 +76,59 @@ describe('App 최종 통합 테스트 (Phase 3.7)', () => {
   it('페이지네이션이 동작해야 함', async () => {
     const user = userEvent.setup();
 
-    // Mock API 응답 - 첫 페이지
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({
-        hits: [
-          {
-            id: 1,
-            pageURL: 'https://pixabay.com/1',
-            previewURL: 'https://preview1.jpg',
-            largeImageURL: 'https://large1.jpg',
-            tags: 'page 1',
-            user: 'user1',
-            likes: 100,
-            views: 1000,
-            downloads: 50,
-          },
-        ],
-        total: 100,
-        totalHits: 100,
-      }),
+    // Mock API 응답 - 모든 페이지에 대해 응답 설정 (prefetch 포함)
+    (global.fetch as jest.Mock).mockImplementation((url: string) => {
+      const urlObj = new URL(url);
+      const page = urlObj.searchParams.get('page');
+
+      if (page === '1') {
+        return Promise.resolve({
+          ok: true,
+          json: async () => ({
+            hits: [
+              {
+                id: 1,
+                pageURL: 'https://pixabay.com/1',
+                previewURL: 'https://preview1.jpg',
+                largeImageURL: 'https://large1.jpg',
+                tags: 'page 1',
+                user: 'user1',
+                likes: 100,
+                views: 1000,
+                downloads: 50,
+              },
+            ],
+            total: 100,
+            totalHits: 100,
+          }),
+        });
+      } else if (page === '2') {
+        return Promise.resolve({
+          ok: true,
+          json: async () => ({
+            hits: [
+              {
+                id: 2,
+                pageURL: 'https://pixabay.com/2',
+                previewURL: 'https://preview2.jpg',
+                largeImageURL: 'https://large2.jpg',
+                tags: 'page 2',
+                user: 'user2',
+                likes: 200,
+                views: 2000,
+                downloads: 100,
+              },
+            ],
+            total: 100,
+            totalHits: 100,
+          }),
+        });
+      }
+
+      return Promise.resolve({
+        ok: true,
+        json: async () => ({ hits: [], total: 0, totalHits: 0 }),
+      });
     });
 
     render(<App />);
@@ -110,28 +143,6 @@ describe('App 최종 통합 테스트 (Phase 3.7)', () => {
     // 첫 페이지 결과 확인
     await waitFor(() => {
       expect(screen.getByAltText(/page 1/i)).toBeInTheDocument();
-    });
-
-    // Mock API 응답 - 두 번째 페이지
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({
-        hits: [
-          {
-            id: 2,
-            pageURL: 'https://pixabay.com/2',
-            previewURL: 'https://preview2.jpg',
-            largeImageURL: 'https://large2.jpg',
-            tags: 'page 2',
-            user: 'user2',
-            likes: 200,
-            views: 2000,
-            downloads: 100,
-          },
-        ],
-        total: 100,
-        totalHits: 100,
-      }),
     });
 
     // 다음 페이지 클릭

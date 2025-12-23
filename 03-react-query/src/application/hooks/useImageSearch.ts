@@ -1,10 +1,12 @@
 /**
  * useImageSearch Hook
  * Application Layer - Custom Hook for Image Search with React Query
+ * Phase 3.8: Prefetching 추가
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useImagesByPageQuery } from '@application/queries/useImagesByPageQuery';
+import { usePrefetch } from '@application/hooks/usePrefetch';
 import type { GetImagesByPageUseCase } from '@domain/usecases/GetImagesByPageUseCase';
 import type { Image } from '@domain/entities/Image';
 
@@ -27,6 +29,7 @@ export interface UseImageSearchReturn {
  * - query, page 상태 관리
  * - useImagesByPageQuery 훅 사용
  * - search, goToPage 함수 제공
+ * - 자동 prefetch로 다음 페이지 미리 로드
  *
  * @param getImagesByPageUseCase - 페이지별 이미지 검색 UseCase
  * @returns UseImageSearchReturn 객체
@@ -44,6 +47,17 @@ export const useImageSearch = (
     page,
     getImagesByPageUseCase
   );
+
+  // Prefetch 훅 사용
+  const { prefetchNextPage } = usePrefetch(getImagesByPageUseCase);
+
+  // 페이지나 검색어가 변경되면 다음 페이지 prefetch
+  useEffect(() => {
+    if (query && images.length > 0 && !isLoading) {
+      // 다음 페이지 prefetch (totalPages는 5로 고정)
+      prefetchNextPage(query, page, 5);
+    }
+  }, [query, page, images.length, isLoading, prefetchNextPage]);
 
   /**
    * 검색 함수

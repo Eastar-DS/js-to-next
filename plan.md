@@ -793,14 +793,21 @@ Phase 2의 Clean Architecture를 유지하면서 **Zustand를 React Query로 교
 **테스트 파일:** `src/__tests__/application/AppFinal.test.tsx`
 **테스트 결과:** 6/6 tests passing, 전체 218 tests passing
 
-#### 3.8 고급 기능 - Prefetching (Red → Green → Refactor)
-- [ ] **Test 8**: Prefetching 테스트 (4 tests)
-  - [ ] queryClient.prefetchQuery 사용
-  - [ ] 현재 페이지 + 1 미리 로드
-  - [ ] useEffect에서 자동 prefetch
-  - [ ] 브라우저 테스트: DevTools에서 prefetch 확인 ✅
+#### 3.8 고급 기능 - Prefetching (Red → Green → Refactor) ✅
+- [x] **Test 8**: Prefetching 테스트 (4 tests)
+  - [x] usePrefetch 훅 생성 및 테스트
+  - [x] queryClient.prefetchQuery 사용
+  - [x] 현재 페이지 + 1 미리 로드
+  - [x] useImageSearch에 자동 prefetch 통합
+  - [x] useEffect에서 자동 prefetch 구현
+  - [x] 브라우저 테스트: DevTools에서 prefetch 확인 ✅
 
-**핵심 학습:** 사용자 경험 개선 (다음 페이지 즉시 로드)
+**구현 파일:**
+- `src/application/hooks/usePrefetch.ts`: Prefetch 커스텀 훅
+- `src/application/hooks/useImageSearch.ts`: 자동 prefetch 통합
+**테스트 파일:** `src/__tests__/application/hooks/usePrefetch.test.tsx`
+**테스트 결과:** 4/4 tests passing (usePrefetch), 전체 222/222 tests passing
+**핵심 학습:** 사용자 경험 개선 (다음 페이지 즉시 로드), QueryClient의 prefetchQuery API
 
 #### 3.9 고급 기능 - Optimistic Updates (선택적)
 - [ ] **Test 9**: Optimistic Updates 테스트 (선택적, 3 tests)
