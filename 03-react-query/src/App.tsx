@@ -1,6 +1,6 @@
 /**
  * App 컴포넌트
- * Phase 3.4: React Query 기본 통합
+ * Phase 3.5: React Query + Pagination 통합
  */
 
 import { useState } from 'react';
@@ -9,10 +9,10 @@ import { ThemeProvider } from 'styled-components';
 
 // Application Layer
 import { queryClient } from '@application/queryClient';
-import { useImagesQuery } from '@application/queries/useImagesQuery';
+import { useImagesByPageQuery } from '@application/queries/useImagesByPageQuery';
 
 // Domain Layer
-import { SearchImagesUseCase } from '@domain/usecases/SearchImagesUseCase';
+import { GetImagesByPageUseCase } from '@domain/usecases/GetImagesByPageUseCase';
 
 // Infrastructure Layer
 import { PixabayDataSource } from '@infrastructure/datasources/PixabayDataSource';
@@ -24,27 +24,38 @@ import { theme } from '@presentation/styles/theme';
 import { GlobalStyles } from '@presentation/styles/GlobalStyles';
 import { SearchBar } from '@presentation/components/SearchBar/SearchBar';
 import { ImageGrid } from '@presentation/components/ImageGrid/ImageGrid';
+import { Pagination } from '@presentation/components/Pagination/Pagination';
 
 // Infrastructure 레이어 초기화 (앱 시작 시 한 번만)
 const dataSource = new PixabayDataSource(env.get('PIXABAY_API_KEY'));
 const repository = new PixabayImageRepository(dataSource);
 
 // Domain 레이어 초기화
-const searchImagesUseCase = new SearchImagesUseCase(repository);
+const getImagesByPageUseCase = new GetImagesByPageUseCase(repository);
 
 /**
  * App 메인 컴포넌트
- * QueryClientProvider를 통해 React Query 통합
+ * QueryClientProvider를 통해 React Query + Pagination 통합
  */
 const AppContent = () => {
-  // 검색어 상태 (useState 사용)
+  // 검색어 및 페이지 상태 (useState 사용)
   const [query, setQuery] = useState('');
+  const [page, setPage] = useState(1);
 
-  // useImagesQuery 훅 사용 (React Query)
-  const { data: images = [], isLoading, error } = useImagesQuery(query, searchImagesUseCase);
+  // useImagesByPageQuery 훅 사용 (React Query + Pagination)
+  const { data: images = [], isLoading, error } = useImagesByPageQuery(
+    query,
+    page,
+    getImagesByPageUseCase
+  );
 
   const handleSearch = (newQuery: string) => {
     setQuery(newQuery);
+    setPage(1); // 새 검색 시 페이지를 1로 리셋
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
   };
 
   return (
@@ -74,6 +85,17 @@ const AppContent = () => {
         <main style={{ flex: 1 }}>
           <ImageGrid images={images} isLoading={isLoading} error={error ?? null} />
         </main>
+        {images.length > 0 && (
+          <footer style={{ flexShrink: 0 }}>
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
+              <Pagination
+                currentPage={page}
+                totalPages={5}
+                onPageChange={handlePageChange}
+              />
+            </div>
+          </footer>
+        )}
       </div>
     </ThemeProvider>
   );

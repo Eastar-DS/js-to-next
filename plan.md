@@ -755,14 +755,16 @@ Phase 2의 Clean Architecture를 유지하면서 **Zustand를 React Query로 교
 **목표:** 여기서 실제 브라우저에서 검색이 동작하는 것 확인!
 
 #### 3.5 Pagination 구현 (Red → Green → Refactor)
-- [ ] **Test 5**: Pagination 기능 테스트 (6 tests)
-  - [ ] useImagesQuery에 page 파라미터 추가
-  - [ ] Query Key에 page 포함 (`imageKeys.page(query, page)`)
-  - [ ] placeholderData 옵션 (이전 데이터 유지하며 로딩)
-  - [ ] Pagination 컴포넌트 연동
-  - [ ] 브라우저 테스트: 페이지 전환 동작 확인 ✅
+- [x] **Test 5**: Pagination 기능 테스트 (6 tests)
+  - [x] useImagesByPageQuery 새 훅 생성 (page 파라미터 포함)
+  - [x] Query Key에 page 포함 (`imageKeys.page(query, page)`)
+  - [x] placeholderData 옵션 (keepPreviousData 사용)
+  - [x] App.tsx에 page 상태 추가 및 Pagination 컴포넌트 연동
+  - [x] GetImagesByPageUseCase 사용
+  - [x] 브라우저 테스트: 페이지 전환 동작 확인 ✅
 
-**핵심 학습:** Query Key의 중요성 (page가 바뀌면 새 쿼리로 인식)
+**구현 파일:** `src/application/queries/useImagesByPageQuery.ts`, `src/App.tsx`
+**핵심 학습:** Query Key의 중요성 (page가 바뀌면 새 쿼리로 인식), keepPreviousData로 부드러운 UX
 
 #### 3.6 useImageSearch 커스텀 훅 (Red → Green → Refactor)
 - [ ] **Test 6**: useImageSearch 훅 리팩토링 (5 tests)
