@@ -22,3 +22,9 @@ export const createQueryClient = (): QueryClient =>
       },
     },
   });
+
+/**
+ * QueryClient 싱글톤 인스턴스
+ * 애플리케이션 전체에서 공유됩니다.
+ */
+export const queryClient = createQueryClient();

@@ -741,16 +741,17 @@ Phase 2의 Clean Architecture를 유지하면서 **Zustand를 React Query로 교
 **핵심 학습:** useQuery 제네릭, queryFn, Query Key, enabled 옵션
 
 #### 3.4 App.tsx 기본 구현 (조기 통합) ⭐
-- [ ] **Test 4**: App.tsx 기본 통합 테스트 (5 tests)
-  - [ ] `src/App.tsx` 수정
-  - [ ] QueryClientProvider 설정
-  - [ ] useState로 query, page 상태 관리
-  - [ ] useImagesQuery 훅 사용
-  - [ ] SearchBar 연동 (검색어 입력 → query state 변경)
-  - [ ] ImageGrid 연동 (data 표시)
-  - [ ] 브라우저 테스트: 기본 검색 기능 동작 확인 ✅
+- [x] **Test 4**: App.tsx 기본 통합 테스트 (5 tests)
+  - [x] `src/App.tsx` 수정
+  - [x] QueryClientProvider 설정
+  - [x] useState로 query 상태 관리 (page는 3.5에서 추가)
+  - [x] useImagesQuery 훅 사용
+  - [x] SearchBar 연동 (검색어 입력 → query state 변경)
+  - [x] ImageGrid 연동 (data 표시)
+  - [x] vite.config.ts에 path alias 설정 추가
+  - [x] 브라우저 테스트: 기본 검색 기능 동작 확인 ✅
 
-**구현 파일:** `src/App.tsx` (기본 버전)
+**구현 파일:** `src/App.tsx` (기본 버전), `vite.config.ts`
 **목표:** 여기서 실제 브라우저에서 검색이 동작하는 것 확인!
 
 #### 3.5 Pagination 구현 (Red → Green → Refactor)
