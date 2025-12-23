@@ -1,9 +1,10 @@
 /**
  * App 컴포넌트
- * Phase 3.6: React Query + useImageSearch 커스텀 훅
+ * Phase 3.7: React Query + useImageSearch + DevTools 완성
  */
 
 import { QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ThemeProvider } from 'styled-components';
 
 // Application Layer
@@ -88,11 +89,13 @@ const AppContent = () => {
 /**
  * App 루트 컴포넌트
  * QueryClientProvider로 React Query 제공
+ * ReactQueryDevtools로 쿼리 상태 모니터링
  */
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AppContent />
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 };

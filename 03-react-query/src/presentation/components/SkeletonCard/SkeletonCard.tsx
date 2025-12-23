@@ -16,7 +16,7 @@ import {
  * 이미지 로딩 중 표시되는 스켈레톤 UI
  */
 export const SkeletonCard = () => (
-  <SkeletonCardContainer aria-label="로딩 중" aria-busy="true">
+  <SkeletonCardContainer aria-label="로딩 중" aria-busy="true" data-testid="skeleton-card">
     <SkeletonImage data-testid="skeleton-image" />
     <SkeletonInfo data-testid="skeleton-info">
       <SkeletonLine width="60%" data-testid="skeleton-line-1" />
