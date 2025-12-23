@@ -11,7 +11,7 @@ import type { GetImagesByPageUseCase } from '@domain/usecases/GetImagesByPageUse
  * usePrefetch 반환 타입
  */
 export interface UsePrefetchReturn {
-  prefetchNextPage: (query: string, currentPage: number, totalPages?: number) => Promise<void>;
+  prefetchNextPage: (query: string, currentPage: number, totalPages?: number) => void;
 }
 
 /**
@@ -33,15 +33,18 @@ export const usePrefetch = (
   /**
    * 다음 페이지 prefetch 함수
    *
+   * 백그라운드에서 비동기로 실행됩니다 (await 사용 안 함).
+   * 메인 스레드를 블로킹하지 않고 즉시 반환합니다.
+   *
    * @param query - 검색어
    * @param currentPage - 현재 페이지
    * @param totalPages - 전체 페이지 수 (선택적, 기본값 5)
    */
-  const prefetchNextPage = async (
+  const prefetchNextPage = (
     query: string,
     currentPage: number,
     totalPages: number = 5
-  ): Promise<void> => {
+  ): void => {
     // 빈 검색어면 prefetch 안 함
     if (query.trim().length === 0) {
       return;
@@ -54,8 +57,8 @@ export const usePrefetch = (
       return;
     }
 
-    // 다음 페이지 prefetch
-    await queryClient.prefetchQuery({
+    // 다음 페이지 prefetch (백그라운드 실행, await 사용 안 함)
+    queryClient.prefetchQuery({
       queryKey: imageKeys.page(query, nextPage),
       queryFn: async () => {
         const result = await getImagesByPageUseCase.execute(query, nextPage);
@@ -68,6 +71,7 @@ export const usePrefetch = (
       },
       staleTime: 5 * 60 * 1000, // 5분
     });
+    // 즉시 반환, prefetch는 백그라운드에서 계속 실행됨
   };
 
   return {
