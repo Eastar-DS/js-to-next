@@ -767,15 +767,16 @@ Phase 2의 Clean Architecture를 유지하면서 **Zustand를 React Query로 교
 **핵심 학습:** Query Key의 중요성 (page가 바뀌면 새 쿼리로 인식), keepPreviousData로 부드러운 UX
 
 #### 3.6 useImageSearch 커스텀 훅 (Red → Green → Refactor)
-- [ ] **Test 6**: useImageSearch 훅 리팩토링 (5 tests)
-  - [ ] `src/application/hooks/useImageSearch.ts` 수정
-  - [ ] useState로 query, page 관리
-  - [ ] useImagesQuery 호출
-  - [ ] search 함수: query 변경 + page를 1로 리셋
-  - [ ] goToPage 함수: page 변경
-  - [ ] 디바운스 기능 유지 (useDebounce 또는 직접 구현)
+- [x] **Test 6**: useImageSearch 훅 구현 (5 tests)
+  - [x] `src/application/hooks/useImageSearch.ts` 생성
+  - [x] useState로 query, page 관리
+  - [x] useImagesByPageQuery 호출
+  - [x] search 함수: query 변경 + page를 1로 리셋
+  - [x] goToPage 함수: page 변경
+  - [x] App.tsx에 적용하여 코드 간소화
 
-**구현 파일:** `src/application/hooks/useImageSearch.ts` (수정)
+**구현 파일:** `src/application/hooks/useImageSearch.ts`, `src/App.tsx` (리팩토링)
+**핵심 학습:** 커스텀 훅으로 상태 관리 로직 캡슐화, App 컴포넌트 단순화
 
 #### 3.7 App.tsx 완성 (Red → Green → Refactor)
 - [ ] **Test 7**: App.tsx 최종 통합 테스트 (6 tests)

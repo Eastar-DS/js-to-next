@@ -1,15 +1,14 @@
 /**
  * App 컴포넌트
- * Phase 3.5: React Query + Pagination 통합
+ * Phase 3.6: React Query + useImageSearch 커스텀 훅
  */
 
-import { useState } from 'react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from 'styled-components';
 
 // Application Layer
 import { queryClient } from '@application/queryClient';
-import { useImagesByPageQuery } from '@application/queries/useImagesByPageQuery';
+import { useImageSearch } from '@application/hooks/useImageSearch';
 
 // Domain Layer
 import { GetImagesByPageUseCase } from '@domain/usecases/GetImagesByPageUseCase';
@@ -35,28 +34,13 @@ const getImagesByPageUseCase = new GetImagesByPageUseCase(repository);
 
 /**
  * App 메인 컴포넌트
- * QueryClientProvider를 통해 React Query + Pagination 통합
+ * QueryClientProvider를 통해 React Query + useImageSearch 커스텀 훅 통합
  */
 const AppContent = () => {
-  // 검색어 및 페이지 상태 (useState 사용)
-  const [query, setQuery] = useState('');
-  const [page, setPage] = useState(1);
-
-  // useImagesByPageQuery 훅 사용 (React Query + Pagination)
-  const { data: images = [], isLoading, error } = useImagesByPageQuery(
-    query,
-    page,
+  // useImageSearch 커스텀 훅 사용 (상태 관리 로직 캡슐화)
+  const { images, isLoading, error, currentPage, search, goToPage } = useImageSearch(
     getImagesByPageUseCase
   );
-
-  const handleSearch = (newQuery: string) => {
-    setQuery(newQuery);
-    setPage(1); // 새 검색 시 페이지를 1로 리셋
-  };
-
-  const handlePageChange = (newPage: number) => {
-    setPage(newPage);
-  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -80,7 +64,7 @@ const AppContent = () => {
           >
             Image Search App
           </h1>
-          <SearchBar onSearch={handleSearch} isLoading={isLoading} />
+          <SearchBar onSearch={search} isLoading={isLoading} />
         </header>
         <main style={{ flex: 1 }}>
           <ImageGrid images={images} isLoading={isLoading} error={error ?? null} />
@@ -89,9 +73,9 @@ const AppContent = () => {
           <footer style={{ flexShrink: 0 }}>
             <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
               <Pagination
-                currentPage={page}
+                currentPage={currentPage}
                 totalPages={5}
-                onPageChange={handlePageChange}
+                onPageChange={goToPage}
               />
             </div>
           </footer>
