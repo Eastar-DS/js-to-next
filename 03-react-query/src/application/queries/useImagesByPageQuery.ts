@@ -8,6 +8,7 @@ import type { UseQueryResult } from '@tanstack/react-query';
 import type { GetImagesByPageUseCase } from '@domain/usecases/GetImagesByPageUseCase';
 import type { Image } from '@domain/entities/Image';
 import { imageKeys } from './queryKeys';
+import { handleImageQueryResult } from './queryUtils';
 
 /**
  * 페이지네이션 이미지 검색 Query Hook
@@ -33,16 +34,8 @@ export const useImagesByPageQuery = (
 
     // Query Function: UseCase를 호출하여 데이터 가져오기
     queryFn: async () => {
-      // UseCase 실행
       const result = await getImagesByPageUseCase.execute(query, page);
-
-      // Result 타입 처리: success 분기
-      if (result.success) {
-        return result.data; // Image[] 반환
-      }
-
-      // 에러인 경우 throw
-      throw result.error;
+      return handleImageQueryResult(result);
     },
 
     // 옵션: 빈 검색어면 쿼리 실행 안 함

@@ -5,6 +5,8 @@
 
 import { useQueryClient } from '@tanstack/react-query';
 import { imageKeys } from '@application/queries/queryKeys';
+import { IMAGE_QUERY_OPTIONS } from '@application/queries/queryOptions';
+import { handleImageQueryResult } from '@application/queries/queryUtils';
 import type { GetImagesByPageUseCase } from '@domain/usecases/GetImagesByPageUseCase';
 
 /**
@@ -62,14 +64,9 @@ export const usePrefetch = (
       queryKey: imageKeys.page(query, nextPage),
       queryFn: async () => {
         const result = await getImagesByPageUseCase.execute(query, nextPage);
-
-        if (result.success) {
-          return result.data;
-        }
-
-        throw result.error;
+        return handleImageQueryResult(result);
       },
-      staleTime: 5 * 60 * 1000, // 5분
+      staleTime: IMAGE_QUERY_OPTIONS.staleTime,
     });
     // 즉시 반환, prefetch는 백그라운드에서 계속 실행됨
   };
