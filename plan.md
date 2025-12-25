@@ -1185,11 +1185,11 @@ API (entities) → React Query Hook (features) → UI (widgets/pages)
   - [x] JSON 자동 파싱
   - [x] Query params 자동 인코딩
 
-- [ ] **Test 2**: QueryClient 설정 테스트 (3 tests)
-  - [ ] `src/shared/api/queryClient.ts` 작성
-  - [ ] QueryClient 기본 옵션 (staleTime: 5분, gcTime: 10분, retry: 1)
-  - [ ] refetchOnWindowFocus: false
-  - [ ] QueryClient export
+- [x] **Test 2**: QueryClient 설정 테스트 (3 tests) ✅
+  - [x] `src/shared/api/queryClient.ts` 작성
+  - [x] QueryClient 기본 옵션 (staleTime: 5분, gcTime: 10분, retry: 1)
+  - [x] refetchOnWindowFocus: false
+  - [x] QueryClient export
 
 **4.1.2 공통 타입 정의**
 
