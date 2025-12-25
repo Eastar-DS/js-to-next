@@ -1177,13 +1177,13 @@ API (entities) → React Query Hook (features) → UI (widgets/pages)
 
 **4.1.1 API Client & React Query 설정**
 
-- [ ] **Test 1**: httpClient 기본 기능 테스트 (6 tests)
-  - [ ] `src/shared/api/httpClient.ts` 작성
-  - [ ] fetch 래퍼 함수 (get, post 메서드)
-  - [ ] 기본 URL 설정 (env 사용)
-  - [ ] 에러 핸들링 (NetworkError)
-  - [ ] JSON 자동 파싱
-  - [ ] Query params 자동 인코딩
+- [x] **Test 1**: httpClient 기본 기능 테스트 (6 tests) ✅
+  - [x] `src/shared/api/httpClient.ts` 작성
+  - [x] fetch 래퍼 함수 (get, post 메서드)
+  - [x] 기본 URL 설정 (env 사용 - src/shared/lib/env.ts)
+  - [x] 에러 핸들링 (NetworkError)
+  - [x] JSON 자동 파싱
+  - [x] Query params 자동 인코딩
 
 - [ ] **Test 2**: QueryClient 설정 테스트 (3 tests)
   - [ ] `src/shared/api/queryClient.ts` 작성
