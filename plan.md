@@ -1193,31 +1193,31 @@ API (entities) → React Query Hook (features) → UI (widgets/pages)
 
 **4.1.2 공통 타입 정의**
 
-- [ ] **Test 3**: 공통 타입 정의 테스트 (5 tests)
-  - [ ] `src/shared/lib/types.ts` 작성
-  - [ ] Result<T> 타입 (success/failure Discriminated Union)
-  - [ ] AsyncState<T> 타입 (data, isLoading, error)
-  - [ ] PaginationState 타입 (currentPage, totalPages)
-  - [ ] Nullable<T>, Optional<T> 타입 유틸리티
+- [x] **Test 3**: 공통 타입 정의 테스트 (10 tests) ✅
+  - [x] `src/shared/lib/types.ts` 작성
+  - [x] Result<T> 타입 (success/failure Discriminated Union)
+  - [x] AsyncState<T> 타입 (data, isLoading, error)
+  - [x] PaginationState 타입 (currentPage, totalPages)
+  - [x] Nullable<T>, Optional<T> 타입 유틸리티
 
 **4.1.3 유틸리티 함수**
 
-- [ ] **Test 4**: 유틸리티 함수 테스트 (4 tests)
-  - [ ] `src/shared/lib/utils.ts` 이미 shadcn이 생성 (cn 함수 포함)
-  - [ ] constants.ts 작성 (API_BASE_URL, ITEMS_PER_PAGE)
-  - [ ] env.ts 작성 (환경 변수 타입 안전하게 접근)
+- [x] **Test 4**: 유틸리티 함수 테스트 (6 tests) ✅
+  - [x] `src/shared/lib/utils.ts` 이미 shadcn이 생성 (cn 함수 포함)
+  - [x] constants.ts 작성 (ITEMS_PER_PAGE)
+  - [x] env.ts 작성 (API_BASE_URL, PIXABAY_API_KEY)
 
 **4.1.4 shadcn/ui 컴포넌트 검증**
 
-- [ ] **Test 5**: shadcn/ui 컴포넌트 렌더링 테스트 (5 tests)
-  - [ ] `src/shared/ui/button.tsx` (Setup에서 설치됨)
-  - [ ] Button variant 테스트 (default, destructive, outline, ghost)
-  - [ ] Button size 테스트 (default, sm, lg)
-  - [ ] Input 렌더링 테스트
-  - [ ] Card 렌더링 테스트
-  - [ ] Skeleton 렌더링 테스트
+- [x] **Test 5**: shadcn/ui 컴포넌트 렌더링 테스트 (9 tests) ✅
+  - [x] `src/shared/ui/button.tsx` (Setup에서 설치됨)
+  - [x] Button variant 테스트 (default, destructive, outline, ghost)
+  - [x] Button size 테스트 (sm, lg)
+  - [x] Input 렌더링 테스트
+  - [x] Card 렌더링 테스트
+  - [x] Skeleton 렌더링 테스트
 
-**예상 테스트 수: 약 23 tests**
+**Phase 4.1 완료! 총 34 tests 통과** ✅
 
 #### 4.2 Entities Layer - Image 엔티티 (Red → Green → Refactor)
 
