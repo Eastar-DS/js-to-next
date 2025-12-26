@@ -382,43 +382,43 @@ API (entities) → React Query Hook (features) → UI (widgets/pages)
 
 **4.3.1 search-images Feature**
 
-- [ ] **Test 11**: useImageSearch 훅 테스트 (8 tests)
-  - [ ] `src/features/search-images/hooks/useImageSearch.ts` 작성
-  - [ ] useQuery 사용 (React Query)
-  - [ ] Query Key: `['images', 'search', query]`
-  - [ ] queryFn에서 getImages 호출
-  - [ ] enabled: query.length > 0
-  - [ ] QueryClient 기본 설정 사용 (staleTime, gcTime)
-  - [ ] 반환: { data, isLoading, error, refetch }
+- [x] **Test 11**: useImageSearch 훅 테스트 (8 tests) ✅
+  - [x] `src/features/search-images/hooks/useImageSearch.ts` 작성
+  - [x] useQuery 사용 (React Query)
+  - [x] Query Key: `['images', 'search', query]`
+  - [x] queryFn에서 getImages 호출
+  - [x] enabled: query.length > 0
+  - [x] QueryClient 기본 설정 사용 (staleTime, gcTime)
+  - [x] 반환: { data, isLoading, error, refetch }
 
-- [ ] **Test 12**: SearchForm UI 컴포넌트 테스트 (9 tests)
-  - [ ] `src/features/search-images/ui/SearchForm.tsx` 작성
-  - [ ] shadcn Input + Button 사용
-  - [ ] onSearch(query: string) callback props
-  - [ ] 폼 제출 핸들러
-  - [ ] 검색어 상태 관리 (useState)
-  - [ ] 빈 검색어 방어
-  - [ ] Enter 키 지원
+- [x] **Test 12**: SearchForm UI 컴포넌트 테스트 (9 tests) ✅
+  - [x] `src/features/search-images/ui/SearchForm.tsx` 작성
+  - [x] shadcn Input + Button 사용
+  - [x] onSearch(query: string) callback props
+  - [x] 폼 제출 핸들러
+  - [x] 검색어 상태 관리 (useState)
+  - [x] 빈 검색어 방어
+  - [x] Enter 키 지원
 
 **4.3.2 paginate-images Feature**
 
-- [ ] **Test 13**: useImagesByPage 훅 테스트 (8 tests)
-  - [ ] `src/features/paginate-images/hooks/useImagesByPage.ts` 작성
-  - [ ] useQuery<Image[], Error>
-  - [ ] Query Key: `['images', 'page', query, page]`
-  - [ ] queryFn에서 getImagesByPage 호출
-  - [ ] enabled: query.length > 0
-  - [ ] placeholderData: keepPreviousData (부드러운 페이지 전환)
+- [x] **Test 13**: useImagesByPage 훅 테스트 (8 tests) ✅
+  - [x] `src/features/paginate-images/hooks/useImagesByPage.ts` 작성
+  - [x] useQuery<Image[], Error>
+  - [x] Query Key: `['images', 'page', query, page]`
+  - [x] queryFn에서 getImagesByPage 호출
+  - [x] enabled: query.length > 0
+  - [x] placeholderData: keepPreviousData (부드러운 페이지 전환)
 
-- [ ] **Test 14**: Pagination UI 컴포넌트 테스트 (8 tests)
-  - [ ] `src/features/paginate-images/ui/Pagination.tsx` 작성
-  - [ ] shadcn Button 사용
-  - [ ] currentPage, totalPages, onPageChange props
-  - [ ] 이전/다음 버튼
-  - [ ] 현재 페이지 표시
-  - [ ] 첫/마지막 페이지 버튼 비활성화
+- [x] **Test 14**: Pagination UI 컴포넌트 테스트 (8 tests) ✅
+  - [x] `src/features/paginate-images/ui/Pagination.tsx` 작성
+  - [x] shadcn Button 사용
+  - [x] currentPage, totalPages, onPageChange props
+  - [x] 이전/다음 버튼
+  - [x] 현재 페이지 표시
+  - [x] 첫/마지막 페이지 버튼 비활성화
 
-**예상 테스트 수: 약 33 tests (누적: 95)**
+**Phase 4.3 완료! 총 33 tests 통과** ✅
 
 #### 4.4 Widgets Layer - 복합 UI 블록 (Red → Green → Refactor)
 
