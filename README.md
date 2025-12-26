@@ -408,17 +408,341 @@ npm run build       # 프로덕션 빌드
 
 ---
 
+## ✅ Phase 3: React + React Query + TypeScript + Styled Components
+
+> **목표**: Clean Architecture + React Query - 서버 상태 관리 패턴 마스터
+
+### 🎯 학습 포인트
+- React Query를 활용한 서버 상태 관리
+- Client State vs Server State 분리
+- Query Key 타입 시스템 구축
+- 캐싱 전략 (staleTime, cacheTime, refetch)
+- Clean Architecture에서 React Query 통합
+
+### 🏗️ Clean Architecture + React Query 구조
+```
+03-react-query/
+├── src/
+│   ├── domain/                    # 도메인 레이어 (변경 없음)
+│   │   ├── entities/
+│   │   │   ├── Image.ts
+│   │   │   └── types.ts
+│   │   ├── repositories/
+│   │   │   └── ImageRepository.ts
+│   │   └── usecases/
+│   │       ├── SearchImages.ts
+│   │       └── GetImagesByPage.ts
+│   │
+│   ├── infrastructure/            # 인프라 레이어 (변경 없음)
+│   │   ├── datasources/
+│   │   ├── mappers/
+│   │   └── repositories/
+│   │
+│   ├── application/               # 애플리케이션 레이어 (React Query로 전환)
+│   │   ├── queries/
+│   │   │   ├── keys.ts           # Query Key 팩토리
+│   │   │   ├── useSearchImages.ts
+│   │   │   └── useImagesByPage.ts
+│   │   └── hooks/
+│   │       └── useImageSearch.ts # 비즈니스 로직 훅
+│   │
+│   └── presentation/              # 프레젠테이션 레이어
+│       ├── components/
+│       │   ├── SearchBar/
+│       │   ├── ImageGrid/
+│       │   ├── ImageCard/
+│       │   ├── SkeletonCard/
+│       │   ├── Pagination/
+│       │   └── ErrorMessage/
+│       └── pages/
+│           └── SearchPage.tsx
+│
+└── __tests__/                     # 192개 테스트
+```
+
+### 📦 기술 스택
+- **프레임워크**: React 19.2.0
+- **언어**: TypeScript 5.9.3
+- **서버 상태 관리**: React Query (TanStack Query) 5.66.4
+- **스타일링**: Styled Components 6.1.19
+- **빌드**: Vite 7.2.4
+- **테스트**: Jest 30.2.0, React Testing Library 16.3.0
+
+### 🔑 핵심 구현
+
+#### 1. Query Key 타입 시스템
+```typescript
+// Query Key 팩토리 (src/application/queries/keys.ts)
+export const imageKeys = {
+  all: ['images'] as const,
+  searches: () => [...imageKeys.all, 'search'] as const,
+  search: (query: string) => [...imageKeys.searches(), query] as const,
+  page: (query: string, page: number) =>
+    [...imageKeys.search(query), 'page', page] as const,
+} as const;
+
+// 타입 안전한 Query Key
+type ImageQueryKey = ReturnType<typeof imageKeys.search>;
+```
+
+#### 2. React Query 커스텀 훅
+```typescript
+// useSearchImages.ts - 검색 쿼리
+export const useSearchImages = (
+  query: string,
+  searchImagesUseCase: SearchImagesUseCase
+) => {
+  return useQuery({
+    queryKey: imageKeys.search(query),
+    queryFn: async () => {
+      const result = await searchImagesUseCase.execute(query);
+      if (!result.success) {
+        throw result.error;
+      }
+      return result.data;
+    },
+    enabled: !!query && query.length > 0,
+    staleTime: 5 * 60 * 1000,  // 5분
+    gcTime: 10 * 60 * 1000,     // 10분
+  });
+};
+```
+
+#### 3. 페이지네이션 쿼리
+```typescript
+// useImagesByPage.ts - 페이지네이션
+export const useImagesByPage = (
+  query: string,
+  page: number,
+  getImagesByPageUseCase: GetImagesByPageUseCase
+) => {
+  return useQuery({
+    queryKey: imageKeys.page(query, page),
+    queryFn: async () => {
+      const result = await getImagesByPageUseCase.execute(query, page);
+      if (!result.success) {
+        throw result.error;
+      }
+      return result.data;
+    },
+    enabled: !!query && page > 0,
+    keepPreviousData: true,  // 페이지 전환 시 이전 데이터 유지
+  });
+};
+```
+
+#### 4. 비즈니스 로직 훅
+```typescript
+// useImageSearch.ts - UI 로직 분리
+export const useImageSearch = () => {
+  const [query, setQuery] = useState('');
+  const [page, setPage] = useState(1);
+
+  const { data: images, isLoading, error } = useImagesByPage(
+    query,
+    page,
+    getImagesByPageUseCase
+  );
+
+  const handleSearch = (newQuery: string) => {
+    setQuery(newQuery);
+    setPage(1);  // 새 검색 시 페이지 리셋
+  };
+
+  return {
+    images,
+    isLoading,
+    error,
+    query,
+    page,
+    handleSearch,
+    setPage,
+  };
+};
+```
+
+### 🔄 Zustand vs React Query 비교
+
+#### Phase 2 (Zustand)
+```typescript
+// Client State와 Server State가 혼재
+const useImageStore = create<ImageStore>((set) => ({
+  images: [],           // Server State
+  isLoading: false,     // Server State
+  error: null,          // Server State
+  currentPage: 1,       // Client State
+  query: '',            // Client State
+
+  searchImages: async (query) => {
+    // 수동 로딩/에러 상태 관리
+    set({ isLoading: true, error: null });
+    const result = await searchImagesUseCase.execute(query);
+    if (result.success) {
+      set({ images: result.data, isLoading: false });
+    }
+  },
+}));
+```
+
+#### Phase 3 (React Query)
+```typescript
+// Server State - React Query가 자동 관리
+const { data: images, isLoading, error } = useQuery({
+  queryKey: imageKeys.search(query),
+  queryFn: () => searchImagesUseCase.execute(query),
+  staleTime: 5 * 60 * 1000,
+});
+
+// Client State - useState로 분리
+const [query, setQuery] = useState('');
+const [page, setPage] = useState(1);
+```
+
+### 📊 테스트 결과
+- ✅ **192개 테스트 모두 통과**
+- 레이어별 테스트 커버리지:
+  - Domain Layer: 31 tests
+  - Infrastructure Layer: 55 tests
+  - Application Layer: 24 tests (Query 훅 테스트 추가)
+  - Presentation Layer: 67 tests
+  - Integration: 15 tests
+
+### 🚀 실행 방법
+```bash
+cd 03-react-query
+
+# .env 파일 설정
+echo "VITE_PIXABAY_API_KEY=your_api_key_here" > .env
+
+# 설치 및 실행
+npm install
+npm run dev         # 개발 서버 (http://localhost:5173)
+npm test            # 테스트 실행
+npm run build       # 프로덕션 빌드
+```
+
+### 📖 주요 학습 내용
+
+#### 1. Server State vs Client State 분리
+- **Server State**: API에서 가져온 데이터 (React Query)
+  - 캐싱, 동기화, 리페칭이 필요
+  - 예: images, isLoading, error
+- **Client State**: UI 상태 (useState/useReducer)
+  - 로컬에서만 관리
+  - 예: query, currentPage, modalOpen
+
+#### 2. React Query 핵심 개념
+- **Query Key**: 캐시 키 역할, 타입 안전하게 관리
+- **staleTime**: 데이터가 fresh한 시간 (5분)
+- **gcTime**: 캐시에 보관하는 시간 (10분)
+- **enabled**: 조건부 쿼리 실행
+- **keepPreviousData**: 페이지네이션 UX 개선
+
+#### 3. 캐싱 전략
+```typescript
+// 검색 결과 캐싱
+queryKey: ['images', 'search', 'cats']
+staleTime: 5분  // 5분간은 재요청 안함
+gcTime: 10분    // 10분간 캐시 유지
+
+// 페이지별 독립 캐싱
+queryKey: ['images', 'search', 'cats', 'page', 1]
+queryKey: ['images', 'search', 'cats', 'page', 2]
+```
+
+#### 4. Clean Architecture 통합
+- **Domain/Infrastructure**: 변경 없음 (UseCase 그대로 사용)
+- **Application**: Zustand → React Query로 전환
+- **Presentation**: Props drilling 감소, 자동 리렌더링
+
+#### 5. 성능 최적화
+- **자동 캐싱**: 동일한 쿼리는 캐시에서 반환
+- **Background Refetch**: 백그라운드에서 자동 동기화
+- **Window Focus Refetch**: 탭 포커스 시 최신 데이터 유지
+- **Retry Logic**: 실패 시 자동 재시도 (exponential backoff)
+
+### 🎯 Phase 2 대비 개선사항
+
+#### 1. 코드 간소화
+```typescript
+// Before (Zustand) - 50줄
+const useImageStore = create<ImageStore>((set) => ({
+  images: [],
+  isLoading: false,
+  error: null,
+  searchImages: async (query) => {
+    set({ isLoading: true, error: null });
+    try {
+      const result = await searchImagesUseCase.execute(query);
+      if (result.success) {
+        set({ images: result.data, isLoading: false });
+      } else {
+        set({ error: result.error, isLoading: false });
+      }
+    } catch (error) {
+      set({ error, isLoading: false });
+    }
+  },
+}));
+
+// After (React Query) - 15줄
+const { data: images, isLoading, error } = useQuery({
+  queryKey: imageKeys.search(query),
+  queryFn: async () => {
+    const result = await searchImagesUseCase.execute(query);
+    if (!result.success) throw result.error;
+    return result.data;
+  },
+  enabled: !!query,
+});
+```
+
+#### 2. 자동 캐싱
+- Zustand: 수동으로 캐시 로직 구현 필요
+- React Query: 자동 캐싱, invalidation, refetch
+
+#### 3. 로딩 상태 관리
+- Zustand: 수동으로 isLoading 상태 설정
+- React Query: 자동으로 isLoading, isFetching 제공
+
+#### 4. 에러 처리
+- Zustand: try-catch로 수동 처리
+- React Query: 자동 에러 캐치 및 재시도
+
+### 🔍 아키텍처 다이어그램
+```
+┌─────────────────────────────────────────┐
+│         Presentation Layer              │
+│  (React Components, Styled Components)  │
+└───────────────┬─────────────────────────┘
+                │ uses
+┌───────────────▼─────────────────────────┐
+│        Application Layer                │
+│   (React Query Hooks, Custom Hooks)     │
+│   - useSearchImages (Query)             │
+│   - useImagesByPage (Query)             │
+│   - useImageSearch (Business Logic)     │
+└───────────────┬─────────────────────────┘
+                │ depends on
+┌───────────────▼─────────────────────────┐
+│           Domain Layer                  │
+│  (Entities, UseCases, Interfaces)       │
+└───────────────▲─────────────────────────┘
+                │ implemented by
+┌───────────────┴─────────────────────────┐
+│       Infrastructure Layer              │
+│ (API Client, Repository, Mappers)       │
+└─────────────────────────────────────────┘
+```
+
+---
+
 ## 🔜 다음 단계
 
-### Phase 3: React Query (진행 예정)
-- React Query를 활용한 서버 상태 관리
-- Query Key 타입 시스템
-- 캐싱 전략 및 Optimistic Updates
-
-### Phase 4: Next.js + Tailwind (진행 예정)
+### Phase 4: Next.js + Tailwind + FSD (진행 중)
 - Feature-Sliced Design 아키텍처
-- Server/Client Component 분리
-- SSR 및 성능 최적화
+- Tailwind CSS 유틸리티 우선 접근
+- React Query + FSD 통합
 
 ### Phase 5: Next.js + Styled Components (진행 예정)
 - FSD + Styled Components 통합
@@ -434,7 +758,9 @@ npm run build       # 프로덕션 빌드
 - [React 19](https://react.dev/)
 - [TypeScript](https://www.typescriptlang.org/)
 - [Zustand](https://zustand-demo.pmnd.rs/)
+- [React Query (TanStack Query)](https://tanstack.com/query/latest)
 - [Styled Components](https://styled-components.com/)
+- [Tailwind CSS](https://tailwindcss.com/)
 
 ### 아키텍처
 - [Clean Architecture - Robert C. Martin](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
