@@ -1,8 +1,8 @@
-// Types
-export type { Image, ImageDTO, PixabayResponse } from './model/types';
+// Types (ImageDTO는 내부 구현 detail이므로 export하지 않음)
+export type { Image, PixabayResponse } from './model/types';
 
 // API
-export * as imageApi from './api/imageApi';
+export { getImages, getImagesByPage } from './api/imageApi';
 
 // UI
 export { ImageCard } from './ui/ImageCard';

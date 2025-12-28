@@ -422,54 +422,56 @@ API (entities) → React Query Hook (features) → UI (widgets/pages)
 
 #### 4.4 Widgets Layer - 복합 UI 블록 (Red → Green → Refactor)
 
-- [ ] **Test 15**: ImageGallery 위젯 테스트 (8 tests)
-  - [ ] `src/widgets/image-gallery/ui/ImageGallery.tsx` 작성
-  - [ ] Features (useImagesByPage) + Entities (ImageGrid) 조합
-  - [ ] query, page props 받기
-  - [ ] 로딩 상태: ImageGrid에 Skeleton 전달
-  - [ ] 에러 상태: shadcn Alert 사용
-  - [ ] 성공 상태: ImageGrid에 data 전달
-  - [ ] Public API: `src/widgets/image-gallery/index.ts`
+- [x] **Test 15**: ImageGallery 위젯 테스트 (8 tests) ✅
+  - [x] `src/widgets/image-gallery/ui/ImageGallery.tsx` 작성
+  - [x] Features (useImagesByPage) + Entities (ImageGrid) 조합
+  - [x] query, page props 받기
+  - [x] 로딩 상태: ImageGrid에 Skeleton 전달
+  - [x] 에러 상태: shadcn Alert 사용
+  - [x] 성공 상태: ImageGrid에 data 전달
+  - [x] Public API: `src/widgets/image-gallery/index.ts`
 
-**예상 테스트 수: 약 8 tests (누적: 103)**
+**Phase 4.4 완료! 총 8 tests 통과** ✅
 
 #### 4.5 Pages Layer - 전체 페이지 (Red → Green → Refactor)
 
-- [ ] **Test 16**: SearchPage 테스트 (7 tests)
-  - [ ] `src/pages/search/ui/SearchPage.tsx` 작성
-  - [ ] SearchForm (features) + ImageGallery (widgets) + Pagination (features) 조합
-  - [ ] query, page 상태 관리 (useState)
-  - [ ] 검색 핸들러: query 변경 + page를 1로 리셋
-  - [ ] 페이지 변경 핸들러: page 변경
-  - [ ] Tailwind로 레이아웃 (Flexbox)
-  - [ ] Public API: `src/pages/search/index.ts`
+- [x] **Test 16**: SearchPage 테스트 (7 tests) ✅
+  - [x] `src/pages/search/ui/SearchPage.tsx` 작성
+  - [x] SearchForm (features) + ImageGallery (widgets) + Pagination (features) 조합
+  - [x] query, page 상태 관리 (useState)
+  - [x] 검색 핸들러: query 변경 + page를 1로 리셋
+  - [x] 페이지 변경 핸들러: page 변경
+  - [x] Tailwind로 레이아웃 (Flexbox)
+  - [x] Public API: `src/pages/search/index.ts`
 
-**예상 테스트 수: 약 7 tests (누적: 110)**
+**Phase 4.5 완료! 총 7 tests 통과** ✅
 
 #### 4.6 App Layer - 앱 초기화 (Red → Green → Refactor)
 
-- [ ] **Test 17**: QueryProvider 테스트 (3 tests)
-  - [ ] `src/app/providers/QueryProvider.tsx` 작성
-  - [ ] QueryClientProvider 설정
-  - [ ] React Query DevTools 추가 (개발 환경만)
-  - [ ] children props 렌더링
+- [x] **Test 17**: QueryProvider 테스트 (3 tests) ✅
+  - [x] `src/app/providers/QueryProvider.tsx` 작성
+  - [x] QueryClientProvider 설정
+  - [x] React Query DevTools 추가 (개발 환경만)
+  - [x] children props 렌더링
 
-- [ ] **Test 18**: App.tsx 테스트 (6 tests)
-  - [ ] `src/app/App.tsx` 작성
-  - [ ] QueryProvider로 래핑
-  - [ ] SearchPage import (from @/pages/search)
-  - [ ] Tailwind 스타일 적용 (globals.css import)
-  - [ ] 전역 레이아웃 (header, main, footer 구조)
+- [x] **Test 18**: App.tsx 테스트 (6 tests) ✅
+  - [x] `src/app/App.tsx` 작성
+  - [x] QueryProvider로 래핑
+  - [x] SearchPage import (from @/pages/search)
+  - [x] Tailwind 스타일 적용 (globals.css import)
+  - [x] 전역 레이아웃 (header, main, footer 구조)
 
-**예상 테스트 수: 약 9 tests (누적: 119)**
+**Phase 4.6 완료! 총 9 tests 통과** ✅
 
 #### 4.7 FSD 검증 및 Public API 테스트 (Red → Green → Refactor)
 
-- [ ] **Test 19**: FSD 레이어 의존성 규칙 검증 (5 tests)
-  - [ ] 상위 레이어만 하위 레이어 import 확인
-  - [ ] 같은 레이어 간 import 금지 확인
-  - [ ] Public API만 사용하는지 확인 (직접 internal import 금지)
-  - [ ] ESLint 규칙 추가 고려 (import/no-restricted-paths)
+- [x] **Test 19**: FSD 레이어 의존성 규칙 검증 (5 tests) ✅
+  - [x] 상위 레이어만 하위 레이어 import 확인
+  - [x] 같은 레이어 간 import 금지 확인 (같은 slice 내부는 허용)
+  - [x] Public API만 사용하는지 확인 (직접 internal import 금지)
+  - [x] ESLint 규칙 추가 고려 (import/no-restricted-paths)
+
+**Phase 4.7 완료! 총 5 tests 통과** ✅
 
 - [ ] **Test 20**: Public API 완전성 검증 (5 tests)
   - [ ] 각 레이어의 index.ts가 필요한 것만 export하는지 확인

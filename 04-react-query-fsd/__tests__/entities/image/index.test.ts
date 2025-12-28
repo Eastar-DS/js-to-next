@@ -15,10 +15,9 @@ describe('entities/image Public API', () => {
     expect(mockImage).toBeDefined();
   });
 
-  it('imageApi를 export 해야 한다', () => {
-    expect(imageEntity).toHaveProperty('imageApi');
-    expect(imageEntity.imageApi).toHaveProperty('getImages');
-    expect(imageEntity.imageApi).toHaveProperty('getImagesByPage');
+  it('API 함수들을 export 해야 한다', () => {
+    expect(imageEntity).toHaveProperty('getImages');
+    expect(imageEntity).toHaveProperty('getImagesByPage');
   });
 
   it('ImageCard 컴포넌트를 export 해야 한다', () => {
