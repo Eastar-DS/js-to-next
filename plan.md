@@ -176,7 +176,7 @@ Phase 4의 FSD 구조를 Next.js 16으로 확장하고, **toFSD.md의 대규모 
 ├── tailwind.config.ts                 # Tailwind 설정
 ├── next.config.mjs                    # Next.js 설정 (Turbopack)
 ├── tsconfig.json                      # TypeScript 설정
-├── .eslintrc.json                     # ✅ Airbnb TypeScript (Phase 4 기반)
+├── eslint.config.js                   # ✅ ESLint 9 Flat Config (Airbnb + Next.js)
 ├── .prettierrc.json                   # ✅ Prettier (Phase 4와 동일)
 ├── jest.config.ts                     # ✅ Next.js + FSD path alias
 └── package.json
@@ -265,49 +265,130 @@ Client-side React Query (useQuery)
   - [ ] jest.setup.ts 생성
   - [ ] __tests__/ 폴더 구조 생성
 
-- [ ] **Setup 4**: ESLint + Prettier 설정 (Airbnb TypeScript 기반)
+- [ ] **Setup 4**: ESLint + Prettier 설정 (Flat Config + Airbnb TypeScript)
   - [ ] **참고**: [`airbnb-style-guide/ESLINT_SETUP_GUIDE.md`](./airbnb-style-guide/ESLINT_SETUP_GUIDE.md) 가이드 따라 설정
+  - [ ] **⚠️ 중요**: ESLint 9 Flat Config 방식 사용 (`eslint.config.js`)
   - [ ] ESLint 관련 패키지 설치:
     ```bash
-    npm install -D eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
-    npm install -D eslint-config-airbnb-typescript
-    npm install -D eslint-plugin-import eslint-plugin-jsx-a11y eslint-plugin-react eslint-plugin-react-hooks
+    # ESLint 9 + TypeScript
+    npm install -D eslint@9 globals typescript-eslint
+
+    # React 플러그인
+    npm install -D eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-jsx-a11y
+
+    # FlatCompat (Airbnb 호환 레이어)
+    npm install -D @eslint/eslintrc
+
+    # Airbnb Config (레거시 형식)
+    npm install -D eslint-config-airbnb eslint-config-airbnb-typescript
+    npm install -D eslint-plugin-import
+
+    # Next.js 플러그인
+    npm install -D @next/eslint-plugin-next
+
+    # Prettier 통합
     npm install -D eslint-config-prettier eslint-plugin-prettier prettier
     ```
-  - [ ] `.eslintrc.json` 생성 (Next.js + Airbnb TypeScript):
-    ```json
-    {
-      "extends": [
-        "next/core-web-vitals",
-        "airbnb",
-        "airbnb-typescript",
-        "airbnb/hooks",
-        "plugin:@typescript-eslint/recommended",
-        "plugin:react/recommended",
-        "plugin:react-hooks/recommended",
-        "plugin:jsx-a11y/recommended",
-        "plugin:prettier/recommended"
-      ],
-      "parser": "@typescript-eslint/parser",
-      "parserOptions": {
-        "ecmaVersion": "latest",
-        "sourceType": "module",
-        "project": "./tsconfig.json",
-        "ecmaFeatures": {
-          "jsx": true
-        }
+  - [ ] `eslint.config.js` 생성 (Flat Config + Next.js + Airbnb):
+    ```javascript
+    import js from '@eslint/js';
+    import globals from 'globals';
+    import tseslint from 'typescript-eslint';
+    import react from 'eslint-plugin-react';
+    import reactHooks from 'eslint-plugin-react-hooks';
+    import jsxA11y from 'eslint-plugin-jsx-a11y';
+    import nextPlugin from '@next/eslint-plugin-next';
+    import { FlatCompat } from '@eslint/eslintrc';
+    import { fileURLToPath } from 'url';
+    import path from 'path';
+    import prettierConfig from 'eslint-config-prettier';
+
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+
+    const compat = new FlatCompat({
+      baseDirectory: __dirname,
+    });
+
+    export default tseslint.config(
+      // 1. Ignore 패턴
+      {
+        ignores: [
+          '.next/**',
+          'out/**',
+          'build/**',
+          'dist/**',
+          'node_modules/**',
+          '*.config.js',
+          '*.config.mjs',
+          '*.config.ts',
+        ],
       },
-      "rules": {
-        "react/function-component-definition": ["error", {
-          "namedComponents": "arrow-function"
-        }],
-        "@typescript-eslint/no-unused-vars": ["error", {
-          "argsIgnorePattern": "^_"
-        }],
-        "react/react-in-jsx-scope": "off",
-        "import/prefer-default-export": "off"
+
+      // 2. TypeScript + React 파일 설정
+      {
+        files: ['**/*.{ts,tsx}'],
+        extends: [
+          js.configs.recommended,
+          ...tseslint.configs.recommended,
+          ...compat.extends(
+            'airbnb',
+            'airbnb-typescript',
+            'airbnb/hooks'
+          ),
+          prettierConfig,
+        ],
+        languageOptions: {
+          ecmaVersion: 'latest',
+          sourceType: 'module',
+          globals: {
+            ...globals.browser,
+            ...globals.node,
+          },
+          parser: tseslint.parser,
+          parserOptions: {
+            ecmaFeatures: { jsx: true },
+            project: './tsconfig.json',
+          },
+        },
+        plugins: {
+          '@typescript-eslint': tseslint.plugin,
+          react,
+          'react-hooks': reactHooks,
+          'jsx-a11y': jsxA11y,
+          '@next/next': nextPlugin,
+        },
+        settings: {
+          react: {
+            version: 'detect',
+          },
+        },
+        rules: {
+          // Next.js 규칙
+          '@next/next/no-html-link-for-pages': 'error',
+
+          // React 규칙
+          'react/function-component-definition': ['error', {
+            namedComponents: 'arrow-function',
+          }],
+          'react/react-in-jsx-scope': 'off',
+          'react/prop-types': 'off',
+
+          // TypeScript 규칙
+          '@typescript-eslint/no-unused-vars': ['error', {
+            argsIgnorePattern: '^_',
+            varsIgnorePattern: '^_',
+          }],
+
+          // Import 규칙
+          'import/prefer-default-export': 'off',
+          'import/extensions': ['error', 'ignorePackages', {
+            ts: 'never',
+            tsx: 'never',
+          }],
+        },
       }
-    }
+    );
     ```
   - [ ] `.prettierrc.json` 생성:
     ```json
@@ -318,30 +399,24 @@ Client-side React Query (useQuery)
       "printWidth": 80,
       "tabWidth": 2,
       "useTabs": false,
-      "arrowParens": "always"
+      "arrowParens": "always",
+      "bracketSpacing": true,
+      "endOfLine": "lf"
     }
-    ```
-  - [ ] `.eslintignore` 생성:
-    ```
-    node_modules/
-    .next/
-    out/
-    build/
-    dist/
-    *.config.js
-    *.config.mjs
     ```
   - [ ] package.json에 스크립트 추가:
     ```json
     {
       "scripts": {
-        "lint": "eslint . --ext .ts,.tsx --max-warnings 0",
-        "lint:fix": "eslint . --ext .ts,.tsx --fix",
+        "lint": "eslint . --max-warnings 0",
+        "lint:fix": "eslint . --fix",
+        "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
         "type-check": "tsc --noEmit"
       }
     }
     ```
   - [ ] Lint 실행 확인: `npm run lint`
+  - [ ] Prettier 실행 확인: `npm run format`
   - [ ] Type check 확인: `npm run type-check`
 
 - [ ] **Setup 5**: TypeScript Path Aliases (FSD + Next.js)
@@ -767,40 +842,48 @@ src/
 | **API 호출** | Client에서만 | Server/Client 모두 |
 | **확장성** | 소규모 앱 | 대규모 웹사이트 |
 
-### Phase 3-4 Lint 설정 보존 확인
+### Phase 3-4 Lint 설정에서 Phase 5로 발전
 
-**Phase 5에서 가져올 설정:**
+**Phase 5의 주요 변경사항:**
 
-1. **.eslintrc.json** (Next.js 규칙 추가):
-   ```json
-   {
-     "extends": [
-       "next/core-web-vitals",
-       "airbnb",
-       "airbnb-typescript",
-       "airbnb/hooks",
-       "plugin:@typescript-eslint/recommended",
-       "plugin:react/recommended",
-       "plugin:react-hooks/recommended",
-       "plugin:jsx-a11y/recommended",
-       "plugin:prettier/recommended"
-     ],
-     "parserOptions": {
-       "project": "./tsconfig.json"
-     },
-     "rules": {
-       "react/function-component-definition": ["error", {
-         "namedComponents": "arrow-function"
-       }],
-       "@typescript-eslint/no-unused-vars": ["error", {
-         "argsIgnorePattern": "^_"
-       }],
-       "react/react-in-jsx-scope": "off"
+1. **eslint.config.js** (Flat Config 방식):
+   - Phase 4는 `eslint.config.js` (Flat Config) 사용
+   - Phase 5는 **동일한 Flat Config 방식** + Next.js 플러그인 추가
+   - `.eslintrc.json` (구버전) 사용 안 함
+
+2. **Phase 4 → Phase 5 차이점**:
+   ```javascript
+   // Phase 4: Vite + React
+   export default tseslint.config(
+     {
+       files: ['**/*.{ts,tsx}'],
+       extends: [
+         js.configs.recommended,
+         ...tseslint.configs.recommended,
+         ...compat.extends('airbnb', 'airbnb-typescript', 'airbnb/hooks'),
+       ],
      }
-   }
+   );
+
+   // Phase 5: Next.js + React (추가 부분)
+   export default tseslint.config(
+     {
+       ignores: ['.next/**', 'out/**'],  // ← Next.js 빌드 폴더
+       files: ['**/*.{ts,tsx}'],
+       extends: [
+         // Phase 4와 동일
+       ],
+       plugins: {
+         '@next/next': nextPlugin,  // ← Next.js 플러그인
+       },
+       rules: {
+         '@next/next/no-html-link-for-pages': 'error',  // ← Next.js 규칙
+       },
+     }
+   );
    ```
 
-2. **.prettierrc.json** (그대로):
+3. **.prettierrc.json** (Phase 4와 동일):
    ```json
    {
      "semi": true,
