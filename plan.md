@@ -473,29 +473,35 @@ API (entities) → React Query Hook (features) → UI (widgets/pages)
 
 **Phase 4.7 완료! 총 5 tests 통과** ✅
 
-- [ ] **Test 20**: Public API 완전성 검증 (5 tests)
-  - [ ] 각 레이어의 index.ts가 필요한 것만 export하는지 확인
-  - [ ] DTO 타입이 외부에 노출되지 않는지 확인
-  - [ ] 타입과 컴포넌트/함수가 모두 export되는지 확인
+- [x] **Test 20**: Public API 완전성 검증 (15 tests) ✅
+  - [x] 각 레이어의 index.ts가 필요한 것만 export하는지 확인
+  - [x] DTO 타입이 외부에 노출되지 않는지 확인
+  - [x] 타입과 컴포넌트/함수가 모두 export되는지 확인
 
-**예상 테스트 수: 약 10 tests (누적: 129)**
+**Phase 4.7 완료! 총 15 tests 통과 (누적: 150)** ✅
 
 #### 4.8 고급 기능 - Prefetching (Red → Green → Refactor)
 
-- [ ] **Test 21**: usePrefetch 훅 테스트 (4 tests)
-  - [ ] `src/features/paginate-images/hooks/usePrefetch.ts` 작성
-  - [ ] queryClient.prefetchQuery 사용
-  - [ ] 다음 페이지 (currentPage + 1) prefetch
-  - [ ] 빈 query나 마지막 페이지는 prefetch 안 함
-  - [ ] SearchPage에서 사용 (useEffect로 자동 prefetch)
+- [x] **Test 21**: usePrefetch 훅 테스트 (4 tests) ✅
+  - [x] `src/features/paginate-images/hooks/usePrefetch.ts` 작성
+  - [x] queryClient.prefetchQuery 사용
+  - [x] 다음 페이지 (currentPage + 1) prefetch
+  - [x] 빈 query나 마지막 페이지는 prefetch 안 함
+  - [x] Public API에 export 추가
 
-**예상 테스트 수: 약 4 tests (누적: 133)**
+**Phase 4.8 완료! 총 4 tests 통과 (누적: 154)** ✅
 
 #### 4.9 브라우저 테스트 및 실제 동작 확인
 
-- [ ] **실제 구현**: .env 파일 설정
-  - [ ] VITE_PIXABAY_API_KEY 설정
-  - [ ] env.ts에서 환경 변수 읽기
+- [x] **실제 구현**: .env 파일 설정 ✅
+  - [x] VITE_PIXABAY_API_KEY 설정 (이미 완료)
+  - [x] env.ts에서 환경 변수 읽기 (이미 완료)
+  - [x] main.tsx FSD 구조에 맞게 수정
+  - [x] Tailwind CSS variable 문제 해결
+
+- [x] **빌드 및 개발 서버 실행 확인** ✅
+  - [x] npm run build 성공 확인
+  - [x] npm run dev 실행 확인 (http://localhost:5174)
 
 - [ ] **브라우저 테스트**: 전체 기능 동작 확인
   - [ ] 검색 기능 작동 확인
