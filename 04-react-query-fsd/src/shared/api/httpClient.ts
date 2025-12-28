@@ -10,10 +10,8 @@ class HttpClient {
   }
 
   private buildUrl(endpoint: string, params?: QueryParams): string {
-    // baseUrl이 있으면 결합, 없으면 localhost를 사용 (테스트용)
-    const fullUrl = this.baseUrl
-      ? `${this.baseUrl}${endpoint}`
-      : `http://localhost${endpoint}`;
+    // baseUrl이 이미 완전한 URL이므로 endpoint가 '/'면 그대로 사용
+    const fullUrl = endpoint === '/' ? this.baseUrl : `${this.baseUrl}${endpoint}`;
     const url = new URL(fullUrl);
 
     if (params) {

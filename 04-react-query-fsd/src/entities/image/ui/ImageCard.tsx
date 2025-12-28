@@ -1,30 +1,38 @@
-import { Card, CardContent } from '@/shared/ui/card';
 import type { Image } from '@/entities/image/model/types';
 
 interface ImageCardProps {
   image: Image;
 }
 
+const formatNumber = (num: number): string => num.toLocaleString('en-US');
+
 export function ImageCard({ image }: ImageCardProps) {
   return (
-    <Card className="w-full overflow-hidden transition-transform hover:scale-105">
-      <CardContent className="p-0">
+    <div className="group flex flex-col bg-white rounded-[8px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.12)] transition-all duration-300 ease-[ease] hover:shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:-translate-y-[4px] cursor-pointer">
+      <div className="relative w-full aspect-[4/3] overflow-hidden bg-[#f8f9fa]">
         <img
-          src={image.webformatURL}
+          src={image.previewURL}
           alt={image.tags.join(', ')}
-          className="w-full h-48 object-cover"
+          loading="lazy"
+          className="w-full h-full object-cover transition-transform duration-300 ease-[ease] group-hover:scale-105"
         />
-        <div className="p-4">
-          <p className="text-sm font-semibold mb-2">By {image.user}</p>
-          <div className="flex gap-4 text-sm text-gray-600">
-            <span>❤️ {image.likes}</span>
-            <span>👁️ {image.views}</span>
-          </div>
-          <div className="mt-2">
-            <span className="text-xs text-gray-500">{image.tags[0]}</span>
-          </div>
+      </div>
+      <div className="p-[16px] flex flex-col gap-[8px]">
+        <p className="m-0 text-[12px] font-medium text-[#2c3e50]">
+          by {image.user}
+        </p>
+        <div className="flex gap-[16px] items-center">
+          <span className="text-[12px] text-[#7f8c8d] flex items-center gap-[4px]">
+            👁️ {formatNumber(image.views)}
+          </span>
+          <span className="text-[12px] text-[#7f8c8d] flex items-center gap-[4px]">
+            ⬇️ {formatNumber(image.downloads)}
+          </span>
+          <span className="text-[12px] text-[#7f8c8d] flex items-center gap-[4px]">
+            ❤️ {formatNumber(image.likes)}
+          </span>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

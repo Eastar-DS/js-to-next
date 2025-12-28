@@ -6,11 +6,13 @@ describe('entities/image Public API', () => {
     const mockImage: Image = {
       id: 1,
       tags: ['test'],
+      previewURL: "https://example.com/preview.jpg",
       webformatURL: 'test.jpg',
       largeImageURL: 'large.jpg',
       user: 'user',
       likes: 100,
       views: 500,
+    downloads: 25,
     };
     expect(mockImage).toBeDefined();
   });

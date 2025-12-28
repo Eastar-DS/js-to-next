@@ -28,11 +28,13 @@ export interface ImageDTO {
 export interface Image {
   id: number;
   tags: string[];
+  previewURL: string;
   webformatURL: string;
   largeImageURL: string;
   user: string;
   likes: number;
   views: number;
+  downloads: number;
 }
 
 // Pixabay API 응답 타입
@@ -47,11 +49,13 @@ export function toImage(dto: ImageDTO): Image {
   return {
     id: dto.id,
     tags: dto.tags.split(',').map((tag) => tag.trim()),
+    previewURL: dto.previewURL,
     webformatURL: dto.webformatURL,
     largeImageURL: dto.largeImageURL,
     user: dto.user,
     likes: dto.likes,
     views: dto.views,
+    downloads: dto.downloads,
   };
 }
 
@@ -71,10 +75,12 @@ export function isImage(obj: unknown): obj is Image {
   return (
     typeof image.id === 'number' &&
     Array.isArray(image.tags) &&
+    typeof image.previewURL === 'string' &&
     typeof image.webformatURL === 'string' &&
     typeof image.largeImageURL === 'string' &&
     typeof image.user === 'string' &&
     typeof image.likes === 'number' &&
-    typeof image.views === 'number'
+    typeof image.views === 'number' &&
+    typeof image.downloads === 'number'
   );
 }

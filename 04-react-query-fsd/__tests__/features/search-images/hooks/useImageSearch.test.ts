@@ -11,20 +11,24 @@ const mockImages: Image[] = [
   {
     id: 1,
     tags: ['nature', 'landscape'],
+    previewURL: "https://example.com/preview.jpg",
     webformatURL: 'https://example.com/image1.jpg',
     largeImageURL: 'https://example.com/large1.jpg',
     user: 'photographer1',
     likes: 100,
     views: 500,
+  downloads: 25,
   },
   {
     id: 2,
     tags: ['city', 'architecture'],
+    previewURL: "https://example.com/preview.jpg",
     webformatURL: 'https://example.com/image2.jpg',
     largeImageURL: 'https://example.com/large2.jpg',
     user: 'photographer2',
     likes: 200,
     views: 1000,
+  downloads: 25,
   },
 ];
 

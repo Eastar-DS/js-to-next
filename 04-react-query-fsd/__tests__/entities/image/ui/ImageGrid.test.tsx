@@ -7,20 +7,24 @@ describe('ImageGrid 컴포넌트', () => {
     {
       id: 1,
       tags: ['nature', 'landscape'],
+      previewURL: 'https://example.com/preview1.jpg',
       webformatURL: 'https://example.com/image1.jpg',
       largeImageURL: 'https://example.com/large1.jpg',
       user: 'user1',
       likes: 100,
       views: 500,
+      downloads: 25,
     },
     {
       id: 2,
       tags: ['city', 'architecture'],
+      previewURL: 'https://example.com/preview2.jpg',
       webformatURL: 'https://example.com/image2.jpg',
       largeImageURL: 'https://example.com/large2.jpg',
       user: 'user2',
       likes: 200,
       views: 1000,
+      downloads: 50,
     },
   ];
 

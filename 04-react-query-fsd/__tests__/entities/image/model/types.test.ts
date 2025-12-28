@@ -41,11 +41,13 @@ describe('Image 타입 및 DTO 변환', () => {
       const image: Image = {
         id: 123456,
         tags: ['nature', 'landscape', 'mountain'],
+        previewURL: "https://example.com/preview.jpg",
         webformatURL: 'https://pixabay.com/get/123456_640.jpg',
         largeImageURL: 'https://pixabay.com/get/123456_1280.jpg',
         user: 'photographer',
         likes: 200,
         views: 1000,
+      downloads: 25,
       };
 
       expect(image).toHaveProperty('id');
@@ -73,9 +75,14 @@ describe('Image 타입 및 DTO 변환', () => {
     it('필요한 필드만 포함해야 한다', () => {
       const image = toImage(mockImageDTO);
 
-      expect(image).not.toHaveProperty('previewURL');
+      // Image 타입에 포함되는 필드들
+      expect(image).toHaveProperty('previewURL');
+      expect(image).toHaveProperty('downloads');
+
+      // Image 타입에 포함되지 않는 DTO 전용 필드들
       expect(image).not.toHaveProperty('pageURL');
       expect(image).not.toHaveProperty('type');
+      expect(image).not.toHaveProperty('previewWidth');
     });
   });
 
@@ -110,11 +117,13 @@ describe('Image 타입 및 DTO 변환', () => {
       const validImage: Image = {
         id: 123,
         tags: ['test'],
+        previewURL: "https://example.com/preview.jpg",
         webformatURL: 'https://example.com/image.jpg',
         largeImageURL: 'https://example.com/large.jpg',
         user: 'testuser',
         likes: 10,
         views: 100,
+      downloads: 25,
       };
 
       expect(isImage(validImage)).toBe(true);

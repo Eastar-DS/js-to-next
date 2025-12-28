@@ -33,11 +33,13 @@ describe('usePrefetch 훅', () => {
       {
         id: 1,
         tags: ['test'],
+        previewURL: "https://example.com/preview.jpg",
         webformatURL: 'test.jpg',
         largeImageURL: 'large.jpg',
         user: 'user',
         likes: 100,
         views: 500,
+      downloads: 25,
       },
     ];
 

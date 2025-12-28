@@ -17,18 +17,28 @@ export const SearchPage: React.FC = () => {
   };
 
   return (
-    <div data-testid="search-page" className="flex flex-col gap-6 p-6">
-      <SearchForm onSearch={handleSearch} />
+    <div data-testid="search-page" className="min-h-screen bg-white flex flex-col">
+      <header className="flex-shrink-0">
+        <h1 className="text-center p-5 text-gray-800 m-0 text-2xl font-normal">
+          Image Search App
+        </h1>
+        <SearchForm onSearch={handleSearch} />
+      </header>
+
+      <main className="flex-1">
+        {query && <ImageGallery query={query} page={page} />}
+      </main>
 
       {query && (
-        <>
-          <ImageGallery query={query} page={page} />
-          <Pagination
-            currentPage={page}
-            totalPages={10}
-            onPageChange={handlePageChange}
-          />
-        </>
+        <footer className="flex-shrink-0">
+          <div className="flex justify-center p-5">
+            <Pagination
+              currentPage={page}
+              totalPages={10}
+              onPageChange={handlePageChange}
+            />
+          </div>
+        </footer>
       )}
     </div>
   );

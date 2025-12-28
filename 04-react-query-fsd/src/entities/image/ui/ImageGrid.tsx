@@ -18,7 +18,10 @@ export function ImageGrid({ images }: ImageGridProps) {
   return (
     <div
       data-testid="image-grid"
-      className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+      className="grid w-full
+                 grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-[24px] px-[24px] pb-[24px]
+                 max-[768px]:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] max-[768px]:gap-[16px] max-[768px]:px-[16px] max-[768px]:pb-[16px]
+                 max-[480px]:grid-cols-1 max-[480px]:gap-[8px] max-[480px]:px-[8px] max-[480px]:pb-[8px]"
     >
       {images.map((image) => (
         <ImageCard key={image.id} image={image} />

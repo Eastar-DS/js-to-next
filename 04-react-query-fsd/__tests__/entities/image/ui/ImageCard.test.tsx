@@ -6,11 +6,13 @@ describe('ImageCard 컴포넌트', () => {
   const mockImage: Image = {
     id: 123456,
     tags: ['nature', 'landscape', 'mountain'],
+    previewURL: 'https://example.com/preview.jpg',
     webformatURL: 'https://example.com/image.jpg',
     largeImageURL: 'https://example.com/large.jpg',
     user: 'photographer',
     likes: 200,
     views: 1000,
+    downloads: 50,
   };
 
   it('Image 타입의 props를 받아 렌더링해야 한다', () => {
