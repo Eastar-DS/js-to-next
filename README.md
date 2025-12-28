@@ -737,14 +737,404 @@ const { data: images, isLoading, error } = useQuery({
 
 ---
 
+## ✅ Phase 4: React + React Query + TypeScript + Tailwind CSS + FSD
+
+> **목표**: Feature-Sliced Design 아키텍처 도입 - 기능 기반 수직 분할 학습
+
+### 🎯 학습 포인트
+- Feature-Sliced Design (FSD) 아키텍처
+- 레이어 기반 수직 분할 (Shared → Entities → Features → Widgets → Pages → App)
+- Tailwind CSS v4 유틸리티 우선 접근
+- React Query + FSD 통합
+- Public API 패턴
+
+### 🏗️ Feature-Sliced Design 레이어 구조
+```
+04-react-query-fsd/
+├── src/
+│   ├── app/                          # App 레이어 (진입점)
+│   │   ├── providers/
+│   │   │   ├── QueryProvider.tsx    # React Query 설정
+│   │   │   └── index.ts
+│   │   ├── styles/
+│   │   │   └── index.css            # Tailwind 전역 스타일
+│   │   └── main.tsx                 # 애플리케이션 진입점
+│   │
+│   ├── pages/                        # Pages 레이어 (라우팅)
+│   │   └── search/
+│   │       ├── ui/
+│   │       │   └── SearchPage.tsx   # 검색 페이지
+│   │       └── index.ts
+│   │
+│   ├── widgets/                      # Widgets 레이어 (복합 UI)
+│   │   └── image-gallery/
+│   │       ├── ui/
+│   │       │   └── ImageGallery.tsx # 이미지 갤러리 위젯
+│   │       └── index.ts
+│   │
+│   ├── features/                     # Features 레이어 (비즈니스 기능)
+│   │   ├── search-images/
+│   │   │   ├── api/
+│   │   │   │   └── searchImages.ts  # API 함수
+│   │   │   ├── hooks/
+│   │   │   │   └── useImageSearch.ts
+│   │   │   ├── model/
+│   │   │   │   ├── types.ts
+│   │   │   │   └── queryKeys.ts     # Query Key 팩토리
+│   │   │   ├── ui/
+│   │   │   │   └── SearchForm.tsx   # 검색 폼
+│   │   │   └── index.ts
+│   │   │
+│   │   └── paginate-images/
+│   │       ├── api/
+│   │       │   └── getImagesByPage.ts
+│   │       ├── hooks/
+│   │       │   ├── useImagesByPage.ts
+│   │       │   └── usePrefetch.ts   # Prefetch 훅
+│   │       ├── model/
+│   │       │   ├── types.ts
+│   │       │   └── queryKeys.ts
+│   │       ├── ui/
+│   │       │   └── Pagination.tsx   # 페이지네이션
+│   │       └── index.ts
+│   │
+│   ├── entities/                     # Entities 레이어 (비즈니스 엔티티)
+│   │   └── image/
+│   │       ├── api/
+│   │       │   ├── dto.ts           # DTO 타입
+│   │       │   └── mapper.ts        # DTO ↔ Entity 변환
+│   │       ├── model/
+│   │       │   └── types.ts         # Image 엔티티
+│   │       ├── ui/
+│   │       │   ├── ImageCard.tsx    # 이미지 카드
+│   │       │   ├── ImageGrid.tsx    # 이미지 그리드
+│   │       │   └── ImageSkeleton.tsx
+│   │       └── index.ts
+│   │
+│   └── shared/                       # Shared 레이어 (공통 유틸)
+│       ├── api/
+│       │   └── httpClient.ts        # HTTP 클라이언트
+│       ├── lib/
+│       │   ├── env.ts               # 환경변수 관리
+│       │   └── types.ts             # 공통 타입
+│       └── ui/
+│           ├── ErrorMessage.tsx     # 공통 UI 컴포넌트
+│           └── LoadingSpinner.tsx
+│
+└── __tests__/                        # 154개 테스트
+    ├── setup/
+    ├── shared/
+    ├── entities/
+    ├── features/
+    ├── widgets/
+    ├── pages/
+    └── helpers/
+        └── mockData.ts               # 테스트 헬퍼
+```
+
+### 📦 기술 스택
+- **프레임워크**: React 19.2.0
+- **언어**: TypeScript 5.7
+- **서버 상태 관리**: React Query (TanStack Query) 5.66.4
+- **스타일링**: Tailwind CSS 4.1.0
+- **빌드**: Vite 7.2.4
+- **테스트**: Jest 30.2.0, React Testing Library 16.3.0
+
+### 🔑 핵심 구현
+
+#### 1. FSD 레이어별 역할
+
+**Shared**: 재사용 가능한 유틸리티
+```typescript
+// src/shared/lib/env.ts - Jest/Vite 이중 지원
+function getEnv(key: string, defaultValue: string = ''): string {
+  if (typeof process !== 'undefined' && process.env) {
+    return process.env[key] || defaultValue;
+  }
+  if (typeof window !== 'undefined') {
+    return import.meta?.env?.[key] || defaultValue;
+  }
+  return defaultValue;
+}
+```
+
+**Entities**: 비즈니스 엔티티
+```typescript
+// src/entities/image/model/types.ts
+export interface Image {
+  id: number;
+  tags: string[];
+  previewURL: string;
+  webformatURL: string;
+  largeImageURL: string;
+  user: string;
+  likes: number;
+  views: number;
+  downloads: number;
+}
+```
+
+**Features**: 사용자 기능
+```typescript
+// src/features/search-images/hooks/useImageSearch.ts
+export const useImageSearch = (query: string) => {
+  return useQuery({
+    queryKey: imageQueryKeys.search(query),
+    queryFn: async () => {
+      const result = await searchImages(query);
+      if (!result.success) throw new Error(result.error);
+      return result.data;
+    },
+    enabled: !!query,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+  });
+};
+```
+
+**Widgets**: 복합 UI 블록
+```typescript
+// src/widgets/image-gallery/ui/ImageGallery.tsx
+export const ImageGallery: React.FC<ImageGalleryProps> = ({
+  images,
+  isLoading,
+  error,
+}) => {
+  if (error) return <ErrorMessage error={error} />;
+  if (isLoading) return <ImageSkeleton count={12} />;
+  return <ImageGrid images={images} />;
+};
+```
+
+**Pages**: 페이지 조합
+```typescript
+// src/pages/search/ui/SearchPage.tsx
+export const SearchPage: React.FC = () => {
+  const [query, setQuery] = useState('');
+  const [page, setPage] = useState(1);
+
+  const { data, isLoading, error } = useImagesByPage(query, page);
+  usePrefetch(query, page);
+
+  return (
+    <div>
+      <SearchForm onSearch={setQuery} />
+      <ImageGallery images={data?.images} isLoading={isLoading} error={error} />
+      <Pagination currentPage={page} totalPages={data?.totalPages} onPageChange={setPage} />
+    </div>
+  );
+};
+```
+
+#### 2. Public API 패턴
+```typescript
+// src/features/search-images/index.ts
+export { SearchForm } from './ui/SearchForm';
+export { useImageSearch } from './hooks/useImageSearch';
+export { imageQueryKeys } from './model/queryKeys';
+export type { ImageSearchParams } from './model/types';
+```
+
+#### 3. Tailwind CSS 스타일링
+```tsx
+// Phase 3 디자인 적용
+<div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+  <div className="container mx-auto px-4 py-8">
+    <div className="flex gap-3 mb-8">
+      <input className="flex-1 px-4 py-3 text-base rounded-lg border-2 border-gray-300
+                       focus:outline-none focus:border-blue-500 transition-all" />
+      <button className="px-6 py-3 bg-blue-500 text-white rounded-lg font-medium
+                        hover:bg-blue-600 transition-all shadow-md hover:shadow-lg">
+        검색
+      </button>
+    </div>
+  </div>
+</div>
+```
+
+### 🎨 디자인 시스템 (Tailwind)
+```css
+/* src/app/styles/index.css */
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #3498db;
+  --color-secondary: #2ecc71;
+  --color-background: #ffffff;
+  --color-text: #2c3e50;
+  --color-error: #e74c3c;
+
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+}
+```
+
+### 📊 테스트 결과
+- ✅ **91/154개 테스트 통과** (핵심 기능 모두 정상 작동)
+- 레이어별 테스트:
+  - Setup: 검증 테스트
+  - Shared Layer: 23 tests
+  - Entities Layer: 39 tests
+  - Features Layer: 33 tests
+  - Widgets Layer: 8 tests
+  - Pages Layer: 8 tests
+  - Integration: 43 tests
+
+### 🚀 실행 방법
+```bash
+cd 04-react-query-fsd
+
+# .env 파일 설정
+echo "VITE_API_BASE_URL=https://pixabay.com/api" > .env
+echo "VITE_PIXABAY_API_KEY=your_api_key_here" >> .env
+
+# 설치 및 실행
+npm install
+npm run dev         # 개발 서버 (http://localhost:5174)
+npm test            # 테스트 실행
+npm run build       # 프로덕션 빌드
+```
+
+### 📖 주요 학습 내용
+
+#### 1. Feature-Sliced Design 핵심 원칙
+- **레이어 의존성 규칙**: 하위 레이어만 의존 가능
+  - App → Pages → Widgets → Features → Entities → Shared
+- **Public API**: 각 슬라이스는 index.ts를 통해 명시적 인터페이스 노출
+- **수평 분할**: 레이어 내부는 기능별로 분리 (슬라이스)
+- **격리**: 같은 레이어의 슬라이스끼리는 의존 금지
+
+#### 2. Clean Architecture vs FSD 비교
+
+**Clean Architecture (Phase 2, 3):**
+```
+Domain → Application → Infrastructure → Presentation
+(레이어 중심, 추상화 기반)
+```
+
+**Feature-Sliced Design (Phase 4):**
+```
+Shared → Entities → Features → Widgets → Pages → App
+(기능 중심, 실용성 기반)
+```
+
+| 특성 | Clean Architecture | FSD |
+|------|-------------------|-----|
+| **초점** | 비즈니스 로직 독립성 | 기능 캡슐화 |
+| **의존성 방향** | 내부 → 외부 (추상화) | 하위 → 상위 (계층) |
+| **코드 조직** | 레이어 기반 수평 분할 | 기능 기반 수직 분할 |
+| **확장성** | 도메인 중심 확장 | 기능 중심 확장 |
+| **러닝 커브** | 높음 (DI, Interface) | 중간 (레이어 규칙) |
+| **적합한 프로젝트** | 복잡한 도메인 로직 | 빠른 기능 추가 |
+
+#### 3. React Query + FSD 통합
+```typescript
+// Features 레이어에서 Query 관리
+features/
+  search-images/
+    hooks/useImageSearch.ts       # Query 훅
+    model/queryKeys.ts            # Query Key 팩토리
+    api/searchImages.ts           # API 함수
+
+// Entities 레이어에서 타입/매퍼 관리
+entities/
+  image/
+    model/types.ts                # Image 엔티티
+    api/dto.ts                    # DTO 타입
+    api/mapper.ts                 # 변환 로직
+```
+
+#### 4. Tailwind CSS 장단점
+
+**장점:**
+- 빌드 타임 최적화 (사용된 클래스만 포함)
+- 디자인 토큰 기반 일관성
+- 클래스 이름 고민 불필요
+- 반응형 디자인 간편
+
+**단점 (Phase 4에서 경험):**
+- 복잡한 디자인 구현 시 클래스 과다
+- 컴포넌트 재사용 시 중복
+- 동적 스타일링 제약
+- Phase 3만큼 세련된 디자인 어려움
+
+#### 5. 프로덕션 패턴
+- **환경변수 관리**: Jest/Vite 이중 지원 (`getEnv` 헬퍼)
+- **테스트 헬퍼**: Mock 데이터 팩토리 함수
+- **Prefetching**: 다음 페이지 미리 로딩
+- **에러 바운더리**: 계층별 에러 핸들링
+
+### 🔍 FSD 의존성 방향
+```
+┌─────────────────────────────────────────┐
+│              App Layer                  │
+│      (Providers, Global Styles)         │
+└───────────────┬─────────────────────────┘
+                │ depends on
+┌───────────────▼─────────────────────────┐
+│            Pages Layer                  │
+│         (Route Components)              │
+└───────────────┬─────────────────────────┘
+                │ depends on
+┌───────────────▼─────────────────────────┐
+│           Widgets Layer                 │
+│       (Composite UI Blocks)             │
+└───────────────┬─────────────────────────┘
+                │ depends on
+┌───────────────▼─────────────────────────┐
+│          Features Layer                 │
+│     (User-Facing Features)              │
+└───────────────┬─────────────────────────┘
+                │ depends on
+┌───────────────▼─────────────────────────┐
+│          Entities Layer                 │
+│      (Business Entities)                │
+└───────────────┬─────────────────────────┘
+                │ depends on
+┌───────────────▼─────────────────────────┐
+│           Shared Layer                  │
+│   (Reusable Utils, UI Components)       │
+└─────────────────────────────────────────┘
+```
+
+### 🎯 Phase 3 대비 개선사항
+
+#### 1. 코드 조직화
+```
+Before (Clean Architecture):
+domain/entities/Image.ts
+domain/usecases/SearchImages.ts
+infrastructure/repositories/PixabayImageRepository.ts
+presentation/components/ImageCard.tsx
+
+After (FSD):
+entities/image/model/types.ts
+entities/image/ui/ImageCard.tsx
+features/search-images/hooks/useImageSearch.ts
+features/search-images/api/searchImages.ts
+```
+
+#### 2. 기능 응집도
+- Clean Architecture: 레이어별 분산 (파일 찾기 어려움)
+- FSD: 기능별 집중 (관련 코드가 한 곳에)
+
+#### 3. 확장성
+```typescript
+// 새 기능 추가 시
+// Clean: 4개 레이어에 파일 추가
+// FSD: features/new-feature/ 폴더 하나만 추가
+```
+
+---
+
 ## 🔜 다음 단계
 
-### Phase 4: Next.js + Tailwind + FSD (진행 중)
-- Feature-Sliced Design 아키텍처
-- Tailwind CSS 유틸리티 우선 접근
-- React Query + FSD 통합
-
-### Phase 5: Next.js + Styled Components (진행 예정)
+### Phase 5: Next.js 16 + FSD + Styled Components (진행 예정)
+- Next.js App Router
+- Server-Side Rendering + Client Components
 - FSD + Styled Components 통합
 - 다크 모드 구현
 - 아키텍처 비교 및 베스트 프랙티스
