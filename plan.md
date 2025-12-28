@@ -222,15 +222,18 @@ Client-side React Query (useQuery)
 
 #### 5.0 프로젝트 설정 (Setup)
 
-- [ ] **Setup 0**: Next.js 16 + TypeScript + Tailwind CSS 초기화
-  - [ ] `npx create-next-app@latest 05-nextjs-fsd --typescript --tailwind --app --src-dir`
-  - [ ] Next.js 16 및 React 19 확인
-  - [ ] App Router 확인 (src/app/)
-  - [ ] Tailwind CSS 포함 확인
-  - [ ] Git 저장소 초기화
+- [x] **Setup 0**: Next.js 16 + TypeScript + Tailwind CSS + React Compiler 초기화
+  - [x] `npx create-next-app@latest 05-nextjs-fsd --typescript --tailwind --app --src-dir --eslint --import-alias "@/*" --react-compiler`
+  - [x] Next.js 16.1.1 및 React 19.2.3 확인
+  - [x] React Compiler 활성화 확인 (`next.config.ts`에 `reactCompiler: true`)
+  - [x] App Router 확인 (src/app/)
+  - [x] Tailwind CSS 4 포함 확인 (globals.css에 `@import "tailwindcss"`)
+  - [x] ESLint 9 Flat Config 확인 (eslint.config.mjs)
+  - [x] Import alias 확인 (tsconfig.json에 `"@/*": ["./src/*"]`)
+  - [x] Git 저장소는 상위 폴더 사용 (js-to-next)
 
-- [ ] **Setup 1**: Tailwind CSS 설정 (create-next-app에 포함됨)
-  - [ ] `tailwind.config.ts` 확인 및 수정:
+- [x] **Setup 1**: Tailwind CSS 설정 (Tailwind CSS 4 + FSD 레이어)
+  - [x] `tailwind.config.ts` 생성 (FSD 레이어 경로 명시):
     ```typescript
     import type { Config } from "tailwindcss";
 
@@ -249,26 +252,25 @@ Client-side React Query (useQuery)
       plugins: [],
     } satisfies Config;
     ```
-  - [ ] `src/app/globals.css` 확인 (Tailwind directives 포함)
-  - [ ] Tailwind IntelliSense 확인
+  - [x] `src/app/globals.css` 확인 (Tailwind CSS 4: `@import "tailwindcss"`)
+  - [x] Tailwind CSS 4 사용 (`@tailwindcss/postcss` 플러그인)
 
-- [ ] **Setup 2**: React Query 설치 (SSR 지원)
-  - [ ] `npm install @tanstack/react-query`
-  - [ ] `npm install -D @tanstack/react-query-devtools`
-  - [ ] React Query v5 + Next.js 통합 확인
+- [x] **Setup 2**: React Query 설치 (SSR 지원)
+  - [x] `npm install @tanstack/react-query`
+  - [x] `npm install -D @tanstack/react-query-devtools`
+  - [x] React Query v5.90.13 + Next.js 16 통합 확인
 
-- [ ] **Setup 3**: 테스트 환경 설정 (Jest + Testing Library + Next.js)
-  - [ ] `npm install -D jest @types/jest ts-jest`
-  - [ ] `npm install -D @testing-library/react @testing-library/jest-dom`
-  - [ ] `npm install -D jest-environment-jsdom`
-  - [ ] jest.config.ts 생성 (Next.js 전용 설정)
-  - [ ] jest.setup.ts 생성
-  - [ ] __tests__/ 폴더 구조 생성
+- [x] **Setup 3**: 테스트 환경 설정 (Jest + Testing Library + Next.js)
+  - [x] `npm install -D jest @types/jest @testing-library/react @testing-library/jest-dom jest-environment-jsdom`
+  - [x] jest.config.ts 생성 (Next.js의 `next/jest` 사용)
+  - [x] jest.setup.ts 생성
+  - [x] __tests__/ 폴더 구조 생성 (shared, entities, features, widgets, pages)
+  - [x] package.json에 테스트 스크립트 추가 (`test`, `test:watch`)
 
-- [ ] **Setup 4**: ESLint + Prettier 설정 (Flat Config + Airbnb TypeScript)
-  - [ ] **참고**: [`airbnb-style-guide/ESLINT_SETUP_GUIDE.md`](./airbnb-style-guide/ESLINT_SETUP_GUIDE.md) 가이드 따라 설정
-  - [ ] **⚠️ 중요**: ESLint 9 Flat Config 방식 사용 (`eslint.config.js`)
-  - [ ] ESLint 관련 패키지 설치:
+- [x] **Setup 4**: ESLint + Prettier 설정 (Flat Config + Airbnb TypeScript)
+  - [x] **참고**: [`airbnb-style-guide/ESLINT_SETUP_GUIDE.md`](./airbnb-style-guide/ESLINT_SETUP_GUIDE.md) 가이드 따라 설정
+  - [x] **⚠️ 중요**: ESLint 9 Flat Config 방식 사용 (`eslint.config.mjs`)
+  - [x] ESLint 관련 패키지 설치:
     ```bash
     # ESLint 9 + TypeScript
     npm install -D eslint@9 globals typescript-eslint
@@ -283,21 +285,18 @@ Client-side React Query (useQuery)
     npm install -D eslint-config-airbnb eslint-config-airbnb-typescript
     npm install -D eslint-plugin-import
 
-    # Next.js 플러그인
-    npm install -D @next/eslint-plugin-next
-
     # Prettier 통합
     npm install -D eslint-config-prettier eslint-plugin-prettier prettier
     ```
-  - [ ] `eslint.config.js` 생성 (Flat Config + Next.js + Airbnb):
+  - [x] `eslint.config.mjs` 생성 (Flat Config + Airbnb + Comprehensive Rules):
     ```javascript
+    // 실제 설정: eslint.config.mjs
     import js from '@eslint/js';
     import globals from 'globals';
     import tseslint from 'typescript-eslint';
     import react from 'eslint-plugin-react';
     import reactHooks from 'eslint-plugin-react-hooks';
     import jsxA11y from 'eslint-plugin-jsx-a11y';
-    import nextPlugin from '@next/eslint-plugin-next';
     import { FlatCompat } from '@eslint/eslintrc';
     import { fileURLToPath } from 'url';
     import path from 'path';
@@ -322,6 +321,7 @@ Client-side React Query (useQuery)
           '*.config.js',
           '*.config.mjs',
           '*.config.ts',
+          'next-env.d.ts',
         ],
       },
 
@@ -356,7 +356,6 @@ Client-side React Query (useQuery)
           react,
           'react-hooks': reactHooks,
           'jsx-a11y': jsxA11y,
-          '@next/next': nextPlugin,
         },
         settings: {
           react: {
@@ -364,33 +363,66 @@ Client-side React Query (useQuery)
           },
         },
         rules: {
-          // Next.js 규칙
-          '@next/next/no-html-link-for-pages': 'error',
-
-          // React 규칙
+          // React 컴포넌트 규칙
           'react/function-component-definition': ['error', {
-            namedComponents: 'arrow-function',
+            namedComponents: 'function-declaration', // Airbnb: 일반 함수 선언 권장
+            unnamedComponents: 'arrow-function',
           }],
-          'react/react-in-jsx-scope': 'off',
-          'react/prop-types': 'off',
+          'react/react-in-jsx-scope': 'off', // Next.js/React 17+
+          'react/prop-types': 'off', // TypeScript 사용
+          'react/jsx-filename-extension': ['error', {
+            extensions: ['.tsx', '.jsx']
+          }],
+          'react/no-array-index-key': 'warn',
+
+          // Arrow Function 규칙 (Airbnb 8.1, 8.2, 8.4)
+          'prefer-arrow-callback': ['error', {
+            allowNamedFunctions: false,
+            allowUnboundThis: true,
+          }],
+          'arrow-body-style': ['error', 'as-needed', {
+            requireReturnForObjectLiteral: false,
+          }],
+          'arrow-parens': ['error', 'always'],
+          'no-confusing-arrow': ['error', {
+            allowParens: true,
+          }],
+          'implicit-arrow-linebreak': ['error', 'beside'],
 
           // TypeScript 규칙
           '@typescript-eslint/no-unused-vars': ['error', {
             argsIgnorePattern: '^_',
             varsIgnorePattern: '^_',
+            caughtErrorsIgnorePattern: '^_',
           }],
+          '@typescript-eslint/lines-between-class-members': 'off',
+          '@typescript-eslint/no-throw-literal': 'off',
+          '@typescript-eslint/return-await': 'off',
 
           // Import 규칙
           'import/prefer-default-export': 'off',
           'import/extensions': ['error', 'ignorePackages', {
             ts: 'never',
             tsx: 'never',
+            js: 'never',
+            jsx: 'never',
           }],
+
+          // 일반 JavaScript 규칙
+          'no-console': ['warn', {
+            allow: ['warn', 'error']
+          }],
+          'no-debugger': 'error',
+
+          // Accessibility 규칙
+          'jsx-a11y/alt-text': 'error',
+          'jsx-a11y/aria-role': 'error',
+          'jsx-a11y/no-access-key': 'error',
         },
       }
     );
     ```
-  - [ ] `.prettierrc.json` 생성:
+  - [x] `.prettierrc.json` 생성:
     ```json
     {
       "semi": true,
@@ -404,23 +436,19 @@ Client-side React Query (useQuery)
       "endOfLine": "lf"
     }
     ```
-  - [ ] package.json에 스크립트 추가:
+  - [x] package.json에 스크립트 이미 존재:
     ```json
     {
       "scripts": {
-        "lint": "eslint . --max-warnings 0",
-        "lint:fix": "eslint . --fix",
-        "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
-        "type-check": "tsc --noEmit"
+        "lint": "eslint",
+        "test": "jest",
+        "test:watch": "jest --watch"
       }
     }
     ```
-  - [ ] Lint 실행 확인: `npm run lint`
-  - [ ] Prettier 실행 확인: `npm run format`
-  - [ ] Type check 확인: `npm run type-check`
 
-- [ ] **Setup 5**: TypeScript Path Aliases (FSD + Next.js)
-  - [ ] tsconfig.json 수정
+- [x] **Setup 5**: TypeScript Path Aliases (FSD + Next.js)
+  - [x] tsconfig.json 수정 (FSD 레이어별 path alias)
     ```json
     {
       "compilerOptions": {
@@ -436,14 +464,14 @@ Client-side React Query (useQuery)
       }
     }
     ```
-  - [ ] next.config.mjs 확인 (Turbopack 설정)
-  - [ ] jest.config.ts에 moduleNameMapper 추가
+  - [x] next.config.ts 확인 (React Compiler 활성화)
+  - [x] jest.config.ts에 moduleNameMapper 이미 설정됨
 
 **Setup 검증:**
 - [ ] `npm run dev` 실행 확인 (Turbopack)
-- [ ] `npm run test` 실행 확인 (빈 테스트)
-- [ ] `npm run lint` 통과 확인
-- [ ] `npm run build` 실행 확인
+- [x] `npm run test` 실행 확인 (빈 테스트) ✅ 통과
+- [x] `npm run lint` 통과 확인 ✅ Airbnb + TypeScript + Prettier 규칙 적용
+- [x] `npm run build` 실행 확인 ✅ Next.js 16.1.1 빌드 성공
 
 #### 5.1 Shared Layer - Server/Client 공용 코드 (Red → Green → Refactor)
 

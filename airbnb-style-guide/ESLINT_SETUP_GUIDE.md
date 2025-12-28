@@ -186,7 +186,7 @@ export default tseslint.config(
       'react/function-component-definition': [
         'error',
         {
-          namedComponents: 'arrow-function',
+          namedComponents: 'function-declaration', // Airbnb: 일반 함수 선언 권장
           unnamedComponents: 'arrow-function',
         },
       ],
@@ -297,7 +297,7 @@ export default tseslint.config(
       'react/function-component-definition': [
         'error',
         {
-          namedComponents: 'arrow-function',
+          namedComponents: 'function-declaration', // Airbnb: 일반 함수 선언 권장
           unnamedComponents: 'arrow-function',
         },
       ],
@@ -387,7 +387,7 @@ export default tseslint.config(
       'react/function-component-definition': [
         'error',
         {
-          namedComponents: 'arrow-function',
+          namedComponents: 'function-declaration', // Airbnb: 일반 함수 선언 권장
           unnamedComponents: 'arrow-function',
         },
       ],
